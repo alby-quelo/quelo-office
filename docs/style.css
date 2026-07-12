@@ -126,13 +126,14 @@ main {
 
 .hero-frame {
   width: 100%;
-  max-width: min(100%, 960px);
+  max-width: 100%;
   margin: 1.5rem auto 0;
   aspect-ratio: 16 / 9;
   border: 1px solid var(--border);
   border-radius: 6px;
   overflow: hidden;
   background: #0a0a0a;
+  line-height: 0;
 }
 
 .hero img.hero-shot {
