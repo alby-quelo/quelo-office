@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quelo Office — Italian live USB office</title>
+  <meta name="description" content="Quelo Office: live Linux USB distribution. Portable Italian office on Debian sid + LXQt + Openbox.">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="../logo.png" type="image/png">
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <a class="brand" href="../">
+        <img src="../logo.png" alt="Quelo Office">
+        <span>Quelo Office</span>
+      </a>
+      <div class="nav-links">
+        <a href="#download">Download</a>
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="#usage">How to use</a>
+        <a href="https://github.com/alby-quelo/quelo-office">GitHub</a>
+      </div>
+      <div class="lang"><a href="../">IT</a> · <strong>EN</strong></div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="badges">
+        <span class="badge">0.71-alpha</span>
+        <span class="badge">Debian sid</span>
+        <span class="badge">LXQt + Openbox</span>
+        <span class="badge">CC BY-NC 4.0</span>
+      </div>
+      <h1>Quelo Office</h1>
+      <p class="tagline">
+        A small portable office on a USB stick — in Italian, ready to use on almost any PC.
+        Inspired by Corrado Guzzanti’s «Quelo» character.
+      </p>
+      <div class="cta-row" id="download">
+        <a class="btn btn-primary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_Office-0.71-alpha.iso">
+          Download ISO 0.71-alpha (~1.4 GB)
+        </a>
+        <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha">
+          Release notes
+        </a>
+      </div>
+      <img class="hero-shot" src="../screenshots/01-desktop.png" alt="Quelo Office 0.71 alpha desktop" width="1280" height="720">
+    </section>
+
+    <section id="about">
+      <h2>What it is for</h2>
+      <ul>
+        <li>Carry a <strong>full office setup</strong> (documents, browser, printing, scanning).</li>
+        <li>Work on <strong>multiple PCs</strong> with the same USB stick, without touching internal disks.</li>
+        <li>Keep personal files readable on <strong>Windows and macOS</strong> (exFAT home).</li>
+        <li>Save <strong>only the settings that matter</strong>, without opaque automatic overlays.</li>
+      </ul>
+    </section>
+
+    <section id="features">
+      <h2>Main features</h2>
+
+      <h3>System and desktop</h3>
+      <ul>
+        <li>Based on Debian sid (live-build), Italian locale, Europe/Rome timezone.</li>
+        <li>Boots straight to desktop: autologin, startx, LXQt session with Openbox.</li>
+        <li>Two LXQt panels: version/RAM/home/clock on top; menu, taskbar, network, Bluetooth, volume, trash, power on bottom.</li>
+        <li>Custom menu with Quelo logo; adjustable fonts for menu and bottom panel.</li>
+      </ul>
+
+      <h3>Included applications</h3>
+      <table>
+        <thead>
+          <tr><th>Area</th><th>Software</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Office</td><td>LibreOffice (Italian UI + spell checker)</td></tr>
+          <tr><td>Web</td><td>Firefox ESR (Italian)</td></tr>
+          <tr><td>Text / PDF</td><td>Mousepad, Zathura</td></tr>
+          <tr><td>Files</td><td>pcmanfm-qt</td></tr>
+          <tr><td>Images</td><td>lximage-qt, mtPaint</td></tr>
+          <tr><td>Multimedia</td><td>SMPlayer, Audacious</td></tr>
+          <tr><td>Utilities</td><td>KCalc, lxterminal, Xarchiver, SMB4K, screenshot</td></tr>
+          <tr><td>Print / scan</td><td>CUPS, Simple Scan, broad drivers</td></tr>
+          <tr><td>Network</td><td>NetworkManager, Wi‑Fi/LAN firmware, mobile broadband</td></tr>
+          <tr><td>Bluetooth</td><td>Blueman</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Live behaviour</h3>
+      <ul>
+        <li>Every boot starts from a clean ISO — no automatic Debian overlay on <code>/usr</code>.</li>
+        <li>Caches and temp data in RAM — lean sessions.</li>
+        <li><strong>Selective save</strong> on reboot/shutdown and <strong>guided restore</strong> at startup.</li>
+        <li>Documents on the <strong>QUELO-HOME</strong> exFAT partition, readable everywhere.</li>
+      </ul>
+    </section>
+
+    <section id="screenshots">
+      <h2>Screenshots</h2>
+
+      <h3>Session save and restore</h3>
+      <p>Choose what to keep (network, printers, Bluetooth, desktop, audio, display, Firefox) and review the summary before rebooting.</p>
+
+      <div class="shots">
+        <div class="shots-grid">
+          <figure>
+            <img src="../screenshots/05-save-prompt.png" alt="Save session dialog" loading="lazy">
+            <figcaption>Save — item selection</figcaption>
+          </figure>
+          <figure>
+            <img src="../screenshots/06-save-progress.png" alt="Save in progress" loading="lazy">
+            <figcaption>Save in progress</figcaption>
+          </figure>
+          <figure>
+            <img src="../screenshots/07-save-complete.png" alt="Save complete" loading="lazy">
+            <figcaption>Save complete</figcaption>
+          </figure>
+        </div>
+        <div class="shots-grid">
+          <figure>
+            <img src="../screenshots/02-restore-prompt.png" alt="Restore session dialog" loading="lazy">
+            <figcaption>Restore — item selection</figcaption>
+          </figure>
+          <figure>
+            <img src="../screenshots/03-restore-progress.png" alt="Restore in progress" loading="lazy">
+            <figcaption>Restore in progress</figcaption>
+          </figure>
+          <figure>
+            <img src="../screenshots/04-restore-complete.png" alt="Restore complete" loading="lazy">
+            <figcaption>Restore complete</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="usb">
+      <h2>USB stick layout</h2>
+      <div class="card">
+        <pre>┌─────────────────────────────────────────────────────────┐
+│  Partition 1–2   │  Live ISO (read-only at boot)          │
+├──────────────────┼──────────────────────────────────────┤
+│  Partition 3     │  ext4 «persistence» — Linux settings   │
+│                  │  (invisible to Windows/macOS)          │
+├──────────────────┼──────────────────────────────────────┤
+│  Partition 4     │  exFAT «QUELO-HOME» — your files       │
+│                  │  (readable everywhere)                 │
+└──────────────────┴──────────────────────────────────────┘</pre>
+      </div>
+    </section>
+
+    <section id="usage">
+      <h2>How to use it</h2>
+      <ol>
+        <li><strong>Download the ISO</strong> using the button above (release 0.71-alpha).</li>
+        <li><strong>Prepare the USB stick</strong> on a host PC — never from the live session booted on the same stick:</li>
+      </ol>
+      <pre><code>git clone https://github.com/alby-quelo/quelo-office.git
+cd quelo-office
+sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh</code></pre>
+      <p>Host prerequisites: <code>e2fsprogs</code>, <code>exfatprogs</code>, <code>util-linux</code>.</p>
+      <ol start="3">
+        <li><strong>Boot from USB</strong> (BIOS/UEFI).</li>
+        <li>On <strong>shutdown</strong>, use the Power button to save the settings you want to keep.</li>
+      </ol>
+    </section>
+
+    <section id="script">
+      <h2>Why a separate USB preparation script?</h2>
+      <p>USB preparation (<code>prepare-usb.sh</code>) must run on the host PC, not inside the live system booted from the same stick:</p>
+      <ul>
+        <li><strong>Safety</strong> — <code>dd</code> and partitioning are destructive; the host script has checks and double confirmation.</li>
+        <li><strong>Reliability</strong> — partitioning the disk you boot from is technically fragile.</li>
+        <li><strong>One ISO for everyone</strong> — same image for all; each user customizes their own stick afterwards.</li>
+        <li><strong>Tool choice</strong> — write the ISO with Etcher and use the script only for persistence and QUELO-HOME.</li>
+      </ul>
+    </section>
+
+    <section id="license">
+      <h2>License</h2>
+      <p>
+        Original Quelo Office work: <strong>Creative Commons BY-NC 4.0</strong>.
+        Non-commercial and educational use allowed with attribution.
+        Commercial use requires written permission from
+        <a href="mailto:alby@gnumerica.org">Alberto Frosio</a>.
+      </p>
+      <p>
+        <a href="https://github.com/alby-quelo/quelo-office/blob/main/LICENSE.TXT">LICENSE.TXT</a> ·
+        <a href="https://github.com/alby-quelo/quelo-office/blob/main/CREDITS.TXT">CREDITS.TXT</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Quelo Office · Alberto Frosio · Inspiration: Corrado Guzzanti («Quelo»)</p>
+    <p>
+      <a href="https://github.com/alby-quelo/quelo-office">Repository</a>
+      <a href="https://github.com/alby-quelo/quelo-office/releases">Releases</a>
+      <a href="../">Italiano</a>
+    </p>
+  </footer>
+</body>
+</html>

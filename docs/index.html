@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quelo Office — live USB office in italiano</title>
+  <meta name="description" content="Quelo Office: distribuzione Linux live da chiavetta USB. Ufficio portatile in italiano su Debian sid + LXQt + Openbox.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="logo.png" type="image/png">
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <a class="brand" href="./">
+        <img src="logo.png" alt="Quelo Office">
+        <span>Quelo Office</span>
+      </a>
+      <div class="nav-links">
+        <a href="#download">Download</a>
+        <a href="#caratteristiche">Caratteristiche</a>
+        <a href="#schermate">Schermate</a>
+        <a href="#uso">Come si usa</a>
+        <a href="https://github.com/alby-quelo/quelo-office">GitHub</a>
+      </div>
+      <div class="lang"><strong>IT</strong> · <a href="en/">EN</a></div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="badges">
+        <span class="badge">0.71-alpha</span>
+        <span class="badge">Debian sid</span>
+        <span class="badge">LXQt + Openbox</span>
+        <span class="badge">CC BY-NC 4.0</span>
+      </div>
+      <h1>Quelo Office</h1>
+      <p class="tagline">
+        Un piccolo ufficio portatile su chiavetta USB — in italiano, pronto all’uso su quasi qualsiasi PC.
+        Ispirato al personaggio «Quelo» di Corrado Guzzanti.
+      </p>
+      <div class="cta-row" id="download">
+        <a class="btn btn-primary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_Office-0.71-alpha.iso">
+          Scarica ISO 0.71-alpha (~1,4 GB)
+        </a>
+        <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha">
+          Note di release
+        </a>
+      </div>
+      <img class="hero-shot" src="screenshots/01-desktop.png" alt="Desktop Quelo Office 0.71 alpha" width="1280" height="720">
+    </section>
+
+    <section id="cosa">
+      <h2>A cosa serve</h2>
+      <ul>
+        <li>Portare con sé un <strong>ufficio completo</strong> (documenti, browser, stampa, scanner).</li>
+        <li>Lavorare su <strong>più PC</strong> con la stessa chiavetta, senza toccare i dischi interni.</li>
+        <li>Avere file personali leggibili anche da <strong>Windows e macOS</strong> (home exFAT).</li>
+        <li>Salvare <strong>solo le configurazioni che interessano</strong>, senza overlay automatici opachi.</li>
+      </ul>
+    </section>
+
+    <section id="caratteristiche">
+      <h2>Caratteristiche principali</h2>
+
+      <h3>Sistema e desktop</h3>
+      <ul>
+        <li>Basata su Debian sid (live-build), locale italiano, fuso orario Europe/Rome.</li>
+        <li>Avvio diretto al desktop: autologin, startx, sessione LXQt con Openbox.</li>
+        <li>Due pannelli LXQt: versione/RAM/home/orologio in alto; menu, taskbar, rete, Bluetooth, volume, cestino, spegnimento in basso.</li>
+        <li>Menu personalizzato con logo Quelo; caratteri regolabili per menu e pannello inferiore.</li>
+      </ul>
+
+      <h3>Applicazioni incluse</h3>
+      <table>
+        <thead>
+          <tr><th>Area</th><th>Software</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Ufficio</td><td>LibreOffice (IT + correttore)</td></tr>
+          <tr><td>Web</td><td>Firefox ESR (italiano)</td></tr>
+          <tr><td>Testo / PDF</td><td>Mousepad, Zathura</td></tr>
+          <tr><td>File</td><td>pcmanfm-qt</td></tr>
+          <tr><td>Immagini</td><td>lximage-qt, mtPaint</td></tr>
+          <tr><td>Multimedia</td><td>SMPlayer, Audacious</td></tr>
+          <tr><td>Utilità</td><td>KCalc, lxterminal, Xarchiver, SMB4K, screenshot</td></tr>
+          <tr><td>Stampa / scanner</td><td>CUPS, Simple Scan, driver estesi</td></tr>
+          <tr><td>Rete</td><td>NetworkManager, firmware Wi‑Fi/LAN, modem mobile</td></tr>
+          <tr><td>Bluetooth</td><td>Blueman</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Comportamento live</h3>
+      <ul>
+        <li>Ogni avvio riparte dall’immagine ISO pulita — niente persistenza Debian automatica su <code>/usr</code>.</li>
+        <li>Cache e temporanei in RAM: sessione snella.</li>
+        <li><strong>Salvataggio selettivo</strong> al riavvio/spegnimento e <strong>ripristino guidato</strong> all’avvio.</li>
+        <li>Documenti e file personali sulla partizione <strong>QUELO-HOME</strong> (exFAT), leggibile ovunque.</li>
+      </ul>
+    </section>
+
+    <section id="schermate">
+      <h2>Schermate</h2>
+
+      <h3>Salvataggio e ripristino sessione</h3>
+      <p>Scegli cosa conservare (rete, stampanti, Bluetooth, desktop, audio, schermo, Firefox) e verifica il riepilogo prima di riavviare.</p>
+
+      <div class="shots">
+        <div class="shots-grid">
+          <figure>
+            <img src="screenshots/05-save-prompt.png" alt="Dialogo salvataggio sessione" loading="lazy">
+            <figcaption>Salvataggio — scelta voci</figcaption>
+          </figure>
+          <figure>
+            <img src="screenshots/06-save-progress.png" alt="Salvataggio in corso" loading="lazy">
+            <figcaption>Salvataggio in corso</figcaption>
+          </figure>
+          <figure>
+            <img src="screenshots/07-save-complete.png" alt="Salvataggio completato" loading="lazy">
+            <figcaption>Salvataggio completato</figcaption>
+          </figure>
+        </div>
+        <div class="shots-grid">
+          <figure>
+            <img src="screenshots/02-restore-prompt.png" alt="Dialogo ripristino sessione" loading="lazy">
+            <figcaption>Ripristino — scelta voci</figcaption>
+          </figure>
+          <figure>
+            <img src="screenshots/03-restore-progress.png" alt="Ripristino in corso" loading="lazy">
+            <figcaption>Ripristino in corso</figcaption>
+          </figure>
+          <figure>
+            <img src="screenshots/04-restore-complete.png" alt="Ripristino completato" loading="lazy">
+            <figcaption>Ripristino completato</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="usb">
+      <h2>Layout chiavetta USB</h2>
+      <div class="card">
+        <pre>┌─────────────────────────────────────────────────────────┐
+│  Partizione 1–2  │  ISO live (sola lettura al boot)       │
+├──────────────────┼──────────────────────────────────────┤
+│  Partizione 3    │  ext4 «persistence» — config Linux     │
+│                  │  (invisibile a Windows/macOS)        │
+├──────────────────┼──────────────────────────────────────┤
+│  Partizione 4    │  exFAT «QUELO-HOME» — i tuoi file     │
+│                  │  (leggibile ovunque)                   │
+└──────────────────┴──────────────────────────────────────┘</pre>
+      </div>
+    </section>
+
+    <section id="uso">
+      <h2>Come si usa</h2>
+      <ol>
+        <li><strong>Scarica l’ISO</strong> dal pulsante in alto (release 0.71-alpha).</li>
+        <li><strong>Prepara la chiavetta</strong> dal PC host — mai dalla live bootata sulla stessa USB:</li>
+      </ol>
+      <pre><code>git clone https://github.com/alby-quelo/quelo-office.git
+cd quelo-office
+sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh</code></pre>
+      <p>Prerequisiti sul PC host: <code>e2fsprogs</code>, <code>exfatprogs</code>, <code>util-linux</code>.</p>
+      <ol start="3">
+        <li><strong>Avvia da USB</strong> (BIOS/UEFI).</li>
+        <li>Allo <strong>spegnimento</strong>, usa il pulsante «Spegni» per salvare le configurazioni che vuoi conservare.</li>
+      </ol>
+    </section>
+
+    <section id="script">
+      <h2>Perché uno script separato per la chiavetta?</h2>
+      <p>La preparazione USB (<code>prepare-usb.sh</code>) va eseguita sul PC host, non dentro la live bootata sulla stessa chiavetta:</p>
+      <ul>
+        <li><strong>Sicurezza</strong> — <code>dd</code> e partizionamento sono distruttivi; sul host ci sono controlli e doppia conferma.</li>
+        <li><strong>Affidabilità</strong> — partizionare il disco da cui si boota è tecnicamente fragile.</li>
+        <li><strong>Un’ISO per tutti</strong> — stessa immagine per tutti; ognuno personalizza la propria chiavetta dopo.</li>
+        <li><strong>Libertà di strumenti</strong> — puoi scrivere l’ISO con Etcher e usare lo script solo per persistenza e QUELO-HOME.</li>
+      </ul>
+    </section>
+
+    <section id="licenza">
+      <h2>Licenza</h2>
+      <p>
+        Lavoro originale Quelo Office: <strong>Creative Commons BY-NC 4.0</strong>.
+        Uso didattico e non commerciale consentito con attribuzione.
+        Uso commerciale: autorizzazione scritta di
+        <a href="mailto:alby@gnumerica.org">Alberto Frosio</a>.
+      </p>
+      <p>
+        <a href="https://github.com/alby-quelo/quelo-office/blob/main/LICENSE.TXT">LICENSE.TXT</a> ·
+        <a href="https://github.com/alby-quelo/quelo-office/blob/main/CREDITS.TXT">CREDITS.TXT</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Quelo Office · Alberto Frosio · Ispirazione: Corrado Guzzanti («Quelo»)</p>
+    <p>
+      <a href="https://github.com/alby-quelo/quelo-office">Repository</a>
+      <a href="https://github.com/alby-quelo/quelo-office/releases">Release</a>
+      <a href="en/">English</a>
+    </p>
+  </footer>
+</body>
+</html>

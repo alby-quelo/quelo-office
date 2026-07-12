@@ -8,6 +8,8 @@ Ispirata al personaggio «Quelo» di Corrado Guzzanti, unisce la solidità di **
 
 Release alpha attuale: **0.71** (`ISO/Quelo_Office-0.71-alpha.iso`).
 
+Sito web: **https://alby-quelo.github.io/quelo-office/**
+
 ![Desktop Quelo Office 0.71 alpha](docs/screenshots/01-desktop.png)
 
 
