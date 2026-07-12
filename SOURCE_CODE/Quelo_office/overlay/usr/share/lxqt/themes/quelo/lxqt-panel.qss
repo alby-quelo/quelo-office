@@ -1,0 +1,37 @@
+/* Tema minimale: unico scopo e' lo stile del pannello superiore (grigio
+ * molto scuro, testo chiaro). Il pannello inferiore resta con l'aspetto
+ * standard Qt (palette di sistema, nessuna regola scura).
+ *
+ * Regola di default esplicita PRIMA di quella specifica per LXQtPanel1:
+ * se per qualche motivo il selettore piu' specifico dovesse risultare
+ * inaffidabile (visto in pratica coi tentativi precedenti sia con
+ * [position="Top"] sia con l'objectName da solo), questa riga garantisce
+ * comunque che il pannello NON specificamente scurito riparta dalla
+ * palette normale di sistema (palette(window)), invece di un default
+ * indefinito.
+ */
+LXQtPanel #BackgroundWidget {
+  background-color: palette(window);
+}
+
+LXQtPanel QLabel,
+LXQtPanel QToolButton {
+  color: palette(window-text);
+}
+
+/* Pannello superiore: objectName assegnato da lxqt-panel stesso in
+ * ordine di creazione (LXQtPanel1 = primo elencato in "panels=" di
+ * panel.conf, cioe' panel_top). */
+LXQtPanel#LXQtPanel1 #BackgroundWidget {
+  background-color: #1a1a1a;
+}
+
+LXQtPanel#LXQtPanel1 QLabel,
+LXQtPanel#LXQtPanel1 QToolButton {
+  color: #f5f5f5;
+}
+
+/* Pannello inferiore: barra applicazioni (default 13 pt, come menu e plugin). */
+#TaskBar QToolButton {
+  font-size: 13pt;
+}

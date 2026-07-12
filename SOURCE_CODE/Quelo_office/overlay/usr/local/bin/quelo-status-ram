@@ -1,0 +1,7 @@
+#!/bin/bash
+# Stato RAM per il pannello LXQt (customcommand in panel.conf).
+set -euo pipefail
+
+free -h | awk '/^Mem:/{
+  printf "RAM usata %s / libera %s / totale %s", $3, $4, $2
+}'

@@ -1,0 +1,72 @@
+#!/bin/bash
+set -euo pipefail
+
+. /usr/local/bin/quelo-usb-lib.sh
+
+if [[ "${EUID}" -ne 0 ]]; then
+  echo "Esegui come root: sudo quelo-export"
+  exit 1
+fi
+
+BASE_PKG="/usr/share/quelo-office/base-packages.list"
+BASE_ETC="/usr/share/quelo-office/base-etc.md5"
+STAMP=$(date +%Y%m%d-%H%M%S)
+OUT_ROOT=$(quelo_export_home_dir)
+OUT="${OUT_ROOT}/${STAMP}"
+
+mkdir -p "${OUT}"
+
+{
+  echo "quelo-export ${STAMP}"
+  echo "versione=$(tr -d '[:space:]' </etc/quelo-office-version 2>/dev/null || echo '?')"
+  echo "kernel=$(uname -r)"
+  echo "live_medium=$(quelo_find_live_medium_source 2>/dev/null || echo unknown)"
+  echo "live_disk=$(quelo_disk_is_live_usb 2>/dev/null || echo unknown)"
+} >"${OUT}/README.txt"
+
+dpkg --get-selections >"${OUT}/dpkg-selections.txt"
+dpkg -l >"${OUT}/dpkg-list.txt" 2>/dev/null || true
+
+if [[ -f /var/log/apt/history.log ]]; then
+  cp /var/log/apt/history.log "${OUT}/apt-history.log"
+fi
+if compgen -G "/var/log/apt/term.log*" >/dev/null; then
+  cp /var/log/apt/term.log* "${OUT}/" 2>/dev/null || true
+fi
+
+if [[ -f "${BASE_PKG}" ]]; then
+  comm -23 \
+    <(awk '{print $1}' "${OUT}/dpkg-selections.txt" | sort -u) \
+    <(sort -u "${BASE_PKG}") \
+    >"${OUT}/packages-added.txt"
+else
+  awk '{print $1}' "${OUT}/dpkg-selections.txt" >"${OUT}/packages-added.txt"
+fi
+
+if [[ -f "${BASE_ETC}" ]]; then
+  mkdir -p "${OUT}/etc-changed"
+  while read -r sum basefile; do
+    [[ -f "${basefile}" ]] || continue
+    cur=$(md5sum "${basefile}" | awk '{print $1}')
+    [[ "${cur}" == "${sum}" ]] && continue
+    rel=${basefile#/etc/}
+    mkdir -p "${OUT}/etc-changed/$(dirname "${rel}")"
+    cp -a "${basefile}" "${OUT}/etc-changed/${rel}"
+  done <"${BASE_ETC}"
+fi
+
+{
+  echo "# Pacchetti da aggiungere a SOURCE_CODE/Quelo_office/packages/extra.list.chroot"
+  cat "${OUT}/packages-added.txt"
+  echo ""
+  echo "# File in etc-changed/ da copiare in SOURCE_CODE/Quelo_office/overlay/etc/"
+} >"${OUT}/REBUILD-HINTS.txt"
+
+ln -sfn "${STAMP}" "${OUT_ROOT}/latest"
+
+echo ""
+echo "Export completato:"
+echo "  ${OUT}"
+echo ""
+echo "Invia la cartella 'latest' (o lo zip) per aggiornare la distro."
+echo "File chiave: packages-added.txt, etc-changed/, apt-history.log"

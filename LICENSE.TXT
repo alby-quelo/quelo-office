@@ -1,0 +1,304 @@
+Quelo Office — License / Licenza
+==================================
+
+Copyright (c) 2026 — Alberto Frosio
+
+
+================================================================================
+ITALIANO
+================================================================================
+
+Licenza del lavoro originale (Quelo Office)
+-------------------------------------------
+Il materiale originale di questo progetto — inclusi, a titolo esemplificativo:
+script, configurazioni, overlay, hook di build, menu, temi, documentazione,
+marchio/nome «Quelo Office», ISO così assemblata e ogni parte non coperta
+dalle licenze elencate sotto — è rilasciato sotto:
+
+  Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+
+Testo completo (IT):
+  https://creativecommons.org/licenses/by-nc/4.0/legalcode.it
+
+Testo completo (EN):
+  https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+In sintesi, per il lavoro originale Quelo Office:
+
+  • Uso non commerciale e didattico — consentito, a condizione di citare
+    il progetto nei credits e in ogni documentazione sulle licenze.
+
+  • Uso commerciale — NON consentito senza autorizzazione scritta preventiva
+    di Alberto Frosio, anche se si utilizza solo una parte del materiale
+    (script, configurazione, ISO, branding, ecc.).
+
+  • Attribuzione — chi ridistribuisce o modifica il materiale originale deve
+    indicare la fonte, il link alla licenza CC BY-NC 4.0 e se sono state
+    apportate modifiche.
+
+  • Contatto per uso commerciale — richiedere esplicitamente l’autorizzazione
+    a Alberto Frosio (alby@gnumerica.org) prima di qualsiasi uso a scopo
+    commerciale o lucrativo.
+
+Nota: la presente licenza si applica al lavoro creato dal progetto Quelo Office.
+Non sostituisce né limita le licenze dei software di terze parti inclusi
+nell’ISO (elencati sotto), che restano governati dai rispettivi titolari.
+
+
+Licenze software e componenti di terze parti
+---------------------------------------------
+L’ISO Quelo Office integra Debian GNU/Linux e numerosi programmi di terze parti.
+Ciascuno resta soggetto alla propria licenza. L’elenco seguente è fornito
+in buona fede per trasparenza; in caso di dubbio prevalgono i metadati Debian
+(/usr/share/doc/*/copyright) e i testi ufficiali dei singoli progetti.
+
+Sistema base e build
+  Debian GNU/Linux (sid)              → DFSG / licenze miste (main, contrib,
+                                        non-free, non-free-firmware)
+  live-build, live-boot, live-config → GPL v2+
+  systemd, systemd-timesyncd          → LGPL v2.1+
+  GNU GRUB                            → GPL v3
+  Python 3, python3-pil (Pillow)      → PSF License / HPND
+  sqlite3                             → Public Domain
+  tzdata                              → Public Domain
+
+Firmware (sezione non-free-firmware)
+  firmware-iwlwifi, firmware-realtek, firmware-brcm80211,
+  firmware-mediatek, firmware-libertas, firmware-marvell-prestera,
+  firmware-ti-connectivity, firmware-bnx2, firmware-bnx2x,
+  firmware-netxen, firmware-qlogic, firmware-myricom,
+  firmware-cavium, firmware-netronome, firmware-misc-nonfree
+                                      → licenze proprietarie dei rispettivi
+                                        vendor (vedi pacchetti Debian)
+
+Rete e connettività
+  NetworkManager, network-manager-applet → GPL v2+
+  wpasupplicant, iw                   → GPL v2+ / BSD
+  ModemManager, usb-modeswitch        → GPL v2+
+  dbus-x11                            → GPL v2+ / Academic Free License v2.1
+  avahi-daemon, libnss-mdns           → LGPL v2.1+
+
+Ambiente grafico e desktop
+  X.Org (xorg, driver video/input)    → MIT / licenze miste (X11)
+  Openbox                             → GPL v2+
+  LXQt (lxqt-core e componenti)       → LGPL v2.1+
+  lxqt-config, lxqt-config-l10n       → LGPL v2.1+
+  lxqt-panel-l10n (se presente)       → LGPL v2.1+
+  lxrandr                             → GPL v2+
+  lxterminal                          → GPL v2+
+  x11-utils, xdotool                    → varie (MIT / GPL v3 / BSD)
+  pcmanfm-qt, libfm-qt                  → GPL v2+
+  pcmanfm-qt-l10n, libfm-qt-l10n        → GPL v2+
+  lximage-qt, lximage-qt-l10n           → GPL v2+
+  gvfs, gvfs-backends                   → LGPL v2.1+
+  breeze-icon-theme                     → LGPL v3 / GPL v3
+  Qt 6 / qt6-translations-l10n          → LGPL v3 / GPL v2+ / GPL v3
+                                        (licenza Qt Company)
+
+Applicazioni incluse
+  LibreOffice, libreoffice-l10n-it    → MPL v2
+  hunspell-it, mythes-it               → GPL v3 / LGPL v2.1+
+  Mozilla Firefox ESR, firefox-esr-l10n-it → MPL v2
+  Mousepad                              → GPL v2+
+  Zathura                               → zlib License
+  zathura-pdf-poppler / Poppler         → GPL v2
+  SMPlayer, smplayer-l10n               → GPL v2+ (mpv/MPlayer: GPL v2+)
+  Audacious                             → GPL v2+ / BSD
+  mtPaint                               → GPL v3
+  KCalc, kdialog                        → GPL v2+
+  Xarchiver                             → GPL v2+
+  SMB4K                                 → GPL v2+
+  Simple Scan                           → GPL v2+
+  scrot                                 → GPL v2+
+  zenity                                → LGPL v2.1+
+  KDialog                               → GPL v2+
+
+Audio
+  PulseAudio, pavucontrol               → GPL v2+ / LGPL v2.1+
+  pulseaudio-module-bluetooth         → GPL v2+
+  alsa-utils, libasound2-plugins        → GPL v2+ / LGPL v2.1+
+
+Stampa e scanner
+  CUPS, cups-client                     → GPL v2+ / Apache License 2.0
+  ipp-usb                               → MIT / Apache License 2.0
+  SANE (sane-utils, sane-airscan)       → GPL v2+
+  printer-driver-gutenprint             → GPL v2+
+  printer-driver-hpcups                   → MIT / GPL v2+ (HP)
+  printer-driver-brlaser, -c2050, -c2esp, -cjet, -dymo, -escpr,
+  -foo2zjs, -fujixerox, -indexbraille, -m2300w, -min12xxw, -oki,
+  -pnm2ppa, -postscript-hp, -ptouch, -pxljr, -sag-gdi, -splix
+                                        → GPL v2+ / licenze miste (vedi
+                                          copyright Debian per ogni driver)
+
+Bluetooth
+  BlueZ                                 → GPL v2+
+  Blueman                               → GPL v2+
+  gir1.2-ayatanaappindicator3-0.1       → LGPL v2.1+ / GPL v3
+
+Archivi e filesystem
+  zip, unzip                            → Info-ZIP License (BSD-like)
+  p7zip-full                            → LGPL v2.1+ (7-Zip)
+  unrar                                 → licenza proprietaria RARLAB
+                                        (pacchetto non-free Debian)
+  exfatprogs                            → GPL v2+
+  cifs-utils                            → GPL v3
+
+Font
+  ttf-mscorefonts-installer             → Microsoft End-User License Agreement
+                                        (EULA proprietaria; Arial, Times,
+                                         Verdana, Courier, ecc.)
+
+Altri
+  console-setup, kbd, locales           → GPL v2+ / varie (Debian)
+
+Per l’elenco aggiornato dei pacchetti installati nell’ISO, vedere
+SOURCE_CODE/Quelo_office/packages/extra.list.chroot e i metadati Debian.
+
+
+================================================================================
+ENGLISH
+================================================================================
+
+License for original work (Quelo Office)
+----------------------------------------
+Original material in this project — including but not limited to: scripts,
+configuration, overlay, build hooks, menus, themes, documentation, the
+«Quelo Office» name/branding, the assembled ISO, and any part not covered
+by the licenses listed below — is released under:
+
+  Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
+
+Full legal code (EN):
+  https://creativecommons.org/licenses/by-nc/4.0/legalcode
+
+Full legal code (IT):
+  https://creativecommons.org/licenses/by-nc/4.0/legalcode.it
+
+Summary for original Quelo Office material:
+
+  • Non-commercial and educational use — allowed, provided the project is
+    credited in credits and in all license documentation.
+
+  • Commercial use — NOT allowed without prior written authorization from
+    Alberto Frosio, even if only part of the material is used (scripts,
+    configuration, ISO, branding, etc.).
+
+  • Attribution — redistributors and modifiers must credit the source, link
+    to CC BY-NC 4.0, and note any changes made.
+
+  • Commercial licensing — contact Alberto Frosio (alby@gnumerica.org)
+    explicitly before any commercial or for-profit use.
+
+Note: this license applies to work created by the Quelo Office project.
+It does not replace or limit third-party software licenses included in the
+ISO (listed below), which remain governed by their respective owners.
+
+
+Third-party software and component licenses
+-------------------------------------------
+The Quelo Office ISO includes Debian GNU/Linux and many third-party programs.
+Each remains subject to its own license. The list below is provided in good
+faith for transparency; in case of doubt, Debian metadata
+(/usr/share/doc/*/copyright) and official project texts prevail.
+
+Base system and build
+  Debian GNU/Linux (sid)              → DFSG / mixed licenses (main, contrib,
+                                        non-free, non-free-firmware)
+  live-build, live-boot, live-config  → GPL v2+
+  systemd, systemd-timesyncd          → LGPL v2.1+
+  GNU GRUB                            → GPL v3
+  Python 3, python3-pil (Pillow)      → PSF License / HPND
+  sqlite3                             → Public Domain
+  tzdata                              → Public Domain
+
+Firmware (non-free-firmware section)
+  firmware-iwlwifi, firmware-realtek, firmware-brcm80211,
+  firmware-mediatek, firmware-libertas, firmware-marvell-prestera,
+  firmware-ti-connectivity, firmware-bnx2, firmware-bnx2x,
+  firmware-netxen, firmware-qlogic, firmware-myricom,
+  firmware-cavium, firmware-netronome, firmware-misc-nonfree
+                                      → proprietary vendor licenses (see
+                                        Debian packages)
+
+Networking and connectivity
+  NetworkManager, network-manager-applet → GPL v2+
+  wpasupplicant, iw                   → GPL v2+ / BSD
+  ModemManager, usb-modeswitch        → GPL v2+
+  dbus-x11                            → GPL v2+ / Academic Free License v2.1
+  avahi-daemon, libnss-mdns           → LGPL v2.1+
+
+Graphical environment and desktop
+  X.Org (xorg, video/input drivers)   → MIT / mixed (X11)
+  Openbox                             → GPL v2+
+  LXQt (lxqt-core and components)     → LGPL v2.1+
+  lxqt-config, lxqt-config-l10n       → LGPL v2.1+
+  lxqt-panel-l10n (if present)        → LGPL v2.1+
+  lxrandr                             → GPL v2+
+  lxterminal                          → GPL v2+
+  x11-utils, xdotool                  → various (MIT / GPL v3 / BSD)
+  pcmanfm-qt, libfm-qt                → GPL v2+
+  pcmanfm-qt-l10n, libfm-qt-l10n      → GPL v2+
+  lximage-qt, lximage-qt-l10n         → GPL v2+
+  gvfs, gvfs-backends                 → LGPL v2.1+
+  breeze-icon-theme                   → LGPL v3 / GPL v3
+  Qt 6 / qt6-translations-l10n        → LGPL v3 / GPL v2+ / GPL v3
+                                        (Qt Company license)
+
+Bundled applications
+  LibreOffice, libreoffice-l10n-it    → MPL v2
+  hunspell-it, mythes-it              → GPL v3 / LGPL v2.1+
+  Mozilla Firefox ESR, firefox-esr-l10n-it → MPL v2
+  Mousepad                            → GPL v2+
+  Zathura                             → zlib License
+  zathura-pdf-poppler / Poppler       → GPL v2
+  SMPlayer, smplayer-l10n             → GPL v2+ (mpv/MPlayer: GPL v2+)
+  Audacious                           → GPL v2+ / BSD
+  mtPaint                             → GPL v3
+  KCalc, kdialog                      → GPL v2+
+  Xarchiver                           → GPL v2+
+  SMB4K                               → GPL v2+
+  Simple Scan                         → GPL v2+
+  scrot                               → GPL v2+
+  zenity                              → LGPL v2.1+
+  KDialog                             → GPL v2+
+
+Audio
+  PulseAudio, pavucontrol             → GPL v2+ / LGPL v2.1+
+  pulseaudio-module-bluetooth       → GPL v2+
+  alsa-utils, libasound2-plugins      → GPL v2+ / LGPL v2.1+
+
+Printing and scanning
+  CUPS, cups-client                   → GPL v2+ / Apache License 2.0
+  ipp-usb                             → MIT / Apache License 2.0
+  SANE (sane-utils, sane-airscan)     → GPL v2+
+  printer-driver-gutenprint           → GPL v2+
+  printer-driver-hpcups                 → MIT / GPL v2+ (HP)
+  printer-driver-brlaser, -c2050, -c2esp, -cjet, -dymo, -escpr,
+  -foo2zjs, -fujixerox, -indexbraille, -m2300w, -min12xxw, -oki,
+  -pnm2ppa, -postscript-hp, -ptouch, -pxljr, -sag-gdi, -splix
+                                      → GPL v2+ / mixed (see Debian
+                                        copyright for each driver)
+
+Bluetooth
+  BlueZ                               → GPL v2+
+  Blueman                             → GPL v2+
+  gir1.2-ayatanaappindicator3-0.1     → LGPL v2.1+ / GPL v3
+
+Archives and filesystems
+  zip, unzip                          → Info-ZIP License (BSD-like)
+  p7zip-full                          → LGPL v2.1+ (7-Zip)
+  unrar                               → RARLAB proprietary license
+                                        (Debian non-free package)
+  exfatprogs                          → GPL v2+
+  cifs-utils                          → GPL v3
+
+Fonts
+  ttf-mscorefonts-installer           → Microsoft End-User License Agreement
+                                        (proprietary EULA; Arial, Times,
+                                         Verdana, Courier, etc.)
+
+Other
+  console-setup, kbd, locales         → GPL v2+ / various (Debian)
+
+For the current list of packages installed in the ISO, see
+SOURCE_CODE/Quelo_office/packages/extra.list.chroot and Debian metadata.

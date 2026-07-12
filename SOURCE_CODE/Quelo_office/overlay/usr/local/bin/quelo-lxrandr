@@ -1,0 +1,5 @@
+#!/bin/bash
+# Wrapper lxrandr (nessun salvataggio/persistenza: solo passthrough).
+set -euo pipefail
+
+exec lxrandr "$@"

@@ -1,0 +1,9 @@
+# Esclude il modem WWAN interno (Sierra Wireless EM7305, 1199:9041, visto sul
+# Fujitsu di test) da qualunque probe/enumerazione di udisks2: e' un modem
+# QMI vero (driver qcserial/qmi_wwan), non un disco, ma con udisks2 ora
+# smascherato (vedi 0160-quelo-trim.chroot) meglio escluderlo esplicitamente
+# in via preventiva invece di scoprirlo per tentativi su hardware reale.
+# Non ha alcun effetto sul funzionamento del modem stesso (ModemManager/
+# NetworkManager lo gestiscono con i propri driver, indipendenti da udisks2).
+SUBSYSTEM=="usb", ATTR{idVendor}=="1199", ATTR{idProduct}=="9041", ENV{UDISKS_IGNORE}="1"
+SUBSYSTEM=="block", ENV{ID_VENDOR_ID}=="1199", ENV{UDISKS_IGNORE}="1"

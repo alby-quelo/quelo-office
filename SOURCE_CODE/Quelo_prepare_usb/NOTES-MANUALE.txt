@@ -1,0 +1,53 @@
+Quelo Office — note per manuale (bozza)
+========================================
+
+Preparazione chiavetta USB (script prepare-usb.sh)
+--------------------------------------------------
+Eseguire dal PC locale, MAI dalla live bootata sulla stessa USB.
+
+Prerequisiti sul PC host (Debian/Ubuntu e simili):
+  - e2fsprogs   → mkfs.ext4 (partizione persistenza)
+  - exfatprogs  → mkfs.exfat (partizione home QUELO-HOME)
+  - fdisk, dd, wipefs, partprobe (util-linux)
+
+Verifica rapida:
+  command -v mkfs.ext4 mkfs.exfat fdisk dd wipefs
+
+Barra avanzamento dd: basata su byte scritti su USB (segnale USR1 a dd), non su pv.
+
+Script prepare-usb.sh (9 passi):
+  1 ISO  2 USB+conferme  3 dimensione persistenza
+  4 wipefs (cancella vecchie partizioni)
+  5 dd ISO (barra pv/dd)  6 fdisk sda3+sda4
+  7 mkfs  8 store persistenza+cartelle  9 riepilogo
+  Conferma 2/2: digitare "SI SCRIVI" (maiuscolo o minuscolo)
+  Pausa INVIO prima di ogni operazione critica
+
+Se i passi manuali (mkfs.ext4 / mkfs.exfat) sono già riusciti, i pacchetti
+sono già installati sul sistema.
+
+Comando script:
+  sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh
+
+ISO di pubblicazione (unica da distribuire):
+  ISO/Quelo_Office-0.71-alpha.iso
+  (prepare-usb la propone di default; vedi QUELO_PUBLISH_ISO_VERSION)
+
+Dopo preparazione USB:
+  - Boot da USB
+  - Export modifiche per rebuild: quelo-export
+
+ISO live (comportamento attuale):
+  - NESSUNA persistenza: rimossa del tutto (script di load/save, servizi
+    systemd quelo-persist-load/save, parametro di boot "persistence", tutto
+    eliminato). Ogni boot riparte sempre da zero, identico al precedente:
+    niente config/tema/audio/Bluetooth/Wi-Fi/CUPS salvato tra un riavvio e
+    l'altro, niente overlay su /usr o /var/lib/dpkg per i pacchetti apt.
+  - /tmp, /var/tmp, /var/cache, /root/.cache: sempre tmpfs (RAM), come prima.
+  - Se label QUELO-HOME presente → automount home exFAT (symlink su
+    Desktop/Documenti/Scaricati/Immagini/Musica/Video/Modelli); altrimenti
+    /root normale.
+  - NOTA: prepare-usb.sh crea ancora una partizione ext4 con label
+    "persistence" (non e' stato toccato, e' fuori dall'ambito di questa
+    modifica) - resta pero' inutilizzata, nessuno script del sistema live
+    la monta o la legge piu'.

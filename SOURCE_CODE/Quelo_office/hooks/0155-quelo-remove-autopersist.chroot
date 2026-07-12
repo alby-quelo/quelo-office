@@ -1,0 +1,23 @@
+#!/bin/bash
+# Rimuove e maschera i vecchi servizi di persistenza automatica (v5/v6).
+# Servono ancora perche' la cache chroot di live-build puo' tenere i symlink
+# "systemctl enable" di build passate anche dopo aver tolto i file sorgente.
+set -e
+
+for unit in quelo-persist-load.service quelo-persist-save.service; do
+  systemctl disable "${unit}" 2>/dev/null || true
+  systemctl mask "${unit}" 2>/dev/null || true
+  rm -f "/etc/systemd/system/${unit}"
+  rm -f "/etc/systemd/system/multi-user.target.wants/${unit}"
+  rm -f "/etc/systemd/system/halt.target.wants/${unit}"
+  rm -f "/etc/systemd/system/reboot.target.wants/${unit}"
+  rm -f "/etc/systemd/system/shutdown.target.wants/${unit}"
+  rm -f "/etc/systemd/system/poweroff.target.wants/${unit}"
+  ln -sf /dev/null "/etc/systemd/system/${unit}"
+done
+
+rm -f /usr/local/bin/quelo-persist-load \
+      /usr/local/bin/quelo-persist-load-late \
+      /usr/local/bin/quelo-persist-save \
+      /usr/local/bin/quelo-persist-lib.sh \
+      /usr/local/bin/quelo-display-restore.sh

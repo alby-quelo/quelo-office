@@ -1,0 +1,77 @@
+#!/bin/bash
+set -e
+
+# CRITICO: "muro" invisibile per il cursore del mouse esattamente al
+# confine del pannello superiore (28px, panelSize del [panel_top] in
+# etc/xdg/lxqt/panel.conf), realizzato con un pointer barrier di XFixes
+# (la stessa tecnica usata da GNOME per i "hot corner" e da strumenti
+# come Barrier/Synergy per confinare il cursore).
+#
+# Perche' non basta la "resistance" di Openbox (rc.xml, vedi
+# hooks/0400-quelo-desktop.chroot): quella e' solo un effetto calamita,
+# superabile con un trascinamento del mouse deciso e ampio in un colpo
+# solo. Un pointer barrier invece e' un vincolo del server X: il
+# cursore non puo' FISICAMENTE attraversare la linea, ne' con un
+# movimento lento ne' con uno scatto veloce. Dato che durante un resize
+# il bordo della finestra segue il cursore 1:1 (vedi openbox/moveresize.c
+# upstream), la finestra non puo' mai finire sotto il pannello
+# superiore mentre la si ridimensiona/sposta a mano.
+#
+# Applicato SOLO al pannello superiore (richiesta esplicita dell'utente):
+# quello inferiore ha pulsanti cliccabili (menu, spegni, taskbar, tray) e
+# un muro totale renderebbe quei pulsanti irraggiungibili col mouse (il
+# cursore non potrebbe mai entrare nella fascia per cliccarli). Per il
+# pannello inferiore resta valida la sola resistenza aumentata di Openbox.
+#
+# direction=BarrierPositiveY: contro-intuitivo, ma il parametro
+# "directions" di XFixes specifica il verso in cui il cursore PUO'
+# attraversare la barriera (non quello bloccato: vedi fixesproto.txt
+# "Motion is allowed through the barrier in the directions specified").
+# BarrierPositiveY = passaggio libero verso il basso (Y crescente,
+# entrando nella zona di lavoro); il verso opposto, verso l'alto (Y che
+# decresce, cioe' verso il pannello), resta bloccato non essendo
+# elencato. Stessa combinazione usata da Chromium/ash per il "top
+# barrier" di un cursore confinato (ash_window_tree_host_x11.cc).
+BUILD_DEPS=(gcc libc6-dev libx11-dev libxfixes-dev)
+apt-get install -y --no-install-recommends "${BUILD_DEPS[@]}"
+
+SRC_DIR="$(mktemp -d)"
+cat > "${SRC_DIR}/quelo-pointer-barrier.c" <<'CEOF'
+#include <X11/Xlib.h>
+#include <X11/extensions/Xfixes.h>
+#include <unistd.h>
+
+int main(void)
+{
+    Display *dpy = XOpenDisplay(NULL);
+    if (!dpy)
+        return 1;
+
+    Window root = RootWindow(dpy, DefaultScreen(dpy));
+
+    /* y=28: altezza del pannello superiore (panelSize in panel.conf).
+     * Larghezza volutamente enorme (16000px) per coprire qualsiasi
+     * risoluzione, anche se cambia a runtime (lxrandr). BarrierPositiveY
+     * = passaggio libero verso il basso, bloccato verso l'alto (vedi
+     * commento in cima al file). */
+    XFixesCreatePointerBarrier(dpy, root, 0, 28, 16000, 28,
+                                BarrierPositiveY, 0, NULL);
+    XSync(dpy, False);
+
+    /* Il barrier e' una risorsa del client che l'ha creato: resta
+     * attivo per tutta la vita di questo processo, lanciato in
+     * background da root/.config/openbox/autostart. */
+    for (;;)
+        pause();
+
+    return 0;
+}
+CEOF
+
+gcc -O2 -o /usr/local/bin/quelo-pointer-barrier \
+    "${SRC_DIR}/quelo-pointer-barrier.c" -lX11 -lXfixes
+chmod 755 /usr/local/bin/quelo-pointer-barrier
+rm -rf "${SRC_DIR}"
+
+apt-get purge -y "${BUILD_DEPS[@]}" 2>/dev/null || true
+apt-get autoremove -y --purge 2>/dev/null || true

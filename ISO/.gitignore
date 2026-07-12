@@ -1,0 +1,4 @@
+# Ignora tutto tranne la documentazione (l'ISO va in GitHub Releases)
+*
+!.gitignore
+!README.txt

@@ -1,0 +1,7 @@
+#!/bin/bash
+# Stato spazio QUELO-HOME per il pannello LXQt.
+set -euo pipefail
+
+df -h /media/quelo-home 2>/dev/null | awk 'NR==2{
+  printf "Home usata %s / libera %s / totale %s", $3, $4, $2
+}' || true

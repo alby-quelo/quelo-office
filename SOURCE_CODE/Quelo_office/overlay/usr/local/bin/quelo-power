@@ -1,0 +1,25 @@
+#!/bin/sh
+# Spegni/Riavvia: salva (con conferma) poi esegue l'azione scelta.
+# Dopo il riepilogo, OK ("Ok, riavvia" / "Ok, spegni") = procede; Annulla = resta.
+
+quelo_save_session_gui() {
+  /usr/local/bin/quelo-save-sessione-gui.sh "$@"
+}
+
+kdialog --title "Quelo Office" \
+  --yes-label "Riavvia" --no-label "Spegni" --cancel-label "Annulla" \
+  --warningyesnocancel "Cosa vuoi fare?"
+
+case $? in
+  0)
+    quelo_save_session_gui reboot || exit 0
+    systemctl reboot
+    ;;
+  1)
+    quelo_save_session_gui poweroff || exit 0
+    systemctl poweroff
+    ;;
+  *)
+    exit 0
+    ;;
+esac

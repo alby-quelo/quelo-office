@@ -1,0 +1,3 @@
+ttf-mscorefonts-installer msttcorefonts/eula boolean true
+msttcorefonts/dldir string /var/lib/msttcorefonts/cache
+msttcorefonts/savedir string /var/lib/msttcorefonts/cache

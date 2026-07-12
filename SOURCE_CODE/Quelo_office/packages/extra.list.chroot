@@ -1,0 +1,216 @@
+# WiFi (non-free-firmware)
+firmware-iwlwifi
+firmware-realtek
+firmware-brcm80211
+firmware-mediatek
+firmware-libertas
+firmware-marvell-prestera
+firmware-ti-connectivity
+
+# LAN (non-free-firmware)
+firmware-bnx2
+firmware-bnx2x
+firmware-netxen
+firmware-qlogic
+firmware-myricom
+firmware-cavium
+firmware-netronome
+
+# Mobile broadband
+firmware-misc-nonfree
+modemmanager
+usb-modeswitch
+usb-modeswitch-data
+
+# Rete minima
+network-manager
+network-manager-applet
+wpasupplicant
+iw
+dbus-x11
+
+# Locale e console
+locales
+console-setup
+console-terminus
+kbd
+
+# Splash GRUB (hook binary)
+python3-pil
+
+# Grafica
+xorg
+# --apt-recommends false esclude i driver video di xorg (sono solo
+# Recommends): li mettiamo espliciti, altrimenti niente KMS/DRM e X non
+# parte (schermo nero) sia su QEMU (virtio-gpu/qxl) sia su hardware reale.
+xserver-xorg-video-modesetting
+xserver-xorg-video-fbdev
+xserver-xorg-video-vesa
+# Stesso motivo: senza questo, niente driver di input (tastiera/mouse) in X.
+xserver-xorg-input-libinput
+openbox
+lxqt-core
+# Esplicito (anche se probabile dipendenza di lxqt-core) per garantire
+# lxqt-config-appearance: finestra nativa in italiano per personalizzare
+# stile widget/palette colori/tema icone/font di tutto il sistema, senza
+# toccare margini/resistenza dei pannelli (a differenza di obconf-qt,
+# volutamente escluso: la sua scheda "Margini" permetterebbe di
+# disattivare per errore il fix anti-sovrapposizione pannelli/finestre).
+lxqt-config
+# Traduzione italiana della finestra "Aspetto" (lxqt-config-appearance):
+# senza, con --apt-recommends false resterebbe in inglese.
+lxqt-config-l10n
+x11-utils
+lxrandr
+# Fuso orario (Europe/Rome, vedi hooks/0200-locale.chroot) e sincronizzazione
+# oraria via rete: tzdata di norma e' gia' presente come dipendenza di base,
+# ma lo rendiamo esplicito; systemd-timesyncd invece NON arriva da solo con
+# --apt-recommends false, va installato a parte.
+tzdata
+systemd-timesyncd
+libreoffice
+libreoffice-l10n-it
+# Correttore ortografico italiano per LibreOffice: libreoffice-l10n-it
+# traduce solo l'interfaccia, il dizionario per il controllo ortografico
+# (sottolineatura errori) e' un pacchetto hunspell separato. mythes-it
+# aggiunge anche i sinonimi (tasto destro > Sinonimi).
+hunspell-it
+mythes-it
+mousepad
+# Visualizzatore immagini semplice (solo apertura/sfoglio, no editing):
+# lximage-qt e' il visualizzatore nativo del progetto LXQt stesso (coerente
+# con lo stack Qt/breeze usato ovunque, leggero). mtpaint resta per il
+# fotoritocco/editing (voce di menu separata "Fotoritocco").
+lximage-qt
+# Interfaccia in italiano (con --apt-recommends false i l10n non entrano da soli).
+lximage-qt-l10n
+zathura
+zathura-pdf-poppler
+firefox-esr
+firefox-esr-l10n-it
+sqlite3
+smplayer
+smplayer-l10n
+audacious
+# NIENTE "pcmanfm" (GTK, LXDE): era un refuso, scollegato da qualunque
+# nostra configurazione. Il file manager e' pcmanfm-qt (Qt, LXQt), gia'
+# incluso come dipendenza di lxqt-core: e' quello che gestisce sfondo/
+# desktop/cestino (vedi root/.config/pcmanfm-qt) e viene lanciato sempre
+# tramite il wrapper quelo-filemanager (menu "Gestione file").
+pcmanfm-qt-l10n
+libfm-qt-l10n
+scrot
+lxterminal
+zenity
+xdotool
+mtpaint
+
+# Dialogo di spegnimento (quelo-power): kdialog e' l'equivalente Qt di
+# zenity (che e' GTK e stona sull'estetica Qt/LXQt), usato per un dialogo
+# a 3 pulsanti semplice e in italiano, al posto di lxqt-leave (troppe
+# opzioni, stringhe non tradotte senza lxqt-l10n).
+kdialog
+
+# Font Microsoft (preseed in preseed/mscorefonts.cfg.chroot)
+ttf-mscorefonts-installer
+
+# Mount home exFAT da USB (label QUELO-HOME)
+exfatprogs
+
+# Stampa (CUPS, base + copertura driver "full") e scanner (SANE, si
+# appoggia allo stesso stack: scopre le stampanti/MFP di rete via
+# avahi/mDNS esattamente come CUPS).
+cups
+cups-client
+ipp-usb
+avahi-daemon
+libnss-mdns
+sane-utils
+sane-airscan
+simple-scan
+
+# Driver stampanti: e' l'elenco esplicito di tutto cio' che il
+# metapackage printer-driver-all raccomanderebbe (solo Recommends, non
+# Depends: con --apt-recommends false in build.sh non verrebbe installato
+# nulla installando solo la meta, va quindi elencato a mano). Copertura
+# pressoche' totale dei modelli comuni: ~5-6MB installati in piu' rispetto
+# alla sola coppia gutenprint+hpcups.
+printer-driver-gutenprint
+printer-driver-hpcups
+printer-driver-brlaser
+printer-driver-c2050
+printer-driver-c2esp
+printer-driver-cjet
+printer-driver-dymo
+printer-driver-escpr
+printer-driver-foo2zjs
+printer-driver-fujixerox
+printer-driver-indexbraille
+printer-driver-m2300w
+printer-driver-min12xxw
+printer-driver-oki
+printer-driver-pnm2ppa
+printer-driver-postscript-hp
+printer-driver-ptouch
+printer-driver-pxljr
+printer-driver-sag-gdi
+printer-driver-splix
+
+# Bluetooth (pairing, condivisione file/audio)
+bluez
+blueman
+pulseaudio-module-bluetooth
+# Ponte SNI per l'icona di blueman-applet (GTK) nello [statusnotifier]
+# del pannello (senza, l'icona spesso non compare affatto: e' un
+# problema noto/diffuso di blueman fuori da GNOME/Cinnamon).
+gir1.2-ayatanaappindicator3-0.1
+
+# gvfs: richiesto da pcmanfm-qt per "computer:///" (elenco dischi in
+# "Dispositivi") e per il mount/unmount dal file manager - senza, errore
+# "Operazione non supportata" cliccando su "Computer" (confermato in
+# pratica). Era stato rimosso per errore insieme allo stack Cinnamon (vedi
+# 0160-quelo-trim.chroot), non e' legato a quello. gvfs-backends fornisce
+# il backend basato su udisks2 usato per i dischi fissi/rimovibili.
+gvfs
+gvfs-backends
+
+# Tema icone: senza uno esplicito, molti nomi icona freedesktop usati
+# nel pannello (icon=user-trash, icone dei plugin nativi come "volume",
+# menu, ecc.) restano vuoti perche' non c'e' una vera coverage di
+# default. Breeze e' completo e leggero, usato anche da KDE.
+breeze-icon-theme
+
+# Audio
+pulseaudio
+pavucontrol
+libasound2-plugins
+# alsa-utils: fornisce amixer/alsactl, usati da quelo-audio-default.sh per
+# assicurare che l'audio parta SBLOCCATO e ad un volume udibile ad ogni
+# avvio (vedi root/.xinitrc) - senza, con --apt-recommends false, il
+# pacchetto non entrerebbe affatto (non e' una dipendenza dura di
+# pulseaudio, solo una Recommends).
+alsa-utils
+
+# Gestione archivi (zip/rar/7z): xarchiver e' l'interfaccia grafica (si
+# registra da solo per i mimetype archivio, pcmanfm-qt lo rileva anche per
+# le azioni "Estrai qui/Estrai in..." dal tasto destro), gli altri sono i
+# tool a riga di comando che xarchiver stesso richiama per i vari formati.
+# unrar (non-free, gia' abilitato in build.sh) invece di unrar-free: quello
+# gestisce correttamente anche gli archivi rar piu' recenti/con password.
+xarchiver
+zip
+unzip
+p7zip-full
+unrar
+
+# Condivisioni di rete (Samba/CIFS): smb4k e' un client Qt dedicato per
+# scoprire/montare condivisioni di rete (server Windows/NAS) con
+# un'interfaccia grafica, piu' comodo di digitare percorsi smb:// a mano.
+# cifs-utils fornisce mount.cifs, l'helper che smb4k usa dietro le quinte
+# per montare davvero le condivisioni.
+smb4k
+cifs-utils
+
+# Calcolatrice standalone (oltre a quella di LibreOffice Calc): kcalc e'
+# Qt/KDE, leggera, si integra bene con il tema breeze usato nel sistema.
+kcalc

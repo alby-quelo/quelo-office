@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Screenshot
+Comment=Cattura schermo intero o area selezionata
+Exec=/usr/local/bin/quelo-screenshot
+Icon=applets-screenshooter
+Terminal=false
+Categories=Utility;

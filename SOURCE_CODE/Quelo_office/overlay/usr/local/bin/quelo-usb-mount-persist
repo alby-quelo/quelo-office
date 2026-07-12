@@ -1,0 +1,33 @@
+#!/bin/bash
+# Monta la partizione ext4 "persistence" su /media/quelo-persist se presente.
+# Solo mount: salva_sessione/load_sessione gestiscono il contenuto a mano.
+set -uo pipefail
+
+. /usr/local/bin/quelo-usb-lib.sh
+
+PERSIST_MNT="/media/quelo-persist"
+
+quelo_usbpersist_log() {
+  logger -t quelo-usb-mount-persist "$*" 2>/dev/null || true
+  echo "quelo-usb-mount-persist: $*"
+}
+
+if ! blkid -L "${QUELO_PERSIST_LABEL}" >/dev/null 2>&1; then
+  quelo_usbpersist_log "partizione ${QUELO_PERSIST_LABEL} non trovata, salto"
+  exit 0
+fi
+
+mkdir -p "${PERSIST_MNT}"
+if mountpoint -q "${PERSIST_MNT}" 2>/dev/null; then
+  quelo_usbpersist_log "${PERSIST_MNT} era gia' montata"
+  exit 0
+fi
+
+if ! mount -L "${QUELO_PERSIST_LABEL}" "${PERSIST_MNT}"; then
+  quelo_usbpersist_log "ERRORE: mount di ${QUELO_PERSIST_LABEL} su ${PERSIST_MNT} fallito"
+  exit 0
+fi
+
+mkdir -p "${PERSIST_MNT}/store"
+quelo_usbpersist_log "${QUELO_PERSIST_LABEL} montata su ${PERSIST_MNT}"
+exit 0

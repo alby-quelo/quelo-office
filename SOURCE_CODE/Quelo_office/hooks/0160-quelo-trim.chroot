@@ -1,0 +1,74 @@
+#!/bin/bash
+# Rimuove stack Cinnamon (pescato come agente polkit) e alleggerisce il boot.
+
+set -e
+
+PURGE=(
+  network-manager-gnome
+  cinnamon cinnamon-common cinnamon-control-center cinnamon-control-center-data
+  cinnamon-desktop-data cinnamon-l10n cinnamon-screensaver cinnamon-session
+  cinnamon-session-common cinnamon-settings-daemon
+  nemo nemo-data muffin muffin-common cjs
+  # NIENTE gvfs/gvfs-daemons/gvfs-common/gvfs-libs qui: erano stati
+  # rimossi insieme allo stack Cinnamon senza pensare che servono anche a
+  # pcmanfm-qt per "computer:///" e per elencare i dischi in "Dispositivi"
+  # (senza, errore "Operazione non supportata" - confermato in pratica).
+  # Restano installati esplicitamente, vedi extra.list.chroot.
+  #
+  # Autologin ora via getty+startx (root/.bash_profile): niente display
+  # manager. Purge defensivo, nel caso sddm venga tirato dentro come
+  # dipendenza di qualche altro pacchetto.
+  sddm sddm-theme-debian-breeze
+)
+
+apt-get purge -y "${PURGE[@]}" 2>/dev/null || true
+apt-get autoremove -y --purge
+
+# CRITICO: cups.service NON va qui (era mascherato qui da quando CUPS non
+# era ancora voluto: mask lo rende impossibile far partire in seguito,
+# anche con "systemctl enable" in hooks/0420, perche' mask ha la
+# precedenza). Ora che la stampa e' una feature richiesta, resta solo
+# cups-browsed (helper di auto-discovery legacy, non essenziale).
+#
+# CRITICO (2): udisks2.service NON va qui (era mascherato qui insieme al
+# resto, senza pensare che serve anche per altro): senza udisks2, pcmanfm-qt
+# non "vede" affatto dischi/partizioni oltre a quelli montati a mano dai
+# nostri script via label (es. disco interno NVMe di una macchina reale,
+# segnalato mancante). Lasciato libero di attivarsi on-demand via D-Bus
+# (nessun "systemctl enable": non deve partire da solo al boot, solo
+# quando pcmanfm-qt lo interroga). L'automount indesiderato e' evitato a
+# parte, via [Volume] in root/.config/pcmanfm-qt/lxqt/settings.conf.
+# apt-daily/apt-daily-upgrade: controllo aggiornamenti automatico di APT,
+# incluso di default in qualunque sistema Debian (non attivato da noi).
+# Inutile su un sistema live (32s persi a contattare i repository online
+# ad ogni avvio, visto con systemd-analyze blame) e potenzialmente
+# pericoloso: scriverebbe in /etc//var/lib/dpkg persistenti senza che
+# l'utente lo sappia o lo voglia.
+for svc in \
+  NetworkManager-wait-online.service \
+  colord.service \
+  upower.service \
+  cups-browsed.service \
+  apt-daily.service \
+  apt-daily.timer \
+  apt-daily-upgrade.service \
+  apt-daily-upgrade.timer
+do
+  systemctl disable "${svc}" 2>/dev/null || true
+  systemctl mask "${svc}" 2>/dev/null || true
+done
+
+systemctl mask dev-fd0.device 2>/dev/null || true
+
+if [[ -x /usr/bin/openbox ]]; then
+  update-alternatives --install /usr/bin/x-window-manager x-window-manager /usr/bin/openbox 90 2>/dev/null || true
+  update-alternatives --set x-window-manager /usr/bin/openbox 2>/dev/null || true
+fi
+
+# x-session-manager punta a startlxqt: non serve piu' per l'autologin
+# (root/.xinitrc lancia startlxqt direttamente), ma e' comunque l'alternative
+# di sistema corretta per "la" sessione grafica di Quelo Office.
+if [[ -x /usr/bin/startlxqt ]]; then
+  update-alternatives --install /usr/bin/x-session-manager x-session-manager /usr/bin/startlxqt 50 2>/dev/null || true
+  update-alternatives --set x-session-manager /usr/bin/startlxqt 2>/dev/null || true
+fi

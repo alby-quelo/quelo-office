@@ -1,0 +1,17 @@
+[Unit]
+Description=Quelo Office - monta home exFAT (QUELO-HOME) se presente
+DefaultDependencies=no
+# After=live-config.service: questo servizio scrive symlink dentro /root
+# (Desktop/Documenti/...) - se live-config girasse dopo, potrebbe
+# ricreare quelle cartelle come directory vuote normali, distruggendo i
+# nostri link verso QUELO-HOME.
+After=local-fs.target live-config.service
+Before=getty@tty1.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/quelo-usb-mount-home
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

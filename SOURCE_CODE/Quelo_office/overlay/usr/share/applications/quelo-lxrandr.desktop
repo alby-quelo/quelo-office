@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Schermo
+Comment=Configurazione risoluzione e monitor
+Exec=/usr/local/bin/quelo-lxrandr
+Icon=video-display
+Terminal=false
+Categories=Settings;

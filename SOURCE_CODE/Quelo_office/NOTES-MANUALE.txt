@@ -1,0 +1,19 @@
+Quelo Office — build ISO (Quelo_office)
+========================================
+
+Comandi (dalla root del repository quelo-office-bis):
+
+  sudo SOURCE_CODE/Quelo_office/build.sh
+  sudo SOURCE_CODE/Quelo_office/cleanup.sh
+
+Output ISO:
+  ISO/Quelo_Office-<versione>-alpha.iso
+
+ISO pubblicata (unica da caricare online): 0.71-alpha
+  vedi ISO/README.txt — le build locali successive (0.72+) sono solo interne.
+
+Versione corrente:
+  SOURCE_CODE/Quelo_office/VERSION
+
+Preparazione chiavetta USB:
+  vedi SOURCE_CODE/Quelo_prepare_usb/NOTES-MANUALE.txt

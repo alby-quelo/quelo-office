@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Name=Firefox ESR
+GenericName=Web Browser
+Comment=Browser web Quelo Office
+Exec=/usr/local/bin/quelo-firefox %u
+Terminal=false
+Type=Application
+Icon=firefox-esr
+Categories=Network;WebBrowser;
+MimeType=text/html;text/xml;application/xhtml+xml;x-scheme-handler/http;x-scheme-handler/https;
+StartupNotify=true

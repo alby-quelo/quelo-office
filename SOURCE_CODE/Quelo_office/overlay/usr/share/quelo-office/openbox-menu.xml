@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openbox_menu xmlns="http://openbox.org/3.4/menu">
+  <menu id="root-menu" label="Quelo Office">
+    <item label="Browser">
+      <action name="Execute"><execute>quelo-firefox</execute></action>
+    </item>
+    <item label="Calcolatrice">
+      <action name="Execute"><execute>kcalc</execute></action>
+    </item>
+    <item label="Editor di testo">
+      <action name="Execute"><execute>mousepad</execute></action>
+    </item>
+    <item label="Fotoritocco">
+      <action name="Execute"><execute>mtpaint</execute></action>
+    </item>
+    <item label="Gestione file">
+      <action name="Execute"><execute>quelo-filemanager</execute></action>
+    </item>
+    <item label="Lettore PDF">
+      <action name="Execute"><execute>zathura</execute></action>
+    </item>
+    <item label="LibreOffice">
+      <action name="Execute"><execute>libreoffice</execute></action>
+    </item>
+    <item label="Player Audio">
+      <action name="Execute"><execute>audacious</execute></action>
+    </item>
+    <item label="Player Video">
+      <action name="Execute"><execute>smplayer</execute></action>
+    </item>
+    <item label="Scanner">
+      <action name="Execute"><execute>simple-scan</execute></action>
+    </item>
+    <item label="Screenshot">
+      <action name="Execute"><execute>quelo-screenshot</execute></action>
+    </item>
+    <item label="Visualizzatore immagini">
+      <action name="Execute"><execute>lximage-qt</execute></action>
+    </item>
+    <menu id="quelo-configurazioni-menu" label="Configurazioni">
+      <item label="Aspetto">
+        <action name="Execute"><execute>lxqt-config-appearance</execute></action>
+      </item>
+      <item label="Caratteri menu">
+        <action name="Execute"><execute>quelo-config-font-menu</execute></action>
+      </item>
+      <item label="Caratteri pannello inferiore">
+        <action name="Execute"><execute>quelo-config-font-panel</execute></action>
+      </item>
+      <item label="Bluetooth">
+        <action name="Execute"><execute>blueman-manager</execute></action>
+      </item>
+      <item label="Rete">
+        <action name="Execute"><execute>nm-connection-editor</execute></action>
+      </item>
+      <item label="Condivisioni di rete">
+        <action name="Execute"><execute>smb4k</execute></action>
+      </item>
+      <item label="Schermo">
+        <action name="Execute"><execute>quelo-lxrandr</execute></action>
+      </item>
+      <item label="Stampanti">
+        <action name="Execute"><execute>sh -c 'quelo-firefox http://localhost:631'</execute></action>
+      </item>
+      <item label="Volume">
+        <action name="Execute"><execute>pavucontrol</execute></action>
+      </item>
+    </menu>
+    <separator/>
+    <item label="Terminale">
+      <action name="Execute"><execute>lxterminal</execute></action>
+    </item>
+  </menu>
+</openbox_menu>

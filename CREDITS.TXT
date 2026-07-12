@@ -1,0 +1,204 @@
+Quelo Office — Credits / Ringraziamenti
+========================================
+
+Progetto: Quelo Office (quelo-office-bis)
+
+
+================================================================================
+ITALIANO
+================================================================================
+
+Ispirazione
+-----------
+Ringraziamenti particolari a Corrado Guzzanti per aver creato il personaggio
+«Quelo», musa e fonte d’ispirazione di questo progetto.
+
+  Corrado Guzzanti | personaggio «Quelo» (ispirazione) | —
+
+
+Software di terze parti
+-----------------------
+Per ogni voce: Autore / progetto | Software | Sito o riferimento
+
+Sistema e build
+  Debian Project | Debian GNU/Linux (sid) | https://www.debian.org/
+  Debian Live team | live-build, live-boot, live-config | https://wiki.debian.org/DebianLive
+  Free Software Foundation | GNU GRUB | https://www.gnu.org/software/grub/
+  Lennart Poettering et al. | systemd | https://systemd.io/
+  Python Software Foundation | Python 3 | https://www.python.org/
+  Pillow contributors | Pillow (python3-pil) | https://python-pillow.org/
+
+Firmware di rete (vendor)
+  Debian non-free-firmware | firmware-* (LAN, WiFi, mobile) | https://wiki.debian.org/Firmware
+
+Rete
+  NetworkManager team | NetworkManager, network-manager-applet | https://networkmanager.dev/
+  freedesktop.org | ModemManager | https://www.freedesktop.org/wiki/Software/ModemManager/
+  wpasupplicant / iw contributors | wpasupplicant, iw | https://w1.fi/
+
+Desktop e ambiente grafico
+  X.Org Foundation | X.Org (xorg, driver) | https://www.x.org/
+  Dana Jansens et al. | Openbox | https://openbox.org/
+  LXQt team | LXQt (lxqt-core, lxqt-panel, lxqt-config, …) | https://lxqt-project.org/
+  LXDE/LXQt team | lxrandr, lxterminal | https://lxqt-project.org/
+  LXQt team | pcmanfm-qt, libfm-qt | https://lxqt-project.org/
+  LXQt team | lximage-qt | https://lxqt-project.org/
+  GNOME / freedesktop.org | gvfs | https://wiki.gnome.org/Projects/gvfs
+  KDE community | breeze-icon-theme | https://community.kde.org/Breeze
+  Qt Company | Qt 6 | https://www.qt.io/
+  freedesktop.org | xdotool | https://www.semicomplete.com/projects/xdotool/
+  freedesktop.org | x11-utils | https://www.freedesktop.org/
+
+Applicazioni
+  The Document Foundation | LibreOffice | https://www.libreoffice.org/
+  Hunspell / MyThes contributors | hunspell-it, mythes-it | https://hunspell.github.io/
+  Mozilla | Firefox ESR | https://www.mozilla.org/firefox/enterprise/
+  Xfce developers | Mousepad | https://gitlab.xfce.org/apps/mousepad
+  pwmt | Zathura | https://pwmt.org/projects/zathura/
+  freedesktop.org | Poppler (zathura-pdf-poppler) | https://poppler.freedesktop.org/
+  Ricardo Villalba | SMPlayer | https://www.smplayer.info/
+  Audacious development team | Audacious | https://audacious-media-player.org/
+  Mark K. Kim et al. | mtPaint | https://mtpaint.sourceforge.net/
+  KDE community | KCalc, kdialog | https://kde.org/
+  Giuseppe Tucci et al. | Xarchiver | https://github.com/ib/xarchiver
+  Alexander Reinholdt et al. | SMB4K | https://apps.kde.org/smb4k/
+  GNOME / Canonical | Simple Scan | https://gitlab.gnome.org/GNOME/simple-scan
+  Tom Gilbert et al. | scrot | https://github.com/resurrecting-open-source-projects/scrot
+  GNOME project | zenity | https://gitlab.gnome.org/GNOME/zenity
+
+Audio
+  PulseAudio / freedesktop.org | PulseAudio, pavucontrol | https://www.freedesktop.org/wiki/Software/PulseAudio/
+  ALSA team | alsa-utils | https://www.alsa-project.org/
+
+Stampa e scanner
+  OpenPrinting / Apple et al. | CUPS | https://openprinting.org/
+  OpenPrinting | ipp-usb | https://github.com/OpenPrinting/ipp-usb
+  Avahi developers | Avahi | https://avahi.org/
+  SANE project | SANE (sane-utils, sane-airscan) | https://www.sane-project.org/
+  Gutenprint project | printer-driver-gutenprint | https://gutenprint.sourceforge.net/
+  HP / Linux Foundation | printer-driver-hpcups | https://developers.hp.com/hp-linux-imaging-and-printing
+  OpenPrinting e contributori | altri printer-driver-* | https://openprinting.org/
+
+Bluetooth
+  BlueZ contributors | BlueZ | https://www.bluez.org/
+  Blueman team | Blueman | https://github.com/blueman-project/blueman
+  Ayatana Indicators | libayatana-appindicator | https://github.com/AyatanaIndicators
+
+Archivi e filesystem
+  Info-ZIP | zip, unzip | https://info-zip.org/
+  Igor Pavlov / 7-Zip | p7zip-full | https://www.7-zip.org/
+  RARLAB | unrar | https://www.rarlab.com/
+  exFAT FUSE / Samsung et al. | exfatprogs | https://github.com/exfatprogs/exfatprogs
+  Samba Team | cifs-utils | https://www.samba.org/
+
+Font
+  Microsoft | TrueType core fonts (msttcorefonts) | https://www.microsoft.com/typography/
+
+Autori del progetto Quelo Office
+--------------------------------
+  Alberto Frosio | autore e maintainer | alby@gnumerica.org
+
+
+Contributori
+------------
+
+
+================================================================================
+ENGLISH
+================================================================================
+
+Inspiration
+-----------
+Special thanks to Corrado Guzzanti for creating the character «Quelo»,
+muse and source of inspiration for this project.
+
+  Corrado Guzzanti | «Quelo» character (inspiration) | —
+
+
+Third-party software
+--------------------
+For each entry: Author / project | Software | Website or reference
+
+System and build
+  Debian Project | Debian GNU/Linux (sid) | https://www.debian.org/
+  Debian Live team | live-build, live-boot, live-config | https://wiki.debian.org/DebianLive
+  Free Software Foundation | GNU GRUB | https://www.gnu.org/software/grub/
+  Lennart Poettering et al. | systemd | https://systemd.io/
+  Python Software Foundation | Python 3 | https://www.python.org/
+  Pillow contributors | Pillow (python3-pil) | https://python-pillow.org/
+
+Network firmware (vendors)
+  Debian non-free-firmware | firmware-* (LAN, WiFi, mobile) | https://wiki.debian.org/Firmware
+
+Networking
+  NetworkManager team | NetworkManager, network-manager-applet | https://networkmanager.dev/
+  freedesktop.org | ModemManager | https://www.freedesktop.org/wiki/Software/ModemManager/
+  wpasupplicant / iw contributors | wpasupplicant, iw | https://w1.fi/
+
+Desktop and graphical environment
+  X.Org Foundation | X.Org (xorg, drivers) | https://www.x.org/
+  Dana Jansens et al. | Openbox | https://openbox.org/
+  LXQt team | LXQt (lxqt-core, lxqt-panel, lxqt-config, …) | https://lxqt-project.org/
+  LXDE/LXQt team | lxrandr, lxterminal | https://lxqt-project.org/
+  LXQt team | pcmanfm-qt, libfm-qt | https://lxqt-project.org/
+  LXQt team | lximage-qt | https://lxqt-project.org/
+  GNOME / freedesktop.org | gvfs | https://wiki.gnome.org/Projects/gvfs
+  KDE community | breeze-icon-theme | https://community.kde.org/Breeze
+  Qt Company | Qt 6 | https://www.qt.io/
+  freedesktop.org | xdotool | https://www.semicomplete.com/projects/xdotool/
+  freedesktop.org | x11-utils | https://www.freedesktop.org/
+
+Applications
+  The Document Foundation | LibreOffice | https://www.libreoffice.org/
+  Hunspell / MyThes contributors | hunspell-it, mythes-it | https://hunspell.github.io/
+  Mozilla | Firefox ESR | https://www.mozilla.org/firefox/enterprise/
+  Xfce developers | Mousepad | https://gitlab.xfce.org/apps/mousepad
+  pwmt | Zathura | https://pwmt.org/projects/zathura/
+  freedesktop.org | Poppler (zathura-pdf-poppler) | https://poppler.freedesktop.org/
+  Ricardo Villalba | SMPlayer | https://www.smplayer.info/
+  Audacious development team | Audacious | https://audacious-media-player.org/
+  Mark K. Kim et al. | mtPaint | https://mtpaint.sourceforge.net/
+  KDE community | KCalc, kdialog | https://kde.org/
+  Giuseppe Tucci et al. | Xarchiver | https://github.com/ib/xarchiver
+  Alexander Reinholdt et al. | SMB4K | https://apps.kde.org/smb4k/
+  GNOME / Canonical | Simple Scan | https://gitlab.gnome.org/GNOME/simple-scan
+  Tom Gilbert et al. | scrot | https://github.com/resurrecting-open-source-projects/scrot
+  GNOME project | zenity | https://gitlab.gnome.org/GNOME/zenity
+
+Audio
+  PulseAudio / freedesktop.org | PulseAudio, pavucontrol | https://www.freedesktop.org/wiki/Software/PulseAudio/
+  ALSA team | alsa-utils | https://www.alsa-project.org/
+
+Printing and scanning
+  OpenPrinting / Apple et al. | CUPS | https://openprinting.org/
+  OpenPrinting | ipp-usb | https://github.com/OpenPrinting/ipp-usb
+  Avahi developers | Avahi | https://avahi.org/
+  SANE project | SANE (sane-utils, sane-airscan) | https://www.sane-project.org/
+  Gutenprint project | printer-driver-gutenprint | https://gutenprint.sourceforge.net/
+  HP / Linux Foundation | printer-driver-hpcups | https://developers.hp.com/hp-linux-imaging-and-printing
+  OpenPrinting and contributors | other printer-driver-* | https://openprinting.org/
+
+Bluetooth
+  BlueZ contributors | BlueZ | https://www.bluez.org/
+  Blueman team | Blueman | https://github.com/blueman-project/blueman
+  Ayatana Indicators | libayatana-appindicator | https://github.com/AyatanaIndicators
+
+Archives and filesystems
+  Info-ZIP | zip, unzip | https://info-zip.org/
+  Igor Pavlov / 7-Zip | p7zip-full | https://www.7-zip.org/
+  RARLAB | unrar | https://www.rarlab.com/
+  exFAT FUSE / Samsung et al. | exfatprogs | https://github.com/exfatprogs/exfatprogs
+  Samba Team | cifs-utils | https://www.samba.org/
+
+Fonts
+  Microsoft | TrueType core fonts (msttcorefonts) | https://www.microsoft.com/typography/
+
+
+Quelo Office project authors
+------------------------------
+  Alberto Frosio | author and maintainer | alby@gnumerica.org
+
+
+Contributors
+------------
+

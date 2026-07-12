@@ -1,0 +1,7 @@
+#!/bin/sh
+# Pulsante "Menu" del pannello: apre il menu nativo di Openbox (root-menu,
+# vedi /usr/share/quelo-office/openbox-menu.xml) simulando la stessa
+# scorciatoia da tastiera (Super+Spazio, keybind aggiunto in rc.xml da
+# hooks/0400-quelo-desktop.chroot) usata dal tasto destro sul desktop.
+# E' un vero menu a tendina nativo, niente finestra di dialogo con OK.
+exec xdotool key --clearmodifiers super+space

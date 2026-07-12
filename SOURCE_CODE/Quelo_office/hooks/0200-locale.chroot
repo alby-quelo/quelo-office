@@ -1,0 +1,30 @@
+#!/bin/bash
+set -e
+
+locale-gen
+
+# Fuso orario fisso Europe/Rome: senza questo, il sistema resta al default
+# (UTC) e l'ora mostrata risulta "sbagliata" di qualche ora rispetto a
+# quella reale in Italia (differenza tipica CET/CEST, +1/+2 rispetto a UTC).
+#
+# CRITICO: preseed di debconf PRIMA di dpkg-reconfigure. Senza, dpkg-
+# reconfigure -f noninteractive rigenera /etc/timezone e /etc/localtime dal
+# valore ESISTENTE in debconf (default Etc/UTC di debootstrap, non
+# preconfigurato) e sovrascrive quello che scriviamo qui sotto: bug
+# confermato in pratica (systemd-analyze/timedatectl mostravano ancora
+# Etc/UTC anche dopo il fix).
+echo "tzdata tzdata/Areas select Europe" | debconf-set-selections
+echo "tzdata tzdata/Zones/Europe select Rome" | debconf-set-selections
+rm -f /etc/localtime
+dpkg-reconfigure -f noninteractive tzdata
+
+# systemd-timesyncd (NON incluso di default con --apt-recommends false):
+# sincronizza l'ora via rete (NTP) non appena una connessione e' disponibile,
+# e riprova automaticamente in background se al boot non c'e' rete (es. si
+# collega dopo con la rete mobile) - comportamento nativo del servizio,
+# nessuno script aggiuntivo necessario. Da non confondere con l'hwclock
+# letto dal BIOS/UEFI all'avvio (spesso storto/in UTC "nudo"): con il fuso
+# sopra impostato, quel valore viene almeno interpretato con l'offset
+# corretto, ma resta comunque approssimativo finche' non arriva la prima
+# sincronizzazione NTP.
+systemctl enable systemd-timesyncd.service 2>/dev/null || true

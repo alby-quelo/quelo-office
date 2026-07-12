@@ -1,0 +1,86 @@
+#!/bin/bash
+# Monta QUELO-HOME (exFAT) se presente; altrimenti home live normale su /root.
+#
+# CRITICO: niente "set -e" qui. Ogni comando a rischio (mount, ln, rm) e'
+# controllato ed eventualmente loggato a mano: uno step secondario che
+# fallisce (es. la sola icona Home sul Desktop) non deve piu' far marcare
+# l'intero servizio come FAILED se il montaggio vero e proprio e' riuscito
+# - prima capitava esattamente questo, e oltre a sembrare un problema serio
+# lasciava anche pcmanfm-qt/udisks2 a tentare un proprio auto-mount "alla
+# cieca" della chiavetta, con risultati diversi dai nostri (niente permessi
+# fmask/dmask, niente cartelle home collegate).
+set -uo pipefail
+
+. /usr/local/bin/quelo-usb-lib.sh
+
+HOME_MNT="/media/quelo-home"
+DEFAULT_DIRS="Desktop Documenti Scaricati Immagini Musica Video Modelli"
+
+quelo_usbhome_log() {
+  logger -t quelo-usb-mount-home "$*" 2>/dev/null || true
+  echo "quelo-usb-mount-home: $*"
+}
+
+if ! blkid -L "${QUELO_HOME_LABEL}" >/dev/null 2>&1; then
+  quelo_usbhome_log "partizione ${QUELO_HOME_LABEL} non trovata, home resta su /root (tmpfs)"
+  exit 0
+fi
+
+mkdir -p "${HOME_MNT}"
+if ! mountpoint -q "${HOME_MNT}" 2>/dev/null; then
+  # CRITICO: exFAT non ha permessi Unix reali, li SIMULA solo in base alle
+  # opzioni di mount (fmask/dmask) - senza specificarle il driver del
+  # kernel usa un default restrittivo (file quasi "solo per root"). Tutto
+  # qui gira come root, quindi i file finivano leggibili/scrivibili SOLO
+  # da root: su un altro S.O./utente (es. root diverso, o utente normale
+  # su un altro Linux) risultavano di fatto in sola lettura. fmask/dmask
+  # 0000 = nessun bit tolto, permessi liberi (rwx) per chiunque legga la
+  # chiavetta, su qualunque sistema.
+  if ! mount -L "${QUELO_HOME_LABEL}" -o uid=0,gid=0,fmask=0000,dmask=0000 "${HOME_MNT}"; then
+    quelo_usbhome_log "ERRORE: mount di ${QUELO_HOME_LABEL} su ${HOME_MNT} fallito, home resta su /root"
+    exit 0
+  fi
+  quelo_usbhome_log "${QUELO_HOME_LABEL} montata su ${HOME_MNT}"
+else
+  quelo_usbhome_log "${HOME_MNT} era gia' montata"
+fi
+
+mkdir -p "${HOME_MNT}/home" "${HOME_MNT}/quelo-export"
+
+# Collegamento cartelle home (Desktop/Documenti/...) con SYMLINK, non
+# bind-mount: un bind-mount per cartella creava altrettanti mountpoint
+# distinti in /proc/mounts, che pcmanfm-qt (via udisks2/gvfs) elencava
+# ciascuno come un "disco" separato nella barra laterale - confusione
+# inutile, dato che e' sempre e solo la stessa chiavetta QUELO-HOME. Un
+# symlink e' trasparente per qualsiasi file manager (doppio click = entra
+# nella cartella) e non genera nessun mountpoint fantasma.
+link_errors=0
+for dir in ${DEFAULT_DIRS}; do
+  mkdir -p "${HOME_MNT}/home/${dir}"
+  target="/root/${dir}"
+  link_target="${HOME_MNT}/home/${dir}"
+  if [[ -L "${target}" && "$(readlink "${target}" 2>/dev/null)" == "${link_target}" ]]; then
+    continue
+  fi
+  if ! rm -rf "${target}" 2>/dev/null; then
+    quelo_usbhome_log "ATTENZIONE: non riesco a liberare ${target} per collegarlo a ${link_target}"
+    ((link_errors++))
+    continue
+  fi
+  if ! ln -s "${link_target}" "${target}" 2>/dev/null; then
+    quelo_usbhome_log "ATTENZIONE: creazione link ${target} -> ${link_target} fallita"
+    ((link_errors++))
+  fi
+done
+quelo_usbhome_log "cartelle home collegate a ${HOME_MNT}/home (${link_errors} errori su $(echo ${DEFAULT_DIRS} | wc -w))"
+
+# Icona "Home": adesso e' quella nativa DesktopShortcuts=Home di
+# pcmanfm-qt (vedi pcmanfm-qt/lxqt/settings.conf) - la crea e la aggiorna
+# lui da solo ad ogni sessione, qui non serve piu' scriverla a mano.
+# Pulizia di residui delle versioni precedenti di questo script (simlink
+# o file .desktop "Home"/"user-home.desktop" scritti a mano in sessioni
+# passate, che altrimenti resterebbero doppioni sul Desktop).
+rm -f "${HOME_MNT}/home/Desktop/Home" "${HOME_MNT}/home/Desktop/Home.desktop" 2>/dev/null || true
+
+quelo_usbhome_log "completato con successo"
+exit 0

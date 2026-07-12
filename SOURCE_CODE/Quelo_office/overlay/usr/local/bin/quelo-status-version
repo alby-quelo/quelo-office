@@ -1,0 +1,6 @@
+#!/bin/bash
+# Titolo completo nel pannello superiore (versione da /etc/quelo-office-version).
+set -euo pipefail
+
+version="$(tr -d '[:space:]' </etc/quelo-office-version 2>/dev/null || echo '?')"
+printf 'Quelo Office %s alpha' "${version}"

@@ -1,0 +1,56 @@
+#!/bin/bash
+set -e
+
+SRC="/usr/share/quelo-office/mimeapps.list"
+ZATHURA_DESKTOP="org.pwmt.zathura.desktop"
+# CRITICO: da Mousepad 0.5.7 in poi (Debian Sid ha oggi la 0.7.0) il file
+# .desktop si chiama "org.xfce.mousepad.desktop", non piu' "mousepad.desktop"
+# (vedi docs.xfce.org/apps/mousepad). Puntare al nome vecchio, inesistente,
+# fa "perdere" la nostra scelta di default: il sistema cade sul primo altro
+# programma registrato per text/plain, che risultava essere LibreOffice -
+# stesso identico bug capitato per zathura, stessa identica soluzione:
+# rilevare a build-time quale file esiste davvero.
+MOUSEPAD_DESKTOP="org.xfce.mousepad.desktop"
+
+install -d /root/.config
+install -m 644 "${SRC}" /root/.config/mimeapps.list
+
+if [[ ! -f "/usr/share/applications/${ZATHURA_DESKTOP}" ]]; then
+  for candidate in zathura.desktop org.pwmt.zathura-pdf.desktop; do
+    if [[ -f "/usr/share/applications/${candidate}" ]]; then
+      ZATHURA_DESKTOP="${candidate}"
+      break
+    fi
+  done
+fi
+
+if [[ ! -f "/usr/share/applications/${MOUSEPAD_DESKTOP}" ]]; then
+  for candidate in mousepad.desktop; do
+    if [[ -f "/usr/share/applications/${candidate}" ]]; then
+      MOUSEPAD_DESKTOP="${candidate}"
+      break
+    fi
+  done
+fi
+
+sed -i "s|org.pwmt.zathura.desktop|${ZATHURA_DESKTOP}|g" /root/.config/mimeapps.list
+sed -i "s|QUELO_MOUSEPAD_DESKTOP|${MOUSEPAD_DESKTOP}|g" /root/.config/mimeapps.list
+
+update-mime-database /usr/share/mime 2>/dev/null || true
+update-desktop-database /usr/share/applications 2>/dev/null || true
+
+export HOME=/root
+export XDG_CONFIG_HOME=/root/.config
+
+if command -v xdg-mime >/dev/null 2>&1; then
+  xdg-mime default "${MOUSEPAD_DESKTOP}" text/plain
+  xdg-mime default "${ZATHURA_DESKTOP}" application/pdf
+  xdg-mime default quelo-firefox.desktop text/html
+  xdg-mime default quelo-firefox.desktop x-scheme-handler/http
+  xdg-mime default quelo-firefox.desktop x-scheme-handler/https
+  xdg-mime default libreoffice-writer.desktop application/vnd.oasis.opendocument.text
+  xdg-mime default libreoffice-calc.desktop application/vnd.oasis.opendocument.spreadsheet
+  xdg-mime default libreoffice-impress.desktop application/vnd.oasis.opendocument.presentation
+  xdg-mime default lximage-qt.desktop image/jpeg image/png image/gif image/bmp image/webp image/tiff image/svg+xml
+  xdg-mime default xarchiver.desktop application/zip application/x-rar application/x-7z-compressed
+fi

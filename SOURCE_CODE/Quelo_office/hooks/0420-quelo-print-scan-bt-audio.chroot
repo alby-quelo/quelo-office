@@ -1,0 +1,79 @@
+#!/bin/bash
+set -e
+
+# CUPS: l'interfaccia web (localhost:631, usata dal menu "Stampanti" per
+# aggiungere/gestire le stampanti) e' disattivata di default su Debian
+# (WebInterface No). L'accesso alle funzioni di amministrazione richiede
+# inoltre l'appartenenza al gruppo lpadmin (root non basta per il solo
+# fatto di essere root: CUPS controlla il gruppo, non l'UID).
+CUPSD_CONF="/etc/cups/cupsd.conf"
+if [[ -f "${CUPSD_CONF}" ]]; then
+  if grep -q '^WebInterface' "${CUPSD_CONF}"; then
+    sed -i 's/^WebInterface.*/WebInterface Yes/' "${CUPSD_CONF}"
+  else
+    echo 'WebInterface Yes' >> "${CUPSD_CONF}"
+  fi
+  # Difensivo: assicura un vero listener TCP su :631 (non solo il socket
+  # Unix /run/cups/cups.sock). Sul default Debian di solito c'e' gia',
+  # ma lo garantiamo esplicitamente invece di darlo per assunto (e' stato
+  # fonte di piu' di un problema silenzioso finora).
+  if ! grep -q '^Listen localhost:631' "${CUPSD_CONF}" && ! grep -qE '^Port 631' "${CUPSD_CONF}"; then
+    echo 'Listen localhost:631' >> "${CUPSD_CONF}"
+  fi
+fi
+usermod -aG lpadmin root 2>/dev/null || true
+
+# Di norma bluez la crea da sola al primo avvio di bluetoothd, ma la
+# garantiamo qui esplicitamente per non dipendere da quel timing.
+mkdir -p /var/lib/bluetooth
+
+# Abilitazione esplicita e defensiva dei servizi: durante la build in
+# chroot live-build blocca l'avvio effettivo (policy-rc.d), ma i simlink
+# di systemd "enable" vengono comunque creati dai postinst dei pacchetti
+# nella quasi totalita' dei casi. Lo facciamo comunque a mano per
+# sicurezza (stesso pattern defensivo usato altrove in questi hook).
+for svc in avahi-daemon.service bluetooth.service; do
+  systemctl enable "${svc}" 2>/dev/null || true
+done
+
+# CRITICO: cups.service NON basta abilitarlo con "systemctl enable" (bug
+# gia' visto e corretto: era mascherato, vedi hooks/0160 - ma anche
+# rimosso il mask, restava comunque "connection refused" su :631). Il
+# motivo reale: l'unit di Debian ha "WantedBy=printer.target" (non
+# multi-user.target!) e printer.target non viene mai raggiunto al boot
+# se nessuno lo richiede esplicitamente (nessun job di stampa in coda).
+# La webUI (menu "Stampanti", localhost:631) si raggiunge via TCP, che
+# cups.socket NON copre: il socket unit di Debian ha solo
+# "ListenStream=/run/cups/cups.sock" (socket Unix locale), nessun
+# listener TCP. Risultato: cupsd non parte mai da solo. Fix standard e
+# documentato per questo esatto problema (stesso schema systemd anche su
+# altre distro): link manuale diretto in multi-user.target.wants, che
+# forza cupsd sempre attivo dal boot, bypassando l'attivazione "a
+# richiesta" di printer.target/cups.socket.
+# CRITICO (aggiornamento): anche dopo tutto quanto sopra, "systemctl
+# status cups" in un'ISO buildata mostrava ANCORA "Loaded: masked"!
+# Non veniva da un nostro hook (verificato: nessun "systemctl mask
+# cups.service" resta nel codice). La causa e' l'installazione stessa
+# del pacchetto Debian: dh_installsystemd applica alle unit ad
+# attivazione socket il pattern "prerm marchera', postinst rimuove il
+# mask e riavvia" - ma durante la build in chroot live-build blocca
+# apposta ogni azione reale sui servizi con policy-rc.d, e questo
+# a quanto pare impedisce anche il passo di "unmask" del postinst,
+# lasciando la unit mascherata nell'immagine finale. L'unico modo per
+# essere certi al 100%, qualunque sia la causa esatta, e' rimuovere
+# esplicitamente il mask a mano.
+systemctl unmask cups.service 2>/dev/null || true
+
+CUPS_UNIT=""
+for candidate in /usr/lib/systemd/system/cups.service /lib/systemd/system/cups.service; do
+  if [[ -f "${candidate}" ]]; then
+    CUPS_UNIT="${candidate}"
+    break
+  fi
+done
+if [[ -n "${CUPS_UNIT}" ]]; then
+  mkdir -p /etc/systemd/system/multi-user.target.wants
+  ln -sf "${CUPS_UNIT}" /etc/systemd/system/multi-user.target.wants/cups.service
+else
+  echo "ATTENZIONE: unit cups.service non trovato, impossibile abilitarlo su multi-user.target" >&2
+fi

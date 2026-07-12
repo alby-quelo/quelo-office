@@ -1,0 +1,5 @@
+#!/bin/bash
+# Avvia firefox-esr.
+set -euo pipefail
+
+exec firefox-esr "$@"

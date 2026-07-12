@@ -1,0 +1,114 @@
+#!/bin/bash
+set -e
+
+OB_SRC="/etc/xdg/openbox/rc.xml"
+MENU_SRC="/usr/share/quelo-office/openbox-menu.xml"
+
+install -d /root/.config/openbox
+cp "${OB_SRC}" /root/.config/openbox/rc.xml
+install -m 644 "${MENU_SRC}" /root/.config/openbox/menu.xml
+
+# CRITICO (1): margine STATICO in rc.xml, identico alle altezze dei
+# pannelli (panelSize=28 top / 32 bottom in panel.conf). reserve-space
+# (strut EWMH dinamico) si e' rivelato poco affidabile con Openbox+LXQt
+# (bug diffuso e noto, vedi lxqt/lxqt#1511: "it's up to the WM"), quindi
+# va lasciato "false" nel panel.conf: la riserva altrimenti si somma al
+# margine e sposta il pannello stesso (bug gia' visto: "pannello abbassato
+# di 20px").
+#
+# CRITICO (2): le finestre restano ridimensionabili/spostabili normalmente
+# (barra del titolo, bordo per il resize, maximize/restore, tutto presente:
+# NON bisogna togliere queste funzioni, servono e vanno usate). Nessuna
+# massimizzazione forzata all'apertura: le finestre si aprono alla loro
+# dimensione naturale (Openbox le piazza comunque dentro l'area utile,
+# rispettando i margini, quindi non finiscono sotto i pannelli nemmeno
+# appena apparse). L'utente puo' sempre massimizzarle/ridimensionarle a
+# piacere in un secondo momento.
+#
+# Quello che serve e' impedire che, DOPO che l'utente ridimensiona/sposta a
+# mano una finestra non massimizzata, questa possa comunque finire sotto o
+# sopra i pannelli. Openbox (come qualsiasi altra WM: stesso limite esiste
+# in Windows/macOS/GNOME/KDE) non ha un vincolo "muro invalicabile" per il
+# drag interattivo del mouse: il meccanismo nativo piu' vicino e' la
+# "resistance" contro i bordi dei dock/pannelli durante move/resize (vedi
+# changelog Openbox "make move and resize take the dock into account for
+# resistance"). Aumentiamo la resistenza (screen_edge_strength/strength) a
+# un valore molto piu' alto del default (10/20) per rendere la zona dei
+# pannelli fortemente "calamitata": la finestra si blocca al bordo margine
+# e serve un movimento del mouse deciso e ampio in un solo scatto per
+# forzarla oltre, cosa che non capita muovendo/ridimensionando normalmente.
+# Per il pannello superiore c'e' in aggiunta il muro invalicabile per il
+# cursore (vedi hooks/0410-quelo-pointer-barrier.chroot).
+#
+# CRITICO (4): tasto "Menu" del pannello (quelo-menu, click su customcommand
+# in panel.conf) simula Super+Spazio per aprire lo stesso menu nativo di
+# Openbox (root-menu, openbox-menu.xml) usato dal tasto destro sul desktop:
+# e' un vero menu a tendina (niente finestra di dialogo con OK).
+python3 - "/root/.config/openbox/rc.xml" <<'PYEOF'
+import re
+import sys
+
+path = sys.argv[1]
+with open(path, "r", encoding="utf-8") as f:
+    xml = f.read()
+
+margins_block = (
+    "<margins>\n"
+    "    <top>28</top>\n"
+    "    <bottom>32</bottom>\n"
+    "    <left>0</left>\n"
+    "    <right>0</right>\n"
+    "  </margins>"
+)
+if re.search(r"<margins>.*?</margins>", xml, flags=re.S):
+    xml = re.sub(r"<margins>.*?</margins>", margins_block, xml, count=1, flags=re.S)
+else:
+    xml = re.sub(r"(</desktops>)", r"\1\n  " + margins_block, xml, count=1)
+
+resistance_block = (
+    "<resistance>\n"
+    "  <strength>50</strength>\n"
+    "  <screen_edge_strength>50</screen_edge_strength>\n"
+    "</resistance>"
+)
+xml = re.sub(r"<resistance>.*?</resistance>", resistance_block, xml, count=1, flags=re.S)
+
+keybind_block = (
+    "<keybind key=\"W-space\">\n"
+    "    <action name=\"ShowMenu\"><menu>root-menu</menu></action>\n"
+    "  </keybind>"
+)
+xml = re.sub(r"(<keyboard>)", r"\1\n  " + keybind_block, xml, count=1)
+
+menu_font_size = "13"
+for place in ("MenuItem", "MenuHeader", "MenuTitle"):
+    font_block = (
+        f'  <font place="{place}">\n'
+        f'    <name>sans</name>\n'
+        f'    <size>{menu_font_size}</size>\n'
+        f'    <weight>normal</weight>\n'
+        f'    <slant>normal</slant>\n'
+        f'  </font>'
+    )
+    pat = rf'<font place="{place}">.*?</font>'
+    if re.search(pat, xml, flags=re.S):
+        xml = re.sub(pat, font_block, xml, count=1, flags=re.S)
+    else:
+        xml = re.sub(r"(</theme>)", font_block + r"\n\1", xml, count=1)
+
+with open(path, "w", encoding="utf-8") as f:
+    f.write(xml)
+PYEOF
+
+install -d /etc/xdg/openbox
+install -m 644 /root/.config/openbox/rc.xml /etc/xdg/openbox/rc.xml
+install -m 644 /root/.config/openbox/menu.xml /etc/xdg/openbox/menu.xml
+
+rm -rf /root/.config/tint2
+
+# Icona "Home" sul Desktop: NESSUN file scritto qui a build-time. E'
+# pcmanfm-qt stesso a creare ~/Desktop/user-home.desktop ad ogni avvio
+# (DesktopShortcuts=Home in settings.conf) restando automaticamente
+# "fidato" - vedi quelo-home-label-fix.sh (richiamato da
+# root/.config/openbox/autostart) per il dettaglio e per come viene poi
+# corretta solo l'etichetta "Home" al posto del nome utente "root".

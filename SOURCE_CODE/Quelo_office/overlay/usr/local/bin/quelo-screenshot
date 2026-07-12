@@ -1,0 +1,35 @@
+#!/bin/bash
+# Cattura screenshot e salva in ~/Immagini (persistente su QUELO-HOME).
+
+set -euo pipefail
+
+SAVE_DIR="/root/Immagini"
+mkdir -p "${SAVE_DIR}"
+
+choice=$(zenity --list \
+  --title="Screenshot" \
+  --text="Scegli tipo di cattura:" \
+  --column="Modalita" \
+  --hide-header \
+  --width=300 --height=200 \
+  "Schermo intero" "Seleziona area" 2>/dev/null) || exit 0
+
+stamp="$(date +%Y%m%d-%H%M%S)"
+out="${SAVE_DIR}/screenshot-${stamp}.png"
+
+case "${choice}" in
+  "Schermo intero")
+    scrot "${out}"
+    ;;
+  "Seleziona area")
+    scrot -s "${out}"
+    ;;
+  *)
+    exit 0
+    ;;
+esac
+
+zenity --info \
+  --title="Screenshot" \
+  --text="Salvato in:\n${out}" \
+  --width=420 2>/dev/null || true

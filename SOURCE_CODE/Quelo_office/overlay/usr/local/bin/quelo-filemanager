@@ -1,0 +1,25 @@
+#!/bin/bash
+# Wrapper "Gestione file": apre sempre pcmanfm-qt (l'unico file manager
+# installato, coerente con sfondo/desktop/cestino gia' configurati - vedi
+# root/.config/pcmanfm-qt), MAI il vecchio "pcmanfm" GTK (rimosso dai
+# pacchetti: era un refuso, scollegato da qualunque nostra configurazione).
+#
+# Apre di default dentro QUELO-HOME/home (dove ci sono Desktop/Documenti/
+# Immagini/ecc, tutte mostrano sempre lo spazio libero reale della
+# chiavetta) quando montata, invece che sulla radice della home (/root):
+# quella resta sulla parte live del sistema e mostrerebbe lo spazio
+# dell'overlay, non quello della USB (fonte di confusione, vedi
+# quelo-usb-mount-home per i bind-mount delle singole sottocartelle).
+#
+# CRITICO: "/media/quelo-home/home", NON la radice "/media/quelo-home":
+# quest'ultima conterrebbe anche "quelo-export" (cartella tecnica per il
+# tool di export dei sorgenti, vedi quelo-export - non riguarda l'utente
+# finale), inutile e confusionaria da vedere sempre in mezzo ai documenti.
+set -euo pipefail
+
+TARGET="/root"
+if mountpoint -q /media/quelo-home 2>/dev/null; then
+  TARGET="/media/quelo-home/home"
+fi
+
+exec pcmanfm-qt "${TARGET}"

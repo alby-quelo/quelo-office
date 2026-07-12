@@ -1,0 +1,21 @@
+# Esclude "QUELO-HOME" da qualunque probe/automount/monitoraggio di
+# udisks2 (e quindi di gvfs, che ci si appoggia sopra per il
+# volume-monitor usato da pcmanfm-qt "computer:///" e dal cestino per
+# volume): questa partizione la montiamo e la gestiamo SOLO noi, a mano,
+# con "mount -L" in quelo-usb-mount-home/quelo-usb-lib.sh.
+#
+# CRITICO: da quando udisks2.service e' stato smascherato (vedi
+# 0160-quelo-trim.chroot, serviva per vedere i dischi interni in
+# "Dispositivi") senza pensare a escludere anche QUELO-HOME, udisks2/gvfs
+# la vedeva comunque e la montava/monitorava per conto proprio in
+# parallelo al nostro mount esplicito - due sistemi diversi che toccano
+# lo stesso dispositivo per tutta la sessione, indipendenti tra loro.
+# UDISKS_IGNORE="1" la rende invisibile SOLO a udisks2: il comando
+# "mount -L" (usato da noi) legge da blkid direttamente e non ne e'
+# minimamente influenzato, continua a funzionare come sempre.
+SUBSYSTEM=="block", ENV{ID_FS_LABEL}=="QUELO-HOME", ENV{UDISKS_IGNORE}="1"
+# Stessa logica per la partizione ext4 "persistence": la montiamo noi su
+# /media/quelo-persist (quelo-usb-mount-persist.service), non udisks2 in
+# /run/media/root/persistence dove salva_sessione/load_sessione non la
+# trovano.
+SUBSYSTEM=="block", ENV{ID_FS_LABEL}=="persistence", ENV{UDISKS_IGNORE}="1"

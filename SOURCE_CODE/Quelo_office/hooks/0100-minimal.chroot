@@ -1,0 +1,60 @@
+#!/bin/bash
+set -e
+
+chsh -s /bin/bash root || true
+
+# CRITICO: live-config (usr/lib/live/config/0030-user-setup e
+# 0030-live-debconfig_passwd, entrambi eseguiti al boot) impostano la
+# password SOLO se l'utente configurato (LIVE_USERNAME=root) NON esiste
+# ancora in /etc/passwd. Siccome root esiste sempre di default, quello
+# script salta a vuoto e la password di root resta quella (bloccata, "*")
+# lasciata da debootstrap. Impostiamola qui in modo esplicito: serve sia
+# come fallback di login manuale su un'altra console (es. tty2) se
+# l'autologin su tty1 non dovesse partire, sia perche' un account con
+# password bloccata puo' far fallire il controllo PAM "account" anche per
+# servizi non strettamente legati alla password (es. lo stesso autologin).
+echo "root:quelo" | chpasswd
+
+if id user >/dev/null 2>&1; then
+  userdel -r user || true
+fi
+
+apt-get purge -y live-tools 2>/dev/null || true
+apt-get autoremove -y --purge
+
+find /usr/share/doc -mindepth 1 -delete 2>/dev/null || true
+find /usr/share/man -mindepth 1 -delete 2>/dev/null || true
+
+chmod 755 /root/.config/openbox/autostart 2>/dev/null || true
+chmod 755 /root/.xinitrc 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-menu 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-font-apply-at-start 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-config-font-lib.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-config-font-menu 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-config-font-panel 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-status-version 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-status-ram 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-status-home 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-lxrandr 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-screenshot 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-firefox 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-power 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-usb-lib.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-usb-mount-home 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-usb-mount-persist 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-export 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-filemanager 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-home-label-fix.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-audio-default.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-display-capture.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-session-common.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/salva_sessione.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/load_sessione.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-load-sessione-gui.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-save-sessione-gui.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-session-gui-lib.sh 2>/dev/null || true
+chmod 755 /usr/local/bin/quelo-load-sessione-gui-autostart.sh 2>/dev/null || true
+ln -sf salva_sessione.sh /usr/local/bin/salva_sessione 2>/dev/null || true
+ln -sf load_sessione.sh /usr/local/bin/load_sessione 2>/dev/null || true
+chmod 644 /etc/xdg/autostart/quelo-load-sessione-gui.desktop 2>/dev/null || true
+chmod 644 /root/.bashrc 2>/dev/null || true

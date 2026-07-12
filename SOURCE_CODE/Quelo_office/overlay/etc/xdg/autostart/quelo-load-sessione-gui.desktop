@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Quelo Office — ripristino sessione
+Comment=Chiede se ripristinare i settaggi salvati su persistence
+Exec=/usr/local/bin/quelo-load-sessione-gui-autostart.sh
+Terminal=false
+Categories=System;
+NoDisplay=true
+OnlyShowIn=LXQt;
+X-GNOME-Autostart-enabled=true

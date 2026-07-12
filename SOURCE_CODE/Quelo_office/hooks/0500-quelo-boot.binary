@@ -1,0 +1,124 @@
+#!/bin/bash
+set -e
+
+VERSION="$(tr -d '[:space:]' <../config/includes.binary/quelo-version 2>/dev/null || echo "0.01")"
+TITLE="Quelo Office ${VERSION} alpha"
+LOGO="../chroot/usr/share/quelo-office/logo.png"
+SPLASH="boot/grub/splash.png"
+THEME="boot/grub/live-theme/theme.txt"
+GRUB_W=800
+GRUB_H=600
+
+quelo_strip_bootargs() {
+  echo "$1" | sed -e 's/\bquiet\b//g' -e 's/\bsplash\b//g' -e 's/  */ /g' -e 's/^ //' -e 's/ $//'
+}
+
+quelo_make_splash() {
+  [[ -f "${LOGO}" ]] || return 0
+  mkdir -p "$(dirname "${SPLASH}")"
+
+  if [[ -x ../chroot/usr/bin/python3 && -f ../chroot/usr/share/quelo-office/logo.png ]]; then
+    chroot ../chroot python3 <<PY && cp -f ../chroot/tmp/quelo-splash.png "${SPLASH}" && return 0
+from PIL import Image
+
+w, h = ${GRUB_W}, ${GRUB_H}
+bg = Image.new("RGB", (w, h), (46, 52, 54))
+logo = Image.open("/usr/share/quelo-office/logo.png").convert("RGBA")
+logo.thumbnail((200, 200), Image.LANCZOS)
+x = (w - logo.width) // 2
+y = 72
+bg.paste(logo, (x, y), logo)
+bg.save("/tmp/quelo-splash.png", format="PNG")
+PY
+  fi
+
+  if command -v convert >/dev/null 2>&1; then
+    convert -size "${GRUB_W}x${GRUB_H}" xc:'#2e3436' \
+      \( "${LOGO}" -resize 200x200 -background none \) \
+      -gravity north -geometry +0+72 -compose Over -composite \
+      -type TrueColor -depth 8 PNG24:"${SPLASH}"
+    return 0
+  fi
+
+  python3 - "${LOGO}" "${SPLASH}" <<PY || return 0
+import sys
+from PIL import Image
+
+logo_path, splash_path = sys.argv[1:3]
+w, h = ${GRUB_W}, ${GRUB_H}
+bg = Image.new("RGB", (w, h), (46, 52, 54))
+logo = Image.open(logo_path).convert("RGBA")
+logo.thumbnail((200, 200), Image.LANCZOS)
+x = (w - logo.width) // 2
+y = 72
+bg.paste(logo, (x, y), logo)
+bg.save(splash_path, format="PNG")
+PY
+}
+
+quelo_patch_grub_config() {
+  local cfg="boot/grub/config.cfg"
+  [[ -f "${cfg}" ]] || return 0
+
+  sed -i '/^set timeout=/d;/^set timeout_style=/d;/^set gfxmode=/d' "${cfg}"
+  sed -i "1iset timeout=2\nset timeout_style=menu\nset gfxmode=${GRUB_W}x${GRUB_H},auto" "${cfg}"
+}
+
+quelo_patch_grub_theme() {
+  [[ -f "${THEME}" ]] || return 0
+
+  sed -i \
+    -e 's/Unifont Regular 16/Unifont Regular 28/g' \
+    -e 's/item_height = 16/item_height = 28/g' \
+    -e 's/height = 20/height = 28/g' \
+    "${THEME}"
+}
+
+quelo_patch_grub_menu() {
+  local cfg="boot/grub/grub.cfg"
+  [[ -f "${cfg}" ]] || return 0
+
+  sed -i "0,/menuentry \"Live system (amd64)\"/s//menuentry \"${TITLE}\"/" "${cfg}" 2>/dev/null || true
+  sed -i 's/Live system (amd64 fail-safe mode)/Quelo Office fail-safe/' "${cfg}" 2>/dev/null || true
+}
+
+quelo_failsafe_append() {
+  echo "boot=live components username=root locales=it_IT.UTF-8 console=tty1 nomodeset"
+}
+
+quelo_direct_isolinux() {
+  local cfg="isolinux/live.cfg"
+  [[ -f "${cfg}" ]] || return 0
+
+  local kernel initrd append failsafe
+  kernel="$(awk '/^[[:space:]]*linux[[:space:]]/{print $2; exit}' "${cfg}")"
+  initrd="$(awk '/^[[:space:]]*initrd[[:space:]]/{print $2; exit}' "${cfg}")"
+  append="$(sed -n '/^[[:space:]]*append[[:space:]]/{s/^[[:space:]]*append[[:space:]]*//p;q}' "${cfg}")"
+  append="$(quelo_strip_bootargs "${append}")"
+  failsafe="$(quelo_failsafe_append)"
+
+  cat >isolinux/isolinux.cfg <<EOF
+SERIAL 0
+DEFAULT live-amd64
+PROMPT 1
+TIMEOUT 20
+
+LABEL live-amd64
+	MENU LABEL ${TITLE}
+	KERNEL ${kernel}
+	APPEND ${append}
+	INITRD ${initrd}
+
+LABEL fail-safe
+	MENU LABEL Quelo Office fail-safe
+	KERNEL ${kernel}
+	APPEND ${failsafe}
+	INITRD ${initrd}
+EOF
+}
+
+quelo_make_splash
+quelo_patch_grub_config
+quelo_patch_grub_theme
+quelo_patch_grub_menu
+quelo_direct_isolinux

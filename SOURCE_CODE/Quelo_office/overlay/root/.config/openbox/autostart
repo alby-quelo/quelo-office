@@ -1,0 +1,24 @@
+xsetroot -solid '#111111'
+
+# Corregge l'etichetta ("Name=") della scorciatoia nativa Home creata da
+# pcmanfm-qt (che scrive sempre il nome utente unix, "root") lasciandone
+# intatti Exec/URL/Icon - vedi quelo-home-label-fix.sh per il perche' NON
+# si usa (e non ha mai funzionato) "gio set metadata::trust" per questo
+# file specifico.
+/usr/local/bin/quelo-home-label-fix.sh &
+
+# Muro invisibile per il cursore del mouse al confine del pannello
+# superiore (vedi hooks/0410-quelo-pointer-barrier.chroot): impedisce
+# alle finestre di finire sotto la barra superiore quando vengono
+# ridimensionate/spostate a mano.
+/usr/local/bin/quelo-pointer-barrier &
+
+# Icona nel tray per gestione Bluetooth (pairing/condivisione): compare
+# nel plugin [tray]/[statusnotifier] del pannello inferiore.
+blueman-applet &
+
+# Caratteri pannello salvati (~/.config/quelo/) → tema utente lxqt.
+/usr/local/bin/quelo-font-apply-at-start &
+
+# Ripristino sessione al boot: attende pannello LXQt + 2 s (vedi autostart script).
+/usr/local/bin/quelo-load-sessione-gui-autostart.sh &

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Spegni
+Comment=Alimentazione
+Exec=/usr/local/bin/quelo-power
+Icon=/usr/share/quelo-office/icons/shutdown.svg
+Terminal=false

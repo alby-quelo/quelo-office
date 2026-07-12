@@ -1,0 +1,28 @@
+#!/bin/bash
+# Menu Openbox: dimensione caratteri (salvata in ~/.config/openbox/rc.xml).
+set -euo pipefail
+
+_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
+. "${_SCRIPT_DIR}/quelo-config-font-lib.sh"
+
+if ! command -v zenity >/dev/null 2>&1; then
+  exit 1
+fi
+
+if [[ ! -f "${QUELO_OPENBOX_RC}" ]]; then
+  zenity --error --text="File non trovato:\n${QUELO_OPENBOX_RC}" --width=360 2>/dev/null || true
+  exit 1
+fi
+
+current="$(quelo_font_read_menu_size)"
+new_size="$(quelo_font_ask_size "Caratteri menu" "${current}")" || exit 0
+new_size="${new_size%.*}"
+
+quelo_font_write_menu_size "${new_size}"
+quelo_font_reconfigure_openbox
+
+zenity --info \
+  --title="Caratteri menu" \
+  --text="Dimensione impostata a ${new_size} pt.\n\nViene salvata con «Desktop» nel salva sessione." \
+  --width=360 2>/dev/null || true

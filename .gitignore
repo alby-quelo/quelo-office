@@ -1,0 +1,8 @@
+# Build locale
+.build/
+
+# Changelog solo interno
+INTERNAL_CHANGELOG.TXT
+
+# ISO: distribuita via GitHub Releases, non nel git
+ISO/*.iso

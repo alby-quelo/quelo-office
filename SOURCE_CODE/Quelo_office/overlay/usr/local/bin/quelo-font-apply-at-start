@@ -1,0 +1,9 @@
+#!/bin/bash
+# Applica caratteri pannello salvati (dopo boot o ripristino config).
+set -euo pipefail
+
+_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
+. "${_SCRIPT_DIR}/quelo-config-font-lib.sh"
+
+quelo_font_apply_at_session_start
