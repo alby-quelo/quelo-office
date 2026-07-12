@@ -17,7 +17,7 @@
   <meta name="twitter:title" content="Quelo Office — live USB office in italiano">
   <meta name="twitter:description" content="Ufficio portatile su chiavetta USB: veloce, semplice, personalizzazioni e file sempre con te.">
   <meta name="twitter:image" content="https://alby-quelo.github.io/quelo-office/screenshots/01-desktop.png">
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
   <link rel="icon" href="logo.png" type="image/png">
 </head>
 <body>
@@ -183,6 +183,7 @@
 cd quelo-office
 sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh</code></pre>
       <p>Prerequisiti sul PC host: <code>e2fsprogs</code>, <code>exfatprogs</code>, <code>util-linux</code>.</p>
+      <p><em>Versione per Windows e GUI Linux in fase di preparazione.</em></p>
       <ol start="3">
         <li><strong>Avvia da USB</strong> (BIOS/UEFI).</li>
         <li>Allo <strong>spegnimento</strong>, usa il pulsante «Spegni» per salvare le configurazioni che vuoi conservare.</li>
@@ -198,6 +199,14 @@ sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh</code></pre>
         <li><strong>Un’ISO per tutti</strong> — stessa immagine per tutti; ognuno personalizza la propria chiavetta dopo.</li>
         <li><strong>Libertà di strumenti</strong> — puoi scrivere l’ISO con Etcher e usare lo script solo per persistenza e QUELO-HOME.</li>
       </ul>
+    </section>
+
+    <section id="avvertenza">
+      <h2>Avvertenza</h2>
+      <blockquote class="disclaimer">
+        <p><strong>Avvertenza.</strong> Quelo Office è distribuito «così com'è», senza garanzie di alcun tipo, espresse o implicite. È realizzato a <strong>scopo didattico e sperimentale</strong>: non sostituisce l'assistenza professionale né garantisce il corretto funzionamento su ogni hardware o l'esito delle operazioni su dischi, sistemi o reti. L'uso è a proprio rischio; l'autore non risponde di danni diretti o indiretti derivanti dall'uso dell'ISO, degli script o delle istruzioni pubblicate.</p>
+        <p><strong>Disclaimer.</strong> Quelo Office is provided «as is», without warranty of any kind, express or implied. It is intended for <strong>educational and experimental purposes</strong> only: it does not replace professional support and does not guarantee correct operation on every hardware configuration or the outcome of any disk, system, or network operation. Use at your own risk; the author is not liable for any direct or indirect damage arising from the use of the ISO, scripts, or published instructions.</p>
+      </blockquote>
     </section>
 
     <section id="licenza">
@@ -216,6 +225,10 @@ sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh</code></pre>
   </main>
 
   <footer>
+    <blockquote class="disclaimer compact">
+      <p><strong>Avvertenza.</strong> Quelo Office è distribuito «così com'è», senza garanzie. Scopo didattico e sperimentale; uso a proprio rischio.</p>
+      <p><strong>Disclaimer.</strong> Provided «as is», without warranty. Educational and experimental use only; at your own risk.</p>
+    </blockquote>
     <p>Quelo Office · Alberto Frosio · Ispirazione: Corrado Guzzanti («Quelo»)</p>
     <p>
       <a href="https://github.com/alby-quelo/quelo-office">Repository</a>

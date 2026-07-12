@@ -136,6 +136,8 @@ Prerequisiti sul PC host: `e2fsprogs`, `exfatprogs`, `util-linux` (fdisk, dd, wi
 
 Lo script guida nove passi con pause e doppia conferma di sicurezza (`SI SCRIVI`).
 
+Versione per Windows e GUI Linux in fase di preparazione.
+
 ### 3. Avvia dal BIOS/UEFI
 
 Seleziona l’avvio da USB. Al primo login trovi il desktop pronto; se hai creato QUELO-HOME, le tue cartelle personali sono già collegate.
@@ -174,6 +176,11 @@ Il codice di build e gli script USB sono in **`SOURCE_CODE/`**:
 Dalla live, `quelo-export` (in `QUELO-HOME/quelo-export/`) raccoglie pacchetti e configurazioni aggiunte durante i test, per integrarle nei sorgenti e rigenerare l’ISO.
 
 Documenti legali: **`LICENSE.TXT`**, **`CREDITS.TXT`** (root del repository).
+
+
+## Avvertenza
+
+> **Avvertenza.** Quelo Office è distribuito «così com'è», senza garanzie di alcun tipo, espresse o implicite. È realizzato a **scopo didattico e sperimentale**: non sostituisce l'assistenza professionale né garantisce il corretto funzionamento su ogni hardware o l'esito delle operazioni su dischi, sistemi o reti. L'uso è a proprio rischio; l'autore non risponde di danni diretti o indiretti derivanti dall'uso dell'ISO, degli script o delle istruzioni pubblicate.
 
 
 ## Licenza

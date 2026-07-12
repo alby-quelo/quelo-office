@@ -296,6 +296,29 @@ th {
   gap: 1rem;
 }
 
+.disclaimer {
+  margin: 1rem 0 1.5rem;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--accent);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  text-align: left;
+}
+
+.disclaimer p {
+  margin: 0 0 0.75rem;
+}
+
+.disclaimer p:last-child {
+  margin-bottom: 0;
+}
+
+.disclaimer.compact {
+  font-size: 0.85rem;
+  max-width: 42rem;
+  margin: 0 auto 1rem;
+}
+
 footer {
   border-top: 1px solid var(--border);
   margin-top: 3rem;
