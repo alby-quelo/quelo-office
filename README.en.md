@@ -191,7 +191,7 @@ The script walks through nine steps with pauses and a safety double confirmation
 #### Option C — Graphical interface (Windows 7+)
 
 ```bat
-windows\setup-tools.bat
+windows\install-dependencies.bat
 windows\prepare-usb-gui.bat
 ```
 

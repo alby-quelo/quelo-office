@@ -19,9 +19,11 @@ Requisiti
 Avvio
 -----
   1. Estrai l'archivio Quelo_prepare_usb_gui_win-0.71-alpha.zip
-  2. Esegui windows\setup-tools.bat (prima volta, se serve mke2fs)
+  2. Esegui windows\install-dependencies.bat (prima volta)
   3. Doppio clic su windows\prepare-usb-gui.bat
   4. Conferma UAC (amministratore)
+
+  (In alternativa: windows\setup-tools.bat solo per mke2fs, se Python è già installato.)
 
 Conferma sicurezza
 ------------------
@@ -33,7 +35,11 @@ Strumenti e2fsprogs (mke2fs)
 ----------------------------
   Windows non formatta ext4 nativamente. Il pacchetto usa mke2fs.exe:
 
-  Metodo A — Cygwin (consigliato per sviluppatori):
+  Metodo A — automatico (consigliato):
+    Esegui windows\install-dependencies.bat
+    Scarica mke2fs da mirror Cygwin (Windows 10+ con tar e Internet)
+
+  Metodo B — Cygwin installato:
     1. Installa Cygwin64 con il pacchetto e2fsprogs
     2. Esegui windows\setup-tools.bat
 
@@ -74,9 +80,11 @@ Requirements
 Start
 -----
   1. Extract Quelo_prepare_usb_gui_win-0.71-alpha.zip
-  2. Run windows\setup-tools.bat (first time, if mke2fs is needed)
+  2. Run windows\install-dependencies.bat (first time)
   3. Double-click windows\prepare-usb-gui.bat
   4. Approve UAC (administrator)
+
+  (Alternatively: windows\setup-tools.bat for mke2fs only, if Python is already installed.)
 
 Safety confirmation
 -------------------
@@ -87,7 +95,11 @@ e2fsprogs tools (mke2fs)
 ------------------------
   Windows cannot format ext4 natively. This package uses mke2fs.exe:
 
-  Method A — Cygwin (recommended for developers):
+  Method A — automatic (recommended):
+    Run windows\install-dependencies.bat
+    Downloads mke2fs from Cygwin mirror (Windows 10+ with tar and Internet)
+
+  Method B — Cygwin installed:
     1. Install Cygwin64 with the e2fsprogs package
     2. Run windows\setup-tools.bat
 

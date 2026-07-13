@@ -191,7 +191,7 @@ Lo script guida nove passi con pause e doppia conferma di sicurezza (`SI SCRIVI`
 #### Opzione C — GUI grafica (Windows 7+)
 
 ```bat
-windows\setup-tools.bat
+windows\install-dependencies.bat
 windows\prepare-usb-gui.bat
 ```
 

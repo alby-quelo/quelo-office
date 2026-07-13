@@ -16,6 +16,18 @@ if exist "%CYG%\mke2fs.exe" (
   exit /b 0
 )
 
+if exist "%DEST%\mke2fs.exe" (
+  echo mke2fs gia presente in %DEST%
+  exit /b 0
+)
+
+where powershell >nul 2>&1
+if not errorlevel 1 (
+  echo Tentativo download automatico mke2fs...
+  powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0fetch-e2fsprogs.ps1"
+  if exist "%DEST%\mke2fs.exe" exit /b 0
+)
+
 echo.
 echo mke2fs non trovato in Cygwin64.
 echo.

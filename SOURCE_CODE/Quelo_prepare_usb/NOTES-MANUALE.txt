@@ -83,7 +83,7 @@ Vedi windows\README-WINDOWS.txt nel pacchetto Quelo_prepare_usb_gui_win.
 
 Avvio
 -----
-  1. windows\setup-tools.bat   (mke2fs da Cygwin, prima volta)
+  1. windows\install-dependencies.bat   (Python, tkinter, mke2fs — prima volta)
   2. windows\prepare-usb-gui.bat   (richiede UAC amministratore)
 
 Prerequisiti
