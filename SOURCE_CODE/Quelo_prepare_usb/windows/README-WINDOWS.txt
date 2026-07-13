@@ -43,7 +43,7 @@ Strumenti e2fsprogs (mke2fs)
     1. Installa Cygwin64 con il pacchetto e2fsprogs
     2. Esegui windows\setup-tools.bat
 
-  Metodo B — manuale:
+  Metodo C — manuale:
     Copia mke2fs.exe e le DLL Cygwin necessarie in:
       windows\tools\e2fsprogs\
 
@@ -103,7 +103,7 @@ e2fsprogs tools (mke2fs)
     1. Install Cygwin64 with the e2fsprogs package
     2. Run windows\setup-tools.bat
 
-  Method B — manual:
+  Method C — manual:
     Copy mke2fs.exe and required Cygwin DLLs to:
       windows\tools\e2fsprogs\
 
