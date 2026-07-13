@@ -43,6 +43,24 @@ USB dal PC host (non dalla live Quelo Office bootata sulla stessa USB).
   - Script CLI `prepare-usb.sh` (terminal)
   - Versione Windows prepare-usb: ancora in preparazione
 
+### Correzione: partizione QUELO-HOME (exFAT) su Windows (2026-07-13)
+
+**Problema:** su Windows 11 la partizione dati **QUELO-HOME** (exFAT, partizione 4)
+poteva comparire in Gestione disco ma **non montarsi** in Esplora file.
+
+**Causa:** la partizione home veniva creata con tipo MBR **Linux (0x83)** invece di
+**exFAT/NTFS (0x07)**. Windows riconosce il filesystem ma spesso rifiuta il mount
+se il tipo partizione non è corretto.
+
+**Correzione (prepare-usb Linux / GUI):**
+  - partizione 4 creata con tipo **0x07** (HPFS/NTFS/exFAT)
+  - su QUELO-HOME: `NASCONDI-BOOT-WINDOWS.bat` (opzionale) per nascondere ISO/EFI
+    in Esplora file **senza** modificare il boot
+  - fix GUI: messaggio d'errore corretto con Python 3.13 (popup «Errore»)
+
+**Nota:** le partizioni ISO (1) e EFI boot (2) **non** vanno alterate: servono
+all'avvio da USB. La persistenza ext4 (3) resta invisibile a Windows (normale).
+
 
 ENGLISH
 -------
@@ -82,3 +100,21 @@ host PC (not from a Quelo Office live session booted on the same stick).
   - Live ISO `Quelo_Office-0.71-alpha.iso`
   - CLI script `prepare-usb.sh` (terminal)
   - Windows prepare-usb version: still in preparation
+
+### Fix: QUELO-HOME (exFAT) partition on Windows (2026-07-13)
+
+**Issue:** on Windows 11 the **QUELO-HOME** data partition (exFAT, partition 4)
+could appear in Disk Management but **not mount** in File Explorer.
+
+**Cause:** the home partition was created with MBR type **Linux (0x83)** instead of
+**exFAT/NTFS (0x07)**. Windows may refuse to assign a drive letter even when the
+filesystem is exFAT.
+
+**Fix (Linux prepare-usb / GUI):**
+  - partition 4 is created with type **0x07** (HPFS/NTFS/exFAT)
+  - on QUELO-HOME: optional `NASCONDI-BOOT-WINDOWS.bat` to hide ISO/EFI volumes
+    in File Explorer **without** changing boot partitions
+  - GUI fix: proper error dialog with Python 3.13
+
+**Note:** ISO (1) and EFI boot (2) partitions must stay unchanged for USB boot.
+ext4 persistence (3) remains invisible to Windows (expected).

@@ -426,7 +426,7 @@ def create_partitions_auto(
     if not shutil.which("sfdisk"):
         raise PrepareError("sfdisk non trovato (util-linux).")
 
-    script = f",{persist_mb}M,L\n,,L\n"
+    script = f",{persist_mb}M,L\n,,7\n"
     for attempt in range(1, 4):
         if step:
             step(
@@ -514,11 +514,14 @@ def setup_home_folders(home_part: str, log: Callable[[str], None] | None = None)
         ):
             os.makedirs(os.path.join(home_dir, name), exist_ok=True)
         os.makedirs(os.path.join(home_mnt, "quelo-export"), exist_ok=True)
+        import quelo_prepare_common as common
+
+        common.write_windows_boot_protect_files(home_mnt)
         with open(os.path.join(home_dir, ".quelo-prepared"), "w", encoding="utf-8") as fh:
             fh.write(time.strftime("%Y-%m-%dT%H:%M:%S%z"))
         subprocess.run(["sync"], check=False)
         if log:
-            log("Cartelle home e quelo-export create.")
+            log("Cartelle home, quelo-export e NASCONDI-BOOT-WINDOWS.bat create.")
     finally:
         subprocess.run(["umount", home_mnt], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         try:

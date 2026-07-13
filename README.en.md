@@ -186,25 +186,14 @@ The script walks through nine steps with pauses and a safety double confirmation
 |---------|---------|
 | Full (CLI + GUI) | `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}` |
 | GUI only (Linux) | `Quelo_prepare_usb_gui-0.71-alpha.{zip,rar,tar}` |
-| GUI Windows 7+ | `Quelo_prepare_usb_gui_win-0.71-alpha.{zip,rar,tar}` |
+
+The Linux GUI (release 0.71-alpha) includes the **QUELO-HOME** exFAT fix for Windows
+(partition type 0x07). See `CHANGELOG.TXT`.
 
 #### Option C — Graphical interface (Windows 7+)
 
-```bat
-windows\install-dependencies.bat
-windows\prepare-usb-gui.bat
-```
-
-**Windows prerequisites:**
-
-| Component | Purpose |
-|-----------|---------|
-| Python 3.8+ with tkinter | Graphical interface |
-| Administrator privileges (UAC) | USB disk write access |
-| `mke2fs.exe` (e2fsprogs) | ext4 persistence formatting |
-| diskpart, format | Partitions and exFAT (built into Windows) |
-
-Details: `windows\README-WINDOWS.txt` in the package. Disk confirmation: **number** (e.g. `2`).
+**Still in preparation** — not available from this release; will be published in a
+later update.
 
 ### 3. Boot from BIOS/UEFI
 

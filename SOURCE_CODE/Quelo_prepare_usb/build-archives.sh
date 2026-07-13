@@ -35,6 +35,8 @@ FULL_FILES=(
   logo.png
   NOTES-MANUALE.txt
   build-archives.sh
+  AVVIA.bat
+  LEGGIMI-WINDOWS.txt
 )
 
 GUI_FILES=(
@@ -54,6 +56,8 @@ WIN_FILES=(
   quelo-write-iso.py
   logo.png
   NOTES-MANUALE.txt
+  AVVIA.bat
+  LEGGIMI-WINDOWS.txt
 )
 
 mkdir -p "${OUT_DIR}"
@@ -65,6 +69,7 @@ for name in "${FULL_FILES[@]}"; do
 done
 cp -a "${SCRIPT_DIR}/windows" "${STAGE}/${PKG}/"
 chmod +x "${STAGE}/${PKG}/prepare-usb.sh" "${STAGE}/${PKG}/prepare-usb-gui.sh" "${STAGE}/${PKG}/build-archives.sh"
+cp "${SCRIPT_DIR}/LEGGIMI-WINDOWS.txt" "${STAGE}/${PKG}/LEGGIMI.txt"
 
 for name in "${GUI_FILES[@]}"; do
   cp "${SCRIPT_DIR}/${name}" "${STAGE}/${PKG_GUI}/"
@@ -74,7 +79,15 @@ chmod +x "${STAGE}/${PKG_GUI}/prepare-usb-gui.sh"
 for name in "${WIN_FILES[@]}"; do
   cp "${SCRIPT_DIR}/${name}" "${STAGE}/${PKG_WIN}/"
 done
+cp "${SCRIPT_DIR}/LEGGIMI-WINDOWS.txt" "${STAGE}/${PKG_WIN}/LEGGIMI.txt"
+
+echo "Preparo asset offline Windows (Python 32 bit + mke2fs)..."
+"${SCRIPT_DIR}/windows/fetch-offline-assets.sh"
+
 cp -a "${SCRIPT_DIR}/windows" "${STAGE}/${PKG_WIN}/"
+rm -f "${STAGE}/${PKG_WIN}/windows/fetch-offline-assets.sh"
+rm -f "${STAGE}/${PKG_WIN}/windows/unpack-python-win32.sh"
+rm -f "${STAGE}/${PKG}/windows/fetch-offline-assets.sh"
 
 rm -f "${BASE}.zip" "${BASE}.rar" "${BASE}.tar"
 rm -f "${BASE_GUI}.zip" "${BASE_GUI}.rar" "${BASE_GUI}.tar"

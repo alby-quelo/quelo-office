@@ -52,9 +52,63 @@ class PrepareUsbGui(tk.Tk):
 
         self._build_ui()
         self._set_window_icon()
+        self.update_idletasks()
         self._startup_checks()
-        self._refresh_disks()
+        self.status_detail_var.set("Caricamento elenco dischi USB...")
+        self.after(50, self._deferred_disk_scan)
         self._autofill_iso()
+
+    def _deferred_disk_scan(self) -> None:
+        def worker() -> None:
+            _win_log("[GUI] scansione dischi (diskpart)...")
+            try:
+                root = lib.root_disk()
+            except lib.PrepareError as exc:
+                _win_log(f"[GUI] root_disk errore: {exc}")
+                root = None
+            try:
+                disks = lib.list_disks()
+            except lib.PrepareError as exc:
+                _win_log(f"[GUI] list_disks errore: {exc}")
+
+                def err() -> None:
+                    messagebox.showerror("Dischi", str(exc))
+                    self.status_detail_var.set("Errore lettura dischi. Premi Aggiorna.")
+
+                self.after(0, err)
+                return
+
+            _win_log(f"[GUI] trovati {len(disks)} dischi")
+
+            def apply() -> None:
+                self._disks = disks
+                labels = []
+                for d in self._disks:
+                    tag = "USB" if d.is_usb else "ATTENZIONE: non USB"
+                    if IS_WINDOWS:
+                        labels.append(f"Disco {d.name}  {d.size}  {d.model}  [{tag}]")
+                    else:
+                        labels.append(f"{d.path}  {d.size}  {d.model}  [{tag}]")
+                self.disk_combo["values"] = labels
+                if labels:
+                    usb_idx = next((i for i, d in enumerate(self._disks) if d.is_usb), 0)
+                    self.disk_combo.current(usb_idx)
+                if root:
+                    label = f"Disco di sistema (NON usare): {root}"
+                    if IS_WINDOWS and hasattr(lib, "_disk_number"):
+                        try:
+                            label = f"Disco di sistema (NON usare): Disco {lib._disk_number(root)}"
+                        except lib.PrepareError:
+                            pass
+                    self.root_disk_label.configure(text=label)
+                self.status_detail_var.set(
+                    "Scegli il file ISO di Quelo Office, seleziona la chiavetta USB "
+                    "e completa le due conferme di sicurezza. Poi premi Esegui."
+                )
+
+            self.after(0, apply)
+
+        threading.Thread(target=worker, daemon=True).start()
 
     def _set_window_icon(self) -> None:
         for path in (
@@ -215,16 +269,6 @@ class PrepareUsbGui(tk.Tk):
             self.after(100, self.destroy)
             return
 
-        root = lib.root_disk()
-        if root:
-            label = f"Disco di sistema (NON usare): {root}"
-            if IS_WINDOWS and hasattr(lib, "_disk_number"):
-                try:
-                    label = f"Disco di sistema (NON usare): Disco {lib._disk_number(root)}"
-                except lib.PrepareError:
-                    pass
-            self.root_disk_label.configure(text=label)
-
     def _autofill_iso(self) -> None:
         found = lib.find_publish_iso()
         if found and not self.iso_var.get():
@@ -239,24 +283,8 @@ class PrepareUsbGui(tk.Tk):
             self.iso_var.set(path)
 
     def _refresh_disks(self) -> None:
-        try:
-            self._disks = lib.list_disks()
-        except lib.PrepareError as exc:
-            messagebox.showerror("Dischi", str(exc))
-            return
-
-        labels = []
-        for d in self._disks:
-            tag = "USB" if d.is_usb else "ATTENZIONE: non USB"
-            if IS_WINDOWS:
-                labels.append(f"Disco {d.name}  {d.size}  {d.model}  [{tag}]")
-            else:
-                labels.append(f"{d.path}  {d.size}  {d.model}  [{tag}]")
-        self.disk_combo["values"] = labels
-        if labels:
-            # prefer first USB disk
-            usb_idx = next((i for i, d in enumerate(self._disks) if d.is_usb), 0)
-            self.disk_combo.current(usb_idx)
+        self.status_detail_var.set("Aggiornamento elenco dischi...")
+        self._deferred_disk_scan()
 
     def _selected_disk(self) -> str | None:
         idx = self.disk_combo.current()
@@ -368,15 +396,16 @@ class PrepareUsbGui(tk.Tk):
                     progress=on_progress,
                 )
             except lib.PrepareError as exc:
-                self._append_log(f"ERRORE: {exc}")
+                err_msg = str(exc)
+                self._append_log(f"ERRORE: {err_msg}")
                 self._set_progress(
                     0,
-                    f"Operazione interrotta\n{exc} "
+                    f"Operazione interrotta\n{err_msg} "
                     "Consulta il registro in basso per i dettagli tecnici.",
                 )
 
-                def _fail() -> None:
-                    messagebox.showerror("Errore", str(exc))
+                def _fail(msg: str = err_msg) -> None:
+                    messagebox.showerror("Errore", msg)
                     self._running = False
                     self.start_btn.configure(state=tk.NORMAL)
                     self.cancel_btn.configure(state=tk.NORMAL)
@@ -408,21 +437,52 @@ class PrepareUsbGui(tk.Tk):
         self._worker.start()
 
 
+def _win_log(msg: str) -> None:
+    if not IS_WINDOWS:
+        return
+    log_path = os.path.join(SCRIPT_DIR, "windows", "LOG-FULL.txt")
+    try:
+        with open(log_path, "a", encoding="utf-8", errors="replace") as fh:
+            fh.write(msg.rstrip() + "\n")
+    except OSError:
+        pass
+
+
 def main() -> int:
+    if IS_WINDOWS:
+        import platform
+        import traceback
+
+        _win_log(f"[prepare-usb-gui.py] === avvio ===")
+        _win_log(f"python={sys.version}")
+        _win_log(f"executable={sys.executable}")
+        _win_log(f"cwd={os.getcwd()}")
+        _win_log(f"platform={platform.platform()}")
+        _win_log(f"arch={platform.architecture()}")
+        _win_log(f"argv={sys.argv}")
     if not IS_WINDOWS and not os.environ.get("DISPLAY"):
         print("ERRORE: DISPLAY non impostato (serve sessione grafica).", file=sys.stderr)
         return 1
     try:
         import tkinter  # noqa: F401
-    except ImportError:
+    except ImportError as exc:
+        _win_log(f"ERRORE tkinter ImportError: {exc}")
         print(
             "ERRORE: tkinter non disponibile (reinstalla Python con Tcl/Tk).",
             file=sys.stderr,
         )
+        if IS_WINDOWS:
+            pass
         return 1
 
-    app = PrepareUsbGui()
-    app.mainloop()
+    try:
+        app = PrepareUsbGui()
+        app.mainloop()
+    except Exception:
+        if IS_WINDOWS:
+            _win_log("ERRORE eccezione GUI:\n" + traceback.format_exc())
+            traceback.print_exc()
+        raise
     return 0
 
 

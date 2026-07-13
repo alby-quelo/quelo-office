@@ -13,6 +13,10 @@ Tre modalità disponibili:
 Entrambe eseguono gli stessi passi: wipe → scrittura+verifica ISO → partizioni
 → formattazione ext4+exFAT → cartelle home.
 
+Correzione 2026-07-13: la partizione QUELO-HOME (exFAT) usa tipo MBR 0x07 così
+Windows può montarla in Esplora file. Su QUELO-HOME viene copiato anche
+NASCONDI-BOOT-WINDOWS.bat (opzionale, solo Windows).
+
 
 ================================================================================
 A) GUI prepare-usb-gui (Linux host)
@@ -79,10 +83,11 @@ Verifica rapida:
 C) GUI prepare-usb-gui (Windows 7+)
 ================================================================================
 
-Vedi windows\README-WINDOWS.txt nel pacchetto Quelo_prepare_usb_gui_win.
+Ancora in preparazione — non distribuita in questa release.
+Vedi windows\README-WINDOWS.txt nel repository (work in progress).
 
-Avvio
------
+Avvio (quando disponibile)
+--------------------------
   1. windows\install-dependencies.bat   (Python, tkinter, mke2fs — prima volta)
   2. windows\prepare-usb-gui.bat   (richiede UAC amministratore)
 

@@ -21,6 +21,8 @@ Pacchetto solo GUI
   Contiene: prepare-usb-gui.sh, prepare-usb-gui.py, quelo_prepare_lib.py,
   quelo-write-iso.py, logo.png, NOTES-MANUALE.txt
 
+Correzione 2026-07-13: QUELO-HOME (exFAT) con tipo partizione 0x07 per Windows.
+
 Distribuiti su GitHub Releases insieme all'ISO:
   https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha
 

@@ -473,7 +473,7 @@ if [[ "${AUTO_PART}" -eq 1 ]]; then
   for attempt in 1 2 3; do
     echo "Creo le partizioni con sfdisk (tentativo ${attempt}/3)..."
     quelo_settle_usb_before_partition "${USB}" || true
-    if printf ',%sM,L\n,,L\n' "${PERSIST_MB}" | sfdisk --append "${USB}"; then
+    if printf ',%sM,L\n,,7\n' "${PERSIST_MB}" | sfdisk --append "${USB}"; then
       sf_ok=1
       break
     fi
@@ -572,6 +572,12 @@ quelo_progress_step "${CONFIG_STEP}" "${CONFIG_TOTAL}" "Crea cartelle home"
 CONFIG_STEP=$(( CONFIG_STEP + 1 ))
 mkdir -p "${HOME_MNT}/quelo-export"
 date -Iseconds >"${HOME_MNT}/home/.quelo-prepared"
+python3 - "${HOME_MNT}" "${SCRIPT_DIR}" <<'PY'
+import sys
+sys.path.insert(0, sys.argv[2])
+import quelo_prepare_common as common
+common.write_windows_boot_protect_files(sys.argv[1])
+PY
 sync
 quelo_progress_step "${CONFIG_STEP}" "${CONFIG_TOTAL}" "Crea quelo-export"
 
