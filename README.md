@@ -118,18 +118,28 @@ La dimensione della partizione di persistenza la scegli tu durante la preparazio
 
 ## Come si usa
 
-### 1. Scarica l’ISO
+### 1. Scarica i file
 
-File ufficiale: **`ISO/Quelo_Office-0.71-alpha.iso`**
+File ufficiale ISO: **`Quelo_Office-0.71-alpha.iso`**
 
-È l’unica immagine destinata alla distribuzione pubblica.
+Pacchetto prepare-usb (script preparazione chiavetta), in tre formati:
+
+| Formato | File |
+|---------|------|
+| ZIP | `Quelo_prepare_usb-0.71-alpha.zip` |
+| RAR | `Quelo_prepare_usb-0.71-alpha.rar` |
+| TAR | `Quelo_prepare_usb-0.71-alpha.tar` |
+
+Tutti i download: **https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha**
 
 ### 2. Prepara la chiavetta USB
 
 **Importante:** la preparazione va fatta **sul PC di casa o dell’ufficio**, **mai** avviando Quelo Office dalla stessa chiavetta che stai scrivendo.
 
 ```bash
-sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh
+# Dopo aver estratto l'archivio prepare-usb, oppure dal repository clonato:
+cd Quelo_prepare_usb
+sudo ./prepare-usb.sh
 ```
 
 Prerequisiti sul PC host: `e2fsprogs`, `exfatprogs`, `util-linux` (fdisk, dd, wipefs…).

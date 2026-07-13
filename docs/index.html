@@ -17,7 +17,7 @@
   <meta name="twitter:title" content="Quelo Office — live USB office in italiano">
   <meta name="twitter:description" content="Ufficio portatile su chiavetta USB: veloce, semplice, personalizzazioni e file sempre con te.">
   <meta name="twitter:image" content="https://alby-quelo.github.io/quelo-office/screenshots/01-desktop.png">
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
   <link rel="icon" href="logo.png" type="image/png">
 </head>
 <body>
@@ -63,8 +63,23 @@
           Scarica ISO 0.71-alpha (~1,4 GB)
         </a>
         <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha">
-          Note di release
+          Tutti i download
         </a>
+      </div>
+      <div class="card" style="margin-top:1rem;text-align:left">
+        <h3 style="margin-top:0">Script prepare-usb (preparazione chiavetta)</h3>
+        <p style="margin:0.5rem 0 0.75rem;color:var(--text-muted)">
+          Pacchetto con <code>prepare-usb.sh</code>, <code>quelo-write-iso.py</code> e note.
+          Scarica anche l’ISO dalla stessa pagina Release.
+        </p>
+        <div class="cta-row" style="justify-content:flex-start;margin-top:0">
+          <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb-0.71-alpha.zip">ZIP</a>
+          <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb-0.71-alpha.rar">RAR</a>
+          <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb-0.71-alpha.tar">TAR</a>
+        </div>
+        <p style="margin:0.75rem 0 0;font-size:0.9rem;color:var(--text-muted)">
+          <em>Versione per Windows e GUI Linux in fase di preparazione.</em>
+        </p>
       </div>
       <div class="hero-frame">
         <img class="hero-shot" src="screenshots/01-desktop.png" alt="Desktop Quelo Office 0.71 alpha" width="1024" height="576">
@@ -176,12 +191,12 @@
     <section id="uso">
       <h2>Come si usa</h2>
       <ol>
-        <li><strong>Scarica l’ISO</strong> dal pulsante in alto (release 0.71-alpha).</li>
-        <li><strong>Prepara la chiavetta</strong> dal PC host — mai dalla live bootata sulla stessa USB:</li>
+        <li><strong>Scarica l’ISO</strong> e il pacchetto <strong>prepare-usb</strong> (ZIP, RAR o TAR) dalla pagina <a href="https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha">Release 0.71-alpha</a>.</li>
+        <li><strong>Prepara la chiavetta</strong> dal PC host — mai dalla live bootata sulla stessa USB. Estrai l’archivio prepare-usb, poi:</li>
       </ol>
-      <pre><code>git clone https://github.com/alby-quelo/quelo-office.git
-cd quelo-office
-sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh</code></pre>
+      <pre><code># oppure: git clone https://github.com/alby-quelo/quelo-office.git
+cd Quelo_prepare_usb
+sudo ./prepare-usb.sh</code></pre>
       <p>Prerequisiti sul PC host: <code>e2fsprogs</code>, <code>exfatprogs</code>, <code>util-linux</code>.</p>
       <p><em>Versione per Windows e GUI Linux in fase di preparazione.</em></p>
       <ol start="3">

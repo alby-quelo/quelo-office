@@ -6,3 +6,8 @@ INTERNAL_CHANGELOG.TXT
 
 # ISO: distribuita via GitHub Releases, non nel git
 ISO/*.iso
+
+# Archivi prepare-usb: su GitHub Releases (rigenerabili con build-archives.sh)
+DOWNLOAD/Quelo_prepare_usb-*.zip
+DOWNLOAD/Quelo_prepare_usb-*.rar
+DOWNLOAD/Quelo_prepare_usb-*.tar

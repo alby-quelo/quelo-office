@@ -118,18 +118,28 @@ You choose the persistence partition size during preparation (e.g. 128 / 256 / 5
 
 ## How to use it
 
-### 1. Download the ISO
+### 1. Download the files
 
-Official file: **`ISO/Quelo_Office-0.71-alpha.iso`**
+Official ISO: **`Quelo_Office-0.71-alpha.iso`**
 
-This is the only image intended for public distribution.
+prepare-usb package (USB preparation scripts), in three formats:
+
+| Format | File |
+|--------|------|
+| ZIP | `Quelo_prepare_usb-0.71-alpha.zip` |
+| RAR | `Quelo_prepare_usb-0.71-alpha.rar` |
+| TAR | `Quelo_prepare_usb-0.71-alpha.tar` |
+
+All downloads: **https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha**
 
 ### 2. Prepare the USB stick
 
 **Important:** preparation must be done on a **host PC**, **never** while booted into Quelo Office from the same stick you are writing to.
 
 ```bash
-sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh
+# After extracting the prepare-usb archive, or from a cloned repository:
+cd Quelo_prepare_usb
+sudo ./prepare-usb.sh
 ```
 
 Host prerequisites: `e2fsprogs`, `exfatprogs`, `util-linux` (fdisk, dd, wipefs…).

@@ -17,7 +17,7 @@
   <meta name="twitter:title" content="Quelo Office — Italian live USB office">
   <meta name="twitter:description" content="Portable office on a USB stick: fast, simple, keep your settings and files with you.">
   <meta name="twitter:image" content="https://alby-quelo.github.io/quelo-office/screenshots/01-desktop.png">
-  <link rel="stylesheet" href="../style.css?v=4">
+  <link rel="stylesheet" href="../style.css?v=5">
   <link rel="icon" href="../logo.png" type="image/png">
 </head>
 <body>
@@ -63,8 +63,23 @@
           Download ISO 0.71-alpha (~1.4 GB)
         </a>
         <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha">
-          Release notes
+          All downloads
         </a>
+      </div>
+      <div class="card" style="margin-top:1rem;text-align:left">
+        <h3 style="margin-top:0">prepare-usb package (USB stick preparation)</h3>
+        <p style="margin:0.5rem 0 0.75rem;color:var(--text-muted)">
+          Includes <code>prepare-usb.sh</code>, <code>quelo-write-iso.py</code>, and notes.
+          Download the ISO from the same Release page.
+        </p>
+        <div class="cta-row" style="justify-content:flex-start;margin-top:0">
+          <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb-0.71-alpha.zip">ZIP</a>
+          <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb-0.71-alpha.rar">RAR</a>
+          <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb-0.71-alpha.tar">TAR</a>
+        </div>
+        <p style="margin:0.75rem 0 0;font-size:0.9rem;color:var(--text-muted)">
+          <em>Windows version and Linux GUI version in preparation.</em>
+        </p>
       </div>
       <div class="hero-frame">
         <img class="hero-shot" src="../screenshots/01-desktop.png" alt="Quelo Office 0.71 alpha desktop" width="1024" height="576">
@@ -176,12 +191,12 @@
     <section id="usage">
       <h2>How to use it</h2>
       <ol>
-        <li><strong>Download the ISO</strong> using the button above (release 0.71-alpha).</li>
-        <li><strong>Prepare the USB stick</strong> on a host PC — never from the live session booted on the same stick:</li>
+        <li><strong>Download the ISO</strong> and the <strong>prepare-usb</strong> package (ZIP, RAR, or TAR) from the <a href="https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha">0.71-alpha Release</a> page.</li>
+        <li><strong>Prepare the USB stick</strong> on a host PC — never from the live session booted on the same stick. Extract the prepare-usb archive, then:</li>
       </ol>
-      <pre><code>git clone https://github.com/alby-quelo/quelo-office.git
-cd quelo-office
-sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh</code></pre>
+      <pre><code># or: git clone https://github.com/alby-quelo/quelo-office.git
+cd Quelo_prepare_usb
+sudo ./prepare-usb.sh</code></pre>
       <p>Host prerequisites: <code>e2fsprogs</code>, <code>exfatprogs</code>, <code>util-linux</code>.</p>
       <p><em>Windows version and Linux GUI version in preparation.</em></p>
       <ol start="3">
@@ -225,6 +240,10 @@ sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh</code></pre>
   </main>
 
   <footer>
+    <blockquote class="disclaimer compact">
+      <p><strong>Disclaimer.</strong> Provided «as is», without warranty. Educational and experimental use only; at your own risk.</p>
+      <p><strong>Avvertenza.</strong> Distribuito «così com'è», senza garanzie. Scopo didattico e sperimentale; uso a proprio rischio.</p>
+    </blockquote>
     <p>Quelo Office · Alberto Frosio · Inspiration: Corrado Guzzanti («Quelo»)</p>
     <p>
       <a href="https://github.com/alby-quelo/quelo-office">Repository</a>
