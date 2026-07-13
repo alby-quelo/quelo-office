@@ -19,3 +19,4 @@ DOWNLOAD/Quelo_prepare_usb_gui_win-*.rar
 DOWNLOAD/Quelo_prepare_usb_gui_win-*.tar
 SOURCE_CODE/Quelo_prepare_usb/windows/tools/e2fsprogs/*.exe
 SOURCE_CODE/Quelo_prepare_usb/windows/tools/e2fsprogs/*.dll
+__pycache__/
