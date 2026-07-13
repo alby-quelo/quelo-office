@@ -53,9 +53,13 @@ def progress_bar(
     current: int,
     elapsed: int,
     label: str,
+    progress_callback=None,
 ) -> None:
     current = min(max(current, 0), total)
     pct = (current * 100 // total) if total else 0
+    if progress_callback is not None:
+        progress_callback(total, current, elapsed, label)
+        return
     filled = pct * BAR_WIDTH // 100
     bar = "#" * filled + "-" * (BAR_WIDTH - filled)
     progress_message(
@@ -106,7 +110,7 @@ def flush_device(dev_path: str, out_fd: int, used_direct: bool) -> None:
     os.fsync(out_fd)
 
 
-def write_iso(iso_path: str, dev_path: str, use_direct: bool = True) -> int:
+def write_iso(iso_path: str, dev_path: str, use_direct: bool = True, progress_callback=None) -> int:
     total = os.path.getsize(iso_path)
     dev_name = os.path.basename(dev_path)
     stat_path = f"/sys/block/{dev_name}/stat"
@@ -158,6 +162,7 @@ def write_iso(iso_path: str, dev_path: str, use_direct: bool = True) -> int:
                     current,
                     int(time.time() - t0),
                     "scrittura",
+                    progress_callback,
                 )
     except OSError as exc:
         print(f"\nERRORE scrittura: {exc}", file=sys.stderr)
@@ -184,15 +189,23 @@ def progress_loop_verify(
     total: int,
     stop: threading.Event,
     state: dict[str, int],
+    progress_callback=None,
 ) -> None:
     t0 = time.time()
     while not stop.is_set():
-        progress_bar(total, state.get("verified", 0), int(time.time() - t0), "verifica")
+        progress_bar(
+            total,
+            state.get("verified", 0),
+            int(time.time() - t0),
+            "verifica",
+            progress_callback,
+        )
         stop.wait(0.25)
-    progress_message("", newline=True)
+    if progress_callback is None:
+        progress_message("", newline=True)
 
 
-def verify_iso(iso_path: str, dev_path: str) -> int:
+def verify_iso(iso_path: str, dev_path: str, progress_callback=None) -> int:
     total = os.path.getsize(iso_path)
 
     print("")
@@ -210,7 +223,7 @@ def verify_iso(iso_path: str, dev_path: str) -> int:
     stop = threading.Event()
     prog = threading.Thread(
         target=progress_loop_verify,
-        args=(total, stop, state),
+        args=(total, stop, state, progress_callback),
         daemon=True,
     )
     prog.start()

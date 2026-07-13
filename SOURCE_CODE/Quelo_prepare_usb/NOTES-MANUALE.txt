@@ -26,8 +26,12 @@ Script prepare-usb.sh (9 passi):
 Se i passi manuali (mkfs.ext4 / mkfs.exfat) sono già riusciti, i pacchetti
 sono già installati sul sistema.
 
-Comando script:
+Comando script (CLI):
   sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh
+
+GUI host (BETA INTERNA — non pubblicata):
+  ./SOURCE_CODE/Quelo_prepare_usb/prepare-usb-gui.sh
+  vedi NOTES-MANUALE-GUI-BETA.txt
 
 ISO di pubblicazione (unica da distribuire):
   ISO/Quelo_Office-0.71-alpha.iso
