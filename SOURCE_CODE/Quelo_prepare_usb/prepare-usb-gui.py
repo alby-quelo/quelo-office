@@ -13,13 +13,22 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 if SCRIPT_DIR not in sys.path:
     sys.path.insert(0, SCRIPT_DIR)
 
-import quelo_prepare_lib as lib  # noqa: E402
+if sys.platform == "win32":
+    import quelo_prepare_win_lib as lib  # noqa: E402
+else:
+    import quelo_prepare_lib as lib  # noqa: E402
+
+IS_WINDOWS = sys.platform == "win32"
 
 
 class PrepareUsbGui(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title("Quelo Office — prepare-usb (PC host)")
+        self.title(
+            "Quelo Office — prepare-usb (PC host, Windows)"
+            if IS_WINDOWS
+            else "Quelo Office — prepare-usb (PC host)"
+        )
         self.minsize(640, 580)
         self.geometry("780x700")
 
@@ -130,7 +139,7 @@ class PrepareUsbGui(tk.Tk):
             text="Tutti i dati sul disco USB verranno SOVRASCRITTI.",
             foreground="#a33",
         ).pack(anchor=tk.W)
-        ttk.Label(confirm_frame, text="Conferma 1/2 — nome disco (es. sdb):").pack(anchor=tk.W, pady=(6, 0))
+        ttk.Label(confirm_frame, text="Conferma 1/2 — numero disco (es. 2):" if IS_WINDOWS else "Conferma 1/2 — nome disco (es. sdb):").pack(anchor=tk.W, pady=(6, 0))
         ttk.Entry(confirm_frame, textvariable=self.confirm_disk_var).pack(fill=tk.X)
         ttk.Label(confirm_frame, text='Conferma 2/2 — digita: SI SCRIVI').pack(anchor=tk.W, pady=(6, 0))
         ttk.Entry(confirm_frame, textvariable=self.confirm_phrase_var).pack(fill=tk.X)
@@ -175,18 +184,24 @@ class PrepareUsbGui(tk.Tk):
         scroll.configure(command=self.log.yview)
 
     def _startup_checks(self) -> None:
-        try:
-            lib.require_host()
-        except lib.PrepareError as exc:
-            messagebox.showerror("Sessione live", str(exc))
-            self.after(100, self.destroy)
-            return
+        if not IS_WINDOWS:
+            try:
+                lib.require_host()
+            except lib.PrepareError as exc:
+                messagebox.showerror("Sessione live", str(exc))
+                self.after(100, self.destroy)
+                return
 
-        if os.geteuid() != 0:
+        elevated = lib.is_admin() if IS_WINDOWS else os.geteuid() == 0
+        if not elevated:
             messagebox.showerror(
                 "Permessi",
-                "Serve esecuzione come root.\n"
-                "Usa: ./prepare-usb-gui.sh (pkexec/sudo)",
+                "Servono privilegi amministratore.\n"
+                + (
+                    "Usa: prepare-usb-gui.bat (UAC)"
+                    if IS_WINDOWS
+                    else "Usa: ./prepare-usb-gui.sh (pkexec/sudo)"
+                ),
             )
             self.after(100, self.destroy)
             return
@@ -202,7 +217,13 @@ class PrepareUsbGui(tk.Tk):
 
         root = lib.root_disk()
         if root:
-            self.root_disk_label.configure(text=f"Disco di sistema (NON usare): {root}")
+            label = f"Disco di sistema (NON usare): {root}"
+            if IS_WINDOWS and hasattr(lib, "_disk_number"):
+                try:
+                    label = f"Disco di sistema (NON usare): Disco {lib._disk_number(root)}"
+                except lib.PrepareError:
+                    pass
+            self.root_disk_label.configure(text=label)
 
     def _autofill_iso(self) -> None:
         found = lib.find_publish_iso()
@@ -227,7 +248,10 @@ class PrepareUsbGui(tk.Tk):
         labels = []
         for d in self._disks:
             tag = "USB" if d.is_usb else "ATTENZIONE: non USB"
-            labels.append(f"{d.path}  {d.size}  {d.model}  [{tag}]")
+            if IS_WINDOWS:
+                labels.append(f"Disco {d.name}  {d.size}  {d.model}  [{tag}]")
+            else:
+                labels.append(f"{d.path}  {d.size}  {d.model}  [{tag}]")
         self.disk_combo["values"] = labels
         if labels:
             # prefer first USB disk
@@ -385,13 +409,16 @@ class PrepareUsbGui(tk.Tk):
 
 
 def main() -> int:
-    if not os.environ.get("DISPLAY"):
+    if not IS_WINDOWS and not os.environ.get("DISPLAY"):
         print("ERRORE: DISPLAY non impostato (serve sessione grafica).", file=sys.stderr)
         return 1
     try:
         import tkinter  # noqa: F401
     except ImportError:
-        print("ERRORE: python3-tk non installato.", file=sys.stderr)
+        print(
+            "ERRORE: tkinter non disponibile (reinstalla Python con Tcl/Tk).",
+            file=sys.stderr,
+        )
         return 1
 
     app = PrepareUsbGui()

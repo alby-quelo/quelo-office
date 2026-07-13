@@ -19,14 +19,18 @@ fi
 
 PKG="Quelo_prepare_usb"
 PKG_GUI="Quelo_prepare_usb_gui"
+PKG_WIN="Quelo_prepare_usb_gui_win"
 BASE="${OUT_DIR}/${PKG}-${VER}"
 BASE_GUI="${OUT_DIR}/${PKG_GUI}-${VER}"
+BASE_WIN="${OUT_DIR}/${PKG_WIN}-${VER}"
 
 FULL_FILES=(
   prepare-usb.sh
   prepare-usb-gui.sh
   prepare-usb-gui.py
   quelo_prepare_lib.py
+  quelo_prepare_common.py
+  quelo_prepare_win_lib.py
   quelo-write-iso.py
   logo.png
   NOTES-MANUALE.txt
@@ -37,6 +41,16 @@ GUI_FILES=(
   prepare-usb-gui.sh
   prepare-usb-gui.py
   quelo_prepare_lib.py
+  quelo_prepare_common.py
+  quelo-write-iso.py
+  logo.png
+  NOTES-MANUALE.txt
+)
+
+WIN_FILES=(
+  prepare-usb-gui.py
+  quelo_prepare_common.py
+  quelo_prepare_win_lib.py
   quelo-write-iso.py
   logo.png
   NOTES-MANUALE.txt
@@ -44,11 +58,12 @@ GUI_FILES=(
 
 mkdir -p "${OUT_DIR}"
 rm -rf "${STAGE}"
-mkdir -p "${STAGE}/${PKG}" "${STAGE}/${PKG_GUI}"
+mkdir -p "${STAGE}/${PKG}" "${STAGE}/${PKG_GUI}" "${STAGE}/${PKG_WIN}"
 
 for name in "${FULL_FILES[@]}"; do
   cp "${SCRIPT_DIR}/${name}" "${STAGE}/${PKG}/"
 done
+cp -a "${SCRIPT_DIR}/windows" "${STAGE}/${PKG}/"
 chmod +x "${STAGE}/${PKG}/prepare-usb.sh" "${STAGE}/${PKG}/prepare-usb-gui.sh" "${STAGE}/${PKG}/build-archives.sh"
 
 for name in "${GUI_FILES[@]}"; do
@@ -56,8 +71,14 @@ for name in "${GUI_FILES[@]}"; do
 done
 chmod +x "${STAGE}/${PKG_GUI}/prepare-usb-gui.sh"
 
+for name in "${WIN_FILES[@]}"; do
+  cp "${SCRIPT_DIR}/${name}" "${STAGE}/${PKG_WIN}/"
+done
+cp -a "${SCRIPT_DIR}/windows" "${STAGE}/${PKG_WIN}/"
+
 rm -f "${BASE}.zip" "${BASE}.rar" "${BASE}.tar"
 rm -f "${BASE_GUI}.zip" "${BASE_GUI}.rar" "${BASE_GUI}.tar"
+rm -f "${BASE_WIN}.zip" "${BASE_WIN}.rar" "${BASE_WIN}.tar"
 
 cd "${STAGE}"
 zip -r "${BASE}.zip" "${PKG}/"
@@ -68,7 +89,11 @@ zip -r "${BASE_GUI}.zip" "${PKG_GUI}/"
 rar a -r "${BASE_GUI}.rar" "${PKG_GUI}/"
 tar -cf "${BASE_GUI}.tar" "${PKG_GUI}/"
 
+zip -r "${BASE_WIN}.zip" "${PKG_WIN}/"
+rar a -r "${BASE_WIN}.rar" "${PKG_WIN}/"
+tar -cf "${BASE_WIN}.tar" "${PKG_WIN}/"
+
 rm -rf "${STAGE}"
 
 echo "Creati:"
-ls -lah "${BASE}".{zip,rar,tar} "${BASE_GUI}".{zip,rar,tar}
+ls -lah "${BASE}".{zip,rar,tar} "${BASE_GUI}".{zip,rar,tar} "${BASE_WIN}".{zip,rar,tar}

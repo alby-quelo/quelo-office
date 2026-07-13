@@ -3,11 +3,12 @@ Quelo Office — note per manuale (prepare-usb)
 
 Preparazione chiavetta USB
 --------------------------
-Eseguire dal PC host (Linux), MAI dalla live Quelo Office bootata sulla stessa USB.
+Eseguire dal PC host, MAI dalla live Quelo Office bootata sulla stessa USB.
 
-Due modalità disponibili:
-  A) GUI grafica (consigliata) — prepare-usb-gui
-  B) Script a terminale (CLI) — prepare-usb.sh
+Tre modalità disponibili:
+  A) GUI grafica Linux (consigliata) — prepare-usb-gui
+  B) Script a terminale Linux (CLI) — prepare-usb.sh
+  C) GUI grafica Windows 7+ — prepare-usb-gui.bat
 
 Entrambe eseguono gli stessi passi: wipe → scrittura+verifica ISO → partizioni
 → formattazione ext4+exFAT → cartelle home.
@@ -72,6 +73,27 @@ Verifica rapida:
   7 mkfs  8 cartelle home  9 riepilogo
   Conferma 2/2: digitare "SI SCRIVI"
   Pausa INVIO prima di ogni operazione critica
+
+
+================================================================================
+C) GUI prepare-usb-gui (Windows 7+)
+================================================================================
+
+Vedi windows\README-WINDOWS.txt nel pacchetto Quelo_prepare_usb_gui_win.
+
+Avvio
+-----
+  1. windows\setup-tools.bat   (mke2fs da Cygwin, prima volta)
+  2. windows\prepare-usb-gui.bat   (richiede UAC amministratore)
+
+Prerequisiti
+------------
+  Python 3.8+ con tkinter
+  Privilegi amministratore
+  mke2fs.exe (e2fsprogs) in windows\tools\e2fsprogs\
+  diskpart e format (inclusi in Windows)
+
+Conferma 1/2: numero disco (es. 2), non «sdb».
 
 
 ================================================================================

@@ -11,9 +11,11 @@ import sys
 import threading
 import time
 
+IS_WINDOWS = sys.platform == "win32"
 BLOCK_SIZE = 1024 * 1024  # 1 MiB
 SECTOR_SIZE = 512
-O_DIRECT = getattr(os, "O_DIRECT", 0)
+O_DIRECT = getattr(os, "O_DIRECT", 0) if not IS_WINDOWS else 0
+O_BINARY = getattr(os, "O_BINARY", 0)
 
 
 PROGRESS = sys.stderr
@@ -89,7 +91,7 @@ def pad_to_sector(size: int) -> int:
 
 
 def open_device_write(dev_path: str, use_direct: bool) -> tuple[int, bool]:
-    flags = os.O_WRONLY
+    flags = os.O_WRONLY | O_BINARY
     if use_direct and O_DIRECT:
         try:
             return os.open(dev_path, flags | O_DIRECT), True
@@ -112,19 +114,12 @@ def flush_device(dev_path: str, out_fd: int, used_direct: bool) -> None:
 
 def write_iso(iso_path: str, dev_path: str, use_direct: bool = True, progress_callback=None) -> int:
     total = os.path.getsize(iso_path)
-    dev_name = os.path.basename(dev_path)
-    stat_path = f"/sys/block/{dev_name}/stat"
-
-    print("")
-    print(f"Scrittura ISO su USB: {human_size(total)} totali.")
-    if use_direct and O_DIRECT:
-        print("Modalita O_DIRECT: scrittura diretta su USB (no flush finale lungo).")
-    else:
-        print("Modalita buffered (fallback).")
-    print("NON rimuovere la USB fino a 'Verifica completata'.")
-    print("")
-
-    start_sectors = read_sector_count(stat_path)
+    stat_path = None
+    start_sectors = 0
+    if not IS_WINDOWS:
+        dev_name = os.path.basename(dev_path)
+        stat_path = f"/sys/block/{dev_name}/stat"
+        start_sectors = read_sector_count(stat_path)
 
     try:
         out_fd, used_direct = open_device_write(dev_path, use_direct)
@@ -132,10 +127,13 @@ def write_iso(iso_path: str, dev_path: str, use_direct: bool = True, progress_ca
         print(f"ERRORE: apertura {dev_path}: {exc}", file=sys.stderr)
         return 1
 
-    if use_direct and not used_direct:
+    if use_direct and not used_direct and not IS_WINDOWS:
         print("ATTENZIONE: O_DIRECT non disponibile, uso scrittura buffered.")
 
-    aligned = mmap.mmap(-1, BLOCK_SIZE)
+    if IS_WINDOWS:
+        buf = bytearray(BLOCK_SIZE)
+    else:
+        aligned = mmap.mmap(-1, BLOCK_SIZE)
     t0 = time.time()
     logical_written = 0
 
@@ -147,16 +145,25 @@ def write_iso(iso_path: str, dev_path: str, use_direct: bool = True, progress_ca
                     break
 
                 io_len = pad_to_sector(len(chunk))
-                aligned.seek(0)
-                aligned.write(chunk)
-                if io_len > len(chunk):
-                    aligned.write(b"\x00" * (io_len - len(chunk)))
-
-                os.write(out_fd, memoryview(aligned)[:io_len])
+                if IS_WINDOWS:
+                    view = memoryview(buf)[:io_len]
+                    view[: len(chunk)] = chunk
+                    if io_len > len(chunk):
+                        view[len(chunk) :] = b"\x00" * (io_len - len(chunk))
+                    os.write(out_fd, view)
+                else:
+                    aligned.seek(0)
+                    aligned.write(chunk)
+                    if io_len > len(chunk):
+                        aligned.write(b"\x00" * (io_len - len(chunk)))
+                    os.write(out_fd, memoryview(aligned)[:io_len])
                 logical_written += len(chunk)
 
-                sysfs = read_bytes_written(stat_path, start_sectors)
-                current = max(logical_written, sysfs)
+                if stat_path:
+                    sysfs = read_bytes_written(stat_path, start_sectors)
+                    current = max(logical_written, sysfs)
+                else:
+                    current = logical_written
                 progress_bar(
                     total,
                     current,
@@ -166,7 +173,8 @@ def write_iso(iso_path: str, dev_path: str, use_direct: bool = True, progress_ca
                 )
     except OSError as exc:
         print(f"\nERRORE scrittura: {exc}", file=sys.stderr)
-        aligned.close()
+        if not IS_WINDOWS:
+            aligned.close()
         os.close(out_fd)
         return 1
 
@@ -175,11 +183,13 @@ def write_iso(iso_path: str, dev_path: str, use_direct: bool = True, progress_ca
         flush_device(dev_path, out_fd, used_direct)
     except OSError as exc:
         print(f"\nERRORE finalizzazione: {exc}", file=sys.stderr)
-        aligned.close()
+        if not IS_WINDOWS:
+            aligned.close()
         os.close(out_fd)
         return 1
 
-    aligned.close()
+    if not IS_WINDOWS:
+        aligned.close()
     os.close(out_fd)
     print("Scrittura completata.")
     return 0
@@ -214,7 +224,7 @@ def verify_iso(iso_path: str, dev_path: str, progress_callback=None) -> int:
     print("")
 
     try:
-        dev_fd = os.open(dev_path, os.O_RDONLY)
+        dev_fd = os.open(dev_path, os.O_RDONLY | O_BINARY)
     except OSError as exc:
         print(f"ERRORE: lettura {dev_path}: {exc}", file=sys.stderr)
         return 1

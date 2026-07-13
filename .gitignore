@@ -14,3 +14,8 @@ DOWNLOAD/Quelo_prepare_usb-*.tar
 DOWNLOAD/Quelo_prepare_usb_gui-*.zip
 DOWNLOAD/Quelo_prepare_usb_gui-*.rar
 DOWNLOAD/Quelo_prepare_usb_gui-*.tar
+DOWNLOAD/Quelo_prepare_usb_gui_win-*.zip
+DOWNLOAD/Quelo_prepare_usb_gui_win-*.rar
+DOWNLOAD/Quelo_prepare_usb_gui_win-*.tar
+SOURCE_CODE/Quelo_prepare_usb/windows/tools/e2fsprogs/*.exe
+SOURCE_CODE/Quelo_prepare_usb/windows/tools/e2fsprogs/*.dll

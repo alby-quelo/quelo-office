@@ -185,9 +185,26 @@ Lo script guida nove passi con pause e doppia conferma di sicurezza (`SI SCRIVI`
 | Pacchetto | Formati |
 |-----------|---------|
 | Completo (CLI + GUI) | `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}` |
-| Solo GUI | `Quelo_prepare_usb_gui-0.71-alpha.{zip,rar,tar}` |
+| Solo GUI Linux | `Quelo_prepare_usb_gui-0.71-alpha.{zip,rar,tar}` |
+| GUI Windows 7+ | `Quelo_prepare_usb_gui_win-0.71-alpha.{zip,rar,tar}` |
 
-Versione per Windows: ancora in preparazione.
+#### Opzione C — GUI grafica (Windows 7+)
+
+```bat
+windows\setup-tools.bat
+windows\prepare-usb-gui.bat
+```
+
+**Prerequisiti su Windows:**
+
+| Componente | Uso |
+|------------|-----|
+| Python 3.8+ con tkinter | Interfaccia grafica |
+| Privilegi amministratore (UAC) | Scrittura disco USB |
+| `mke2fs.exe` (e2fsprogs) | Formattazione ext4 persistenza |
+| diskpart, format | Partizioni e exFAT (inclusi in Windows) |
+
+Dettagli: `windows\README-WINDOWS.txt` nel pacchetto. Conferma disco: **numero** (es. `2`).
 
 ### 3. Avvia dal BIOS/UEFI
 
