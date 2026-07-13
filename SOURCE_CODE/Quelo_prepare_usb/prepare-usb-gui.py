@@ -20,8 +20,8 @@ class PrepareUsbGui(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("Quelo Office — prepare-usb (PC host)")
-        self.minsize(640, 520)
-        self.geometry("760x620")
+        self.minsize(640, 580)
+        self.geometry("780x700")
 
         self.iso_var = tk.StringVar()
         self.disk_var = tk.StringVar()
@@ -41,6 +41,14 @@ class PrepareUsbGui(tk.Tk):
         self._autofill_iso()
 
     def _build_ui(self) -> None:
+        # Barra pulsanti fissa in basso (pack prima, side=BOTTOM)
+        actions = ttk.Frame(self, padding=(12, 8, 12, 12))
+        actions.pack(side=tk.BOTTOM, fill=tk.X)
+        self.cancel_btn = ttk.Button(actions, text="Annulla", command=self.destroy)
+        self.cancel_btn.pack(side=tk.RIGHT, padx=(8, 0))
+        self.start_btn = ttk.Button(actions, text="Esegui", command=self._start)
+        self.start_btn.pack(side=tk.RIGHT)
+
         outer = ttk.Frame(self, padding=12)
         outer.pack(fill=tk.BOTH, expand=True)
 
@@ -103,16 +111,19 @@ class PrepareUsbGui(tk.Tk):
         self.progress = ttk.Progressbar(prog_frame, variable=self.progress_var, maximum=100)
         self.progress.pack(fill=tk.X, pady=(0, 6))
         ttk.Label(prog_frame, textvariable=self.status_var).pack(anchor=tk.W)
-        self.log = tk.Text(prog_frame, height=12, wrap=tk.WORD, state=tk.DISABLED)
-        self.log.pack(fill=tk.BOTH, expand=True, pady=(6, 0))
-        scroll = ttk.Scrollbar(self.log, command=self.log.yview)
-        self.log.configure(yscrollcommand=scroll.set)
-
-        actions = ttk.Frame(outer)
-        actions.pack(fill=tk.X, pady=(8, 0))
-        self.start_btn = ttk.Button(actions, text="Avvia preparazione", command=self._start)
-        self.start_btn.pack(side=tk.RIGHT)
-        ttk.Button(actions, text="Chiudi", command=self.destroy).pack(side=tk.RIGHT, padx=(0, 8))
+        log_wrap = ttk.Frame(prog_frame)
+        log_wrap.pack(fill=tk.BOTH, expand=True, pady=(6, 0))
+        scroll = ttk.Scrollbar(log_wrap)
+        scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        self.log = tk.Text(
+            log_wrap,
+            height=6,
+            wrap=tk.WORD,
+            state=tk.DISABLED,
+            yscrollcommand=scroll.set,
+        )
+        self.log.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scroll.configure(command=self.log.yview)
 
     def _startup_checks(self) -> None:
         try:
@@ -249,6 +260,7 @@ class PrepareUsbGui(tk.Tk):
 
         self._running = True
         self.start_btn.configure(state=tk.DISABLED)
+        self.cancel_btn.configure(state=tk.DISABLED)
         self.progress_var.set(0)
         self.log.configure(state=tk.NORMAL)
         self.log.delete("1.0", tk.END)
@@ -286,6 +298,7 @@ class PrepareUsbGui(tk.Tk):
                 def _done() -> None:
                     self._running = False
                     self.start_btn.configure(state=tk.NORMAL)
+                    self.cancel_btn.configure(state=tk.NORMAL)
 
                 self.after(0, _done)
 
