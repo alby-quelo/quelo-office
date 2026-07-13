@@ -122,7 +122,7 @@ You choose the persistence partition size during preparation (e.g. 128 / 256 / 5
 
 Official ISO: **`Quelo_Office-0.71-alpha.iso`**
 
-prepare-usb package (USB preparation scripts), in three formats:
+prepare-usb package (USB preparation scripts) — **full** package (CLI + GUI), three formats:
 
 | Format | File |
 |--------|------|
@@ -130,23 +130,64 @@ prepare-usb package (USB preparation scripts), in three formats:
 | RAR | `Quelo_prepare_usb-0.71-alpha.rar` |
 | TAR | `Quelo_prepare_usb-0.71-alpha.tar` |
 
+**GUI-only** package (Linux graphical interface):
+
+| Format | File |
+|--------|------|
+| ZIP | `Quelo_prepare_usb_gui-0.71-alpha.zip` |
+| RAR | `Quelo_prepare_usb_gui-0.71-alpha.rar` |
+| TAR | `Quelo_prepare_usb_gui-0.71-alpha.tar` |
+
 All downloads: **https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha**
 
 ### 2. Prepare the USB stick
 
 **Important:** preparation must be done on a **host PC**, **never** while booted into Quelo Office from the same stick you are writing to.
 
+#### Option A — Graphical interface (recommended, Linux)
+
 ```bash
-# After extracting the prepare-usb archive, or from a cloned repository:
+# After extracting the prepare-usb-gui archive (or the full package):
+cd Quelo_prepare_usb_gui   # or Quelo_prepare_usb
+./prepare-usb-gui.sh
+```
+
+![prepare-usb GUI](docs/screenshots/08-prepare-usb-gui.png)
+
+The interface guides you through ISO selection, USB drive choice, and persistence size (512 / 1024 / 2048 MB), with a safety double confirmation and descriptive progress messages. The window closes automatically when finished.
+
+**Host prerequisites (GUI):**
+
+| Package | Purpose |
+|---------|---------|
+| `python3`, `python3-tk` | Graphical interface |
+| `e2fsprogs` | ext4 formatting (persistence) |
+| `exfatprogs` | exFAT formatting (QUELO-HOME) |
+| `util-linux` | fdisk, wipefs, sfdisk, lsblk, dd |
+| `polkit` (pkexec) or `sudo` | Root privileges |
+
+Quick install (Debian/Ubuntu):  
+`sudo apt install python3 python3-tk e2fsprogs exfatprogs util-linux polkit-1`
+
+#### Option B — Terminal script (CLI)
+
+```bash
 cd Quelo_prepare_usb
 sudo ./prepare-usb.sh
 ```
 
-Host prerequisites: `e2fsprogs`, `exfatprogs`, `util-linux` (fdisk, dd, wipefs…).
+**Host prerequisites (CLI):** `e2fsprogs`, `exfatprogs`, `util-linux` (fdisk, dd, wipefs…).
 
 The script walks through nine steps with pauses and a safety double confirmation (`SI SCRIVI`).
 
-Windows version and Linux GUI version in preparation.
+**prepare-usb downloads** (from [Release 0.71-alpha](https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha)):
+
+| Package | Formats |
+|---------|---------|
+| Full (CLI + GUI) | `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}` |
+| GUI only | `Quelo_prepare_usb_gui-0.71-alpha.{zip,rar,tar}` |
+
+Windows version: still in preparation.
 
 ### 3. Boot from BIOS/UEFI
 
@@ -181,7 +222,7 @@ Build code and USB scripts live under **`SOURCE_CODE/`**:
 | Directory | Contents |
 |-----------|----------|
 | `Quelo_office/` | ISO build (live-build, overlay, hooks) |
-| `Quelo_prepare_usb/` | `prepare-usb.sh`, `quelo-write-iso.py` |
+| `Quelo_prepare_usb/` | `prepare-usb.sh`, `prepare-usb-gui.sh`, `prepare-usb-gui.py`, `quelo_prepare_lib.py`, `quelo-write-iso.py` |
 
 From the live system, `quelo-export` (in `QUELO-HOME/quelo-export/`) collects packages and configuration added during testing, so they can be merged into the sources and baked into the next ISO.
 

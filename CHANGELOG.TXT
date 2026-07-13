@@ -1,0 +1,84 @@
+Quelo Office — Changelog pubblico
+==================================
+
+Release 0.71-alpha — aggiornamento prepare-usb GUI (2026-07-13)
+----------------------------------------------------------------
+
+ITALIANO
+--------
+
+### Nuovo: interfaccia grafica prepare-usb (Linux host)
+
+Aggiunta **prepare-usb-gui**, interfaccia grafica per preparare la chiavetta
+USB dal PC host (non dalla live Quelo Office bootata sulla stessa USB).
+
+**File principali**
+  - `prepare-usb-gui.sh` — launcher con elevazione privilegi (pkexec/sudo)
+  - `prepare-usb-gui.py` — interfaccia Tkinter
+  - `quelo_prepare_lib.py` — logica condivisa con lo script CLI
+  - `quelo-write-iso.py` — scrittura e verifica ISO
+  - `logo.png` — icona finestra
+
+**Funzionalità GUI**
+  - Selezione file ISO (con autocompilazione se presente in `ISO/`)
+  - Elenco chiavette USB con avviso disco di sistema
+  - Scelta dimensione persistenza: 512 / 1024 / 2048 MB
+  - Doppia conferma di sicurezza (nome disco + «SI SCRIVI»)
+  - Barra di avanzamento con messaggi descrittivi per ogni fase
+  - Registro dettagliato in finestra
+  - Chiusura automatica al termine con successo
+
+**Dipendenze host (GUI)**
+  - `python3`, `python3-tk`
+  - `e2fsprogs`, `exfatprogs`, `util-linux` (fdisk, wipefs, sfdisk, lsblk, dd)
+  - `polkit` (pkexec) oppure `sudo`
+  - Sessione grafica (`DISPLAY` impostato)
+
+**Download**
+  - Pacchetto CLI completo: `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}`
+  - Pacchetto GUI: `Quelo_prepare_usb_gui-0.71-alpha.{zip,rar,tar}`
+
+**Invariato**
+  - ISO live `Quelo_Office-0.71-alpha.iso`
+  - Script CLI `prepare-usb.sh` (terminal)
+  - Versione Windows prepare-usb: ancora in preparazione
+
+
+ENGLISH
+-------
+
+### New: prepare-usb graphical interface (Linux host)
+
+Added **prepare-usb-gui**, a graphical tool to prepare the USB stick from the
+host PC (not from a Quelo Office live session booted on the same stick).
+
+**Main files**
+  - `prepare-usb-gui.sh` — launcher with privilege elevation (pkexec/sudo)
+  - `prepare-usb-gui.py` — Tkinter interface
+  - `quelo_prepare_lib.py` — logic shared with the CLI script
+  - `quelo-write-iso.py` — ISO write and verify
+  - `logo.png` — window icon
+
+**GUI features**
+  - ISO file picker (auto-fill if found under `ISO/`)
+  - USB drive list with system-disk warning
+  - Persistence size choice: 512 / 1024 / 2048 MB
+  - Safety double confirmation (disk name + «SI SCRIVI»)
+  - Progress bar with descriptive status messages for each phase
+  - Detailed log panel
+  - Automatic exit on successful completion
+
+**Host dependencies (GUI)**
+  - `python3`, `python3-tk`
+  - `e2fsprogs`, `exfatprogs`, `util-linux` (fdisk, wipefs, sfdisk, lsblk, dd)
+  - `polkit` (pkexec) or `sudo`
+  - Graphical session (`DISPLAY` set)
+
+**Downloads**
+  - Full CLI package: `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}`
+  - GUI package: `Quelo_prepare_usb_gui-0.71-alpha.{zip,rar,tar}`
+
+**Unchanged**
+  - Live ISO `Quelo_Office-0.71-alpha.iso`
+  - CLI script `prepare-usb.sh` (terminal)
+  - Windows prepare-usb version: still in preparation

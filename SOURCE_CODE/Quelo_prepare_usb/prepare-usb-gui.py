@@ -28,7 +28,13 @@ class PrepareUsbGui(tk.Tk):
         self.persist_var = tk.IntVar(value=1024)
         self.confirm_disk_var = tk.StringVar()
         self.confirm_phrase_var = tk.StringVar()
-        self.status_var = tk.StringVar(value="Pronto.")
+        self.status_step_var = tk.StringVar(value="Pronto per iniziare")
+        self.status_detail_var = tk.StringVar(
+            value=(
+                "Scegli il file ISO di Quelo Office, seleziona la chiavetta USB "
+                "e completa le due conferme di sicurezza. Poi premi Esegui."
+            ),
+        )
         self.progress_var = tk.DoubleVar(value=0.0)
 
         self._disks: list[lib.DiskInfo] = []
@@ -131,20 +137,33 @@ class PrepareUsbGui(tk.Tk):
 
         prog_frame = ttk.LabelFrame(outer, text="Avanzamento", padding=10)
         prog_frame.pack(fill=tk.BOTH, expand=True, pady=4)
+        prog_frame.columnconfigure(0, weight=1)
+        prog_frame.rowconfigure(3, weight=1)
+
         self.progress = ttk.Progressbar(prog_frame, variable=self.progress_var, maximum=100)
-        self.progress.pack(fill=tk.X, pady=(0, 8))
-        self.status_label = ttk.Label(
+        self.progress.grid(row=0, column=0, sticky=tk.EW, pady=(0, 10))
+
+        self.status_step_label = ttk.Label(
             prog_frame,
-            textvariable=self.status_var,
-            anchor=tk.W,
-            wraplength=680,
-            padding=(0, 2),
+            textvariable=self.status_step_var,
+            font=("", 11, "bold"),
         )
-        self.status_label.pack(fill=tk.X, anchor=tk.W, pady=(0, 8))
+        self.status_step_label.grid(row=1, column=0, sticky=tk.W)
+
+        self.status_detail_label = ttk.Label(
+            prog_frame,
+            textvariable=self.status_detail_var,
+            wraplength=700,
+            justify=tk.LEFT,
+        )
+        self.status_detail_label.grid(row=2, column=0, sticky=tk.EW, pady=(4, 10))
+
         log_wrap = ttk.Frame(prog_frame)
-        log_wrap.pack(fill=tk.BOTH, expand=True)
+        log_wrap.grid(row=3, column=0, sticky=tk.NSEW)
+        log_wrap.columnconfigure(0, weight=1)
+        log_wrap.rowconfigure(0, weight=1)
         scroll = ttk.Scrollbar(log_wrap)
-        scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        scroll.grid(row=0, column=1, sticky=tk.NS)
         self.log = tk.Text(
             log_wrap,
             height=6,
@@ -152,7 +171,7 @@ class PrepareUsbGui(tk.Tk):
             state=tk.DISABLED,
             yscrollcommand=scroll.set,
         )
-        self.log.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        self.log.grid(row=0, column=0, sticky=tk.NSEW)
         scroll.configure(command=self.log.yview)
 
     def _startup_checks(self) -> None:
@@ -230,14 +249,22 @@ class PrepareUsbGui(tk.Tk):
 
         self.after(0, _do)
 
-    def _set_status(self, text: str) -> None:
-        self.after(0, lambda: self.status_var.set(text))
+    def _set_status(self, step: str, detail: str = "") -> None:
+        def _do() -> None:
+            self.status_step_var.set(step)
+            self.status_detail_var.set(detail)
+
+        self.after(0, _do)
 
     def _set_progress(self, pct: int, label: str) -> None:
         def _do() -> None:
             self.progress_var.set(max(0, min(100, pct)))
-            self.status_var.set(label)
-            self.status_label.configure(text=label)
+            if "\n" in label:
+                step, detail = label.split("\n", 1)
+            else:
+                step, detail = label, ""
+            self.status_step_var.set(step)
+            self.status_detail_var.set(detail)
 
         self.after(0, _do)
 
@@ -293,6 +320,12 @@ class PrepareUsbGui(tk.Tk):
         self.start_btn.configure(state=tk.DISABLED)
         self.cancel_btn.configure(state=tk.DISABLED)
         self.progress_var.set(0)
+        self._set_progress(
+            0,
+            "Avvio operazione\n"
+            "Controllo i parametri scelti e avvio la preparazione della chiavetta. "
+            "Tutti i dati già presenti sul disco USB selezionato verranno cancellati.",
+        )
         self.log.configure(state=tk.NORMAL)
         self.log.delete("1.0", tk.END)
         self.log.configure(state=tk.DISABLED)
@@ -312,26 +345,40 @@ class PrepareUsbGui(tk.Tk):
                 )
             except lib.PrepareError as exc:
                 self._append_log(f"ERRORE: {exc}")
-                self.after(0, lambda: messagebox.showerror("Errore", str(exc)))
-            else:
-                self._set_progress(100, "Completato.")
-                self.after(
+                self._set_progress(
                     0,
-                    lambda: messagebox.showinfo(
+                    f"Operazione interrotta\n{exc} "
+                    "Consulta il registro in basso per i dettagli tecnici.",
+                )
+
+                def _fail() -> None:
+                    messagebox.showerror("Errore", str(exc))
+                    self._running = False
+                    self.start_btn.configure(state=tk.NORMAL)
+                    self.cancel_btn.configure(state=tk.NORMAL)
+
+                self.after(0, _fail)
+            else:
+                self._set_progress(
+                    100,
+                    "Operazione completata con successo\n"
+                    "La chiavetta è pronta: rimuovila in sicurezza, riavvia il PC "
+                    "e seleziona l'avvio da USB nel menu del BIOS o del boot manager.",
+                )
+
+                def _finish_ok() -> None:
+                    messagebox.showinfo(
                         "Completato",
                         "Chiavetta pronta.\n\n"
                         "1. Rimuovi la USB in sicurezza\n"
                         "2. Boot da USB\n"
                         "3. Allo spegnimento salva le configurazioni che vuoi conservare",
-                    ),
-                )
-            finally:
-                def _done() -> None:
+                    )
                     self._running = False
-                    self.start_btn.configure(state=tk.NORMAL)
-                    self.cancel_btn.configure(state=tk.NORMAL)
+                    self.quit()
+                    self.destroy()
 
-                self.after(0, _done)
+                self.after(0, _finish_ok)
 
         self._worker = threading.Thread(target=worker, daemon=True)
         self._worker.start()

@@ -8,11 +8,8 @@ Quelo_office/
 
 Quelo_prepare_usb/
   Preparazione chiavetta USB: dd ISO, persistenza, partizione QUELO-HOME exFAT
+  CLI: prepare-usb.sh  |  GUI host Linux: prepare-usb-gui.sh
   Usa di default ISO/Quelo_Office-0.71-alpha.iso (release pubblicata)
 
-ISO pubblicata (unica da distribuire online):
-  ../ISO/Quelo_Office-0.71-alpha.iso
-  vedi ../ISO/README.txt
-
-Documenti legali e changelog interno: nella root del repository
-  LICENSE.TXT, CREDITS.TXT, INTERNAL_CHANGELOG.TXT
+Documenti legali e changelog: nella root del repository
+  LICENSE.TXT, CREDITS.TXT, CHANGELOG.TXT (pubblico), INTERNAL_CHANGELOG.TXT (interno)

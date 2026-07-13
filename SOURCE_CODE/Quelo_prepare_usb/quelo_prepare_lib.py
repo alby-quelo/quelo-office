@@ -21,6 +21,17 @@ PERSIST_SIZES_MB = (512, 1024, 2048)
 ProgressCallback = Callable[[int, int, int, str], None]
 
 
+def human_size(n: int) -> str:
+    val = float(n)
+    for unit in ("B", "KiB", "MiB", "GiB"):
+        if val < 1024.0 or unit == "GiB":
+            if unit == "B":
+                return f"{int(val)}B"
+            return f"{val:.1f}{unit}"
+        val /= 1024.0
+    return f"{n}B"
+
+
 class PrepareError(Exception):
     pass
 
@@ -351,7 +362,26 @@ def write_iso(
 
     def writer_progress(total, current, elapsed, label):
         pct = (current * 100 // total) if total else 0
-        cb(pct, current, total, elapsed, label)
+        if label == "scrittura":
+            mapped = 3 + int(pct * 72 / 100)
+            msg = (
+                "Fase 2 — Copia immagine ISO sulla chiavetta USB\n"
+                f"Sto scrivendo l'immagine avviabile sul disco: {pct}% completato "
+                f"({human_size(current)} di {human_size(total)}, {elapsed} s). "
+                "È la fase più lunga: non scollegare la USB e non chiudere questa finestra."
+            )
+        elif label == "verifica":
+            mapped = 75 + int(pct * 7 / 100)
+            msg = (
+                "Fase 3 — Controllo integrità della copia\n"
+                f"Leggo la chiavetta e la confronto con il file ISO originale per "
+                f"verificare che ogni byte sia stato copiato correttamente: {pct}% "
+                f"({human_size(current)} / {human_size(total)})."
+            )
+        else:
+            mapped = min(82, max(3, pct))
+            msg = label
+        cb(mapped, current, total, elapsed, msg)
 
     rc = mod.write_iso(
         iso_path,
@@ -391,12 +421,22 @@ def create_partitions_auto(
     disk: str,
     persist_mb: int,
     log: Callable[[str], None] | None = None,
+    step: Callable[[int, str], None] | None = None,
 ) -> tuple[str, str]:
     if not shutil.which("sfdisk"):
         raise PrepareError("sfdisk non trovato (util-linux).")
 
     script = f",{persist_mb}M,L\n,,L\n"
     for attempt in range(1, 4):
+        if step:
+            step(
+                82 + attempt,
+                "Fase 4 — Creazione partizioni per persistenza e dati utente\n"
+                f"Tentativo {attempt} di 3: aggiungo due partizioni dopo l'area ISO — "
+                f"una ext4 da {persist_mb} MB (etichetta «{PERSIST_LABEL}») per salvare "
+                f"impostazioni e personalizzazioni della sessione live, e una exFAT "
+                f"(etichetta «{HOME_LABEL}») con lo spazio rimanente per i tuoi file.",
+            )
         if log:
             log(f"Creo partizioni con sfdisk (tentativo {attempt}/3)...")
         settle_usb_before_partition(disk, log)
@@ -429,10 +469,27 @@ def format_partitions(
     persist_part: str,
     home_part: str,
     log: Callable[[str], None] | None = None,
+    step: Callable[[int, str], None] | None = None,
 ) -> None:
+    if step:
+        step(
+            90,
+            "Fase 5 — Formattazione partizione persistenza (ext4)\n"
+            f"Preparo {persist_part} con filesystem ext4 ed etichetta «{PERSIST_LABEL}»: "
+            "qui la live Quelo Office memorizzerà le modifiche che sceglierai di "
+            "conservare tra un avvio e l'altro.",
+        )
     if log:
         log(f"Formatto {persist_part} (ext4, {PERSIST_LABEL})...")
     _run(["mkfs.ext4", "-F", "-L", PERSIST_LABEL, persist_part])
+    if step:
+        step(
+            93,
+            "Fase 5 — Formattazione partizione home (exFAT)\n"
+            f"Preparo {home_part} con filesystem exFAT ed etichetta «{HOME_LABEL}»: "
+            "sarà la tua area documenti, leggibile anche da Windows, con Desktop, "
+            "Documenti, Scaricati e le altre cartelle utente.",
+        )
     if log:
         log(f"Formatto {home_part} (exFAT, {HOME_LABEL})...")
     _run(["mkfs.exfat", "-n", HOME_LABEL, home_part])
@@ -508,29 +565,71 @@ def run_prepare(
     if not disk_is_usb(disk) and not allow_non_usb:
         raise PrepareError("Il disco selezionato non risulta USB/removable.")
 
+    iso_name = os.path.basename(iso_path)
+
+    def step(pct: int, msg: str) -> None:
+        if progress:
+            progress(pct, 0, 0, msg)
+
+    step(
+        0,
+        "Fase 1 — Svuotamento completo della chiavetta USB\n"
+        f"Preparo il disco {disk} alla scrittura: smonto eventuali partizioni ancora "
+        "aperte, rimuovo le firme dei filesystem esistenti e cancello la tabella "
+        "partizioni. Tutto il contenuto precedente verrà eliminato.",
+    )
     if log:
         log("PASSO 4/9 — Pulizia chiavetta")
     wipe_usb(disk, log)
 
+    step(
+        3,
+        "Fase 2 — Copia immagine ISO sulla chiavetta USB\n"
+        f"Trasferisco il file «{iso_name}» sul supporto rimovibile, byte per byte. "
+        "Al termine la USB conterrà il sistema Quelo Office avviabile. "
+        "Operazione lunga: attendi senza scollegare la chiavetta.",
+    )
     if log:
         log("PASSO 5/9 — Scrittura ISO (operazione lunga)")
     write_iso(iso_path, disk, progress=progress, log=log)
     reread_partition_table(disk)
 
+    step(
+        82,
+        "Fase 4 — Creazione partizioni per persistenza e dati utente\n"
+        f"Nello spazio libero dopo l'ISO creo due partizioni: persistenza ext4 "
+        f"da {persist_mb} MB per le impostazioni salvate, e home exFAT per i file personali.",
+    )
     if log:
         log("PASSO 6/9 — Creazione partizioni")
     if not settle_usb_before_partition(disk, log) and log:
         log("ATTENZIONE: disco ancora montato in parte (file manager?).")
-    persist_part, home_part = create_partitions_auto(disk, persist_mb, log)
+    persist_part, home_part = create_partitions_auto(
+        disk, persist_mb, log, step=step,
+    )
 
     if log:
         log("PASSO 7/9 — Formattazione")
-    format_partitions(persist_part, home_part, log)
+    format_partitions(persist_part, home_part, log, step=step)
 
+    step(
+        95,
+        "Fase 6 — Preparazione cartelle e area export\n"
+        "Monto la partizione home exFAT e creo le cartelle utente standard "
+        "(Desktop, Documenti, Scaricati, Immagini, Musica, Video, Modelli) "
+        "più «quelo-export» per esportare file dalla sessione live verso altri PC.",
+    )
     if log:
         log("PASSO 8/9 — Cartelle home exFAT")
     setup_home_folders(home_part, log)
 
+    step(
+        100,
+        "Operazione completata con successo\n"
+        "La chiavetta Quelo Office è pronta. Rimuovila in sicurezza, inseriscila nel PC "
+        "da cui vuoi lavorare e avvia da USB. Al primo spegnimento potrai scegliere "
+        "quali configurazioni salvare sulla partizione di persistenza.",
+    )
     if log:
         log("PASSO 9/9 — Completato")
         log(lsblk_tree(disk))

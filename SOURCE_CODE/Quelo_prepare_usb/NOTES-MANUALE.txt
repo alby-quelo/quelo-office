@@ -1,57 +1,86 @@
-Quelo Office — note per manuale (bozza)
-========================================
+Quelo Office — note per manuale (prepare-usb)
+==============================================
 
-Preparazione chiavetta USB (script prepare-usb.sh)
---------------------------------------------------
-Eseguire dal PC locale, MAI dalla live bootata sulla stessa USB.
+Preparazione chiavetta USB
+--------------------------
+Eseguire dal PC host (Linux), MAI dalla live Quelo Office bootata sulla stessa USB.
 
-Prerequisiti sul PC host (Debian/Ubuntu e simili):
-  - e2fsprogs   → mkfs.ext4 (partizione persistenza)
-  - exfatprogs  → mkfs.exfat (partizione home QUELO-HOME)
-  - fdisk, dd, wipefs, partprobe (util-linux)
+Due modalità disponibili:
+  A) GUI grafica (consigliata) — prepare-usb-gui
+  B) Script a terminale (CLI) — prepare-usb.sh
+
+Entrambe eseguono gli stessi passi: wipe → scrittura+verifica ISO → partizioni
+→ formattazione ext4+exFAT → cartelle home.
+
+
+================================================================================
+A) GUI prepare-usb-gui (Linux host)
+================================================================================
+
+Avvio
+-----
+  cd Quelo_prepare_usb_gui    # oppure Quelo_prepare_usb se pacchetto completo
+  ./prepare-usb-gui.sh
+
+Il launcher richiede privilegi root tramite pkexec o sudo.
+NON usare: sudo ./prepare-usb-gui.sh (il launcher gestisce l'elevazione).
+
+Interfaccia
+-----------
+  1. Immagine ISO — seleziona Quelo_Office-0.71-alpha.iso (Sfoglia…)
+  2. Chiavetta USB — scegli il disco USB; evita il disco di sistema indicato
+  3. Persistenza — 512 / 1024 (consigliato) / 2048 MB
+  4. Conferma sicurezza — nome disco (es. sdb) + digita SI SCRIVI
+  5. Esegui — barra avanzamento, messaggi di stato, registro in basso
+  Al termine con successo la finestra si chiude automaticamente.
+
+Prerequisiti host (GUI)
+-----------------------
+  python3, python3-tk
+  e2fsprogs, exfatprogs, util-linux (fdisk, wipefs, sfdisk, lsblk, dd)
+  polkit (pkexec) oppure sudo
+  Sessione grafica (DISPLAY impostato)
+
+Debian/Ubuntu:
+  sudo apt install python3 python3-tk e2fsprogs exfatprogs util-linux polkit-1
+
+Verifica rapida:
+  command -v python3 mkfs.ext4 mkfs.exfat sfdisk lsblk pkexec
+  python3 -c "import tkinter"
+
+
+================================================================================
+B) Script prepare-usb.sh (CLI, terminale)
+================================================================================
+
+Comando:
+  cd Quelo_prepare_usb
+  sudo ./prepare-usb.sh
+
+Prerequisiti host (CLI)
+-----------------------
+  e2fsprogs   → mkfs.ext4 (partizione persistenza)
+  exfatprogs  → mkfs.exfat (partizione home QUELO-HOME)
+  fdisk, dd, wipefs, partprobe (util-linux)
 
 Verifica rapida:
   command -v mkfs.ext4 mkfs.exfat fdisk dd wipefs
 
-Barra avanzamento dd: basata su byte scritti su USB (segnale USR1 a dd), non su pv.
-
-Script prepare-usb.sh (9 passi):
+9 passi interattivi:
   1 ISO  2 USB+conferme  3 dimensione persistenza
-  4 wipefs (cancella vecchie partizioni)
-  5 dd ISO (barra pv/dd)  6 fdisk sda3+sda4
-  7 mkfs  8 store persistenza+cartelle  9 riepilogo
-  Conferma 2/2: digitare "SI SCRIVI" (maiuscolo o minuscolo)
+  4 wipefs  5 scrittura ISO (barra avanzamento)  6 partizioni
+  7 mkfs  8 cartelle home  9 riepilogo
+  Conferma 2/2: digitare "SI SCRIVI"
   Pausa INVIO prima di ogni operazione critica
 
-Se i passi manuali (mkfs.ext4 / mkfs.exfat) sono già riusciti, i pacchetti
-sono già installati sul sistema.
 
-Comando script (CLI):
-  sudo SOURCE_CODE/Quelo_prepare_usb/prepare-usb.sh
+================================================================================
+ISO di pubblicazione
+================================================================================
 
-GUI host (BETA INTERNA — non pubblicata):
-  ./SOURCE_CODE/Quelo_prepare_usb/prepare-usb-gui.sh
-  vedi NOTES-MANUALE-GUI-BETA.txt
-
-ISO di pubblicazione (unica da distribuire):
   ISO/Quelo_Office-0.71-alpha.iso
-  (prepare-usb la propone di default; vedi QUELO_PUBLISH_ISO_VERSION)
+  (prepare-usb propone il percorso di default; vedi QUELO_PUBLISH_ISO_VERSION)
 
 Dopo preparazione USB:
   - Boot da USB
-  - Export modifiche per rebuild: quelo-export
-
-ISO live (comportamento attuale):
-  - NESSUNA persistenza: rimossa del tutto (script di load/save, servizi
-    systemd quelo-persist-load/save, parametro di boot "persistence", tutto
-    eliminato). Ogni boot riparte sempre da zero, identico al precedente:
-    niente config/tema/audio/Bluetooth/Wi-Fi/CUPS salvato tra un riavvio e
-    l'altro, niente overlay su /usr o /var/lib/dpkg per i pacchetti apt.
-  - /tmp, /var/tmp, /var/cache, /root/.cache: sempre tmpfs (RAM), come prima.
-  - Se label QUELO-HOME presente → automount home exFAT (symlink su
-    Desktop/Documenti/Scaricati/Immagini/Musica/Video/Modelli); altrimenti
-    /root normale.
-  - NOTA: prepare-usb.sh crea ancora una partizione ext4 con label
-    "persistence" (non e' stato toccato, e' fuori dall'ambito di questa
-    modifica) - resta pero' inutilizzata, nessuno script del sistema live
-    la monta o la legge piu'.
+  - Export modifiche per rebuild: quelo-export (cartella QUELO-HOME/quelo-export/)

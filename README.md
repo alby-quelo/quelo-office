@@ -122,7 +122,7 @@ La dimensione della partizione di persistenza la scegli tu durante la preparazio
 
 File ufficiale ISO: **`Quelo_Office-0.71-alpha.iso`**
 
-Pacchetto prepare-usb (script preparazione chiavetta), in tre formati:
+Pacchetto prepare-usb (script preparazione chiavetta), in tre formati — pacchetto **completo** (CLI + GUI):
 
 | Formato | File |
 |---------|------|
@@ -130,23 +130,64 @@ Pacchetto prepare-usb (script preparazione chiavetta), in tre formati:
 | RAR | `Quelo_prepare_usb-0.71-alpha.rar` |
 | TAR | `Quelo_prepare_usb-0.71-alpha.tar` |
 
+Pacchetto **solo GUI** (interfaccia grafica Linux):
+
+| Formato | File |
+|---------|------|
+| ZIP | `Quelo_prepare_usb_gui-0.71-alpha.zip` |
+| RAR | `Quelo_prepare_usb_gui-0.71-alpha.rar` |
+| TAR | `Quelo_prepare_usb_gui-0.71-alpha.tar` |
+
 Tutti i download: **https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha**
 
 ### 2. Prepara la chiavetta USB
 
 **Importante:** la preparazione va fatta **sul PC di casa o dell’ufficio**, **mai** avviando Quelo Office dalla stessa chiavetta che stai scrivendo.
 
+#### Opzione A — GUI grafica (consigliata, Linux)
+
 ```bash
-# Dopo aver estratto l'archivio prepare-usb, oppure dal repository clonato:
+# Dopo aver estratto l'archivio prepare-usb-gui (o il pacchetto completo):
+cd Quelo_prepare_usb_gui   # oppure Quelo_prepare_usb
+./prepare-usb-gui.sh
+```
+
+![Interfaccia prepare-usb GUI](docs/screenshots/08-prepare-usb-gui.png)
+
+L’interfaccia guida la scelta di ISO, chiavetta USB e dimensione persistenza (512 / 1024 / 2048 MB), con doppia conferma di sicurezza e messaggi di avanzamento descrittivi. Al termine la finestra si chiude da sola.
+
+**Prerequisiti sul PC host (GUI):**
+
+| Pacchetto | Uso |
+|-----------|-----|
+| `python3`, `python3-tk` | Interfaccia grafica |
+| `e2fsprogs` | Formattazione ext4 (persistenza) |
+| `exfatprogs` | Formattazione exFAT (QUELO-HOME) |
+| `util-linux` | fdisk, wipefs, sfdisk, lsblk, dd |
+| `polkit` (pkexec) o `sudo` | Privilegi root |
+
+Installazione rapida (Debian/Ubuntu):  
+`sudo apt install python3 python3-tk e2fsprogs exfatprogs util-linux polkit-1`
+
+#### Opzione B — Script a terminale (CLI)
+
+```bash
 cd Quelo_prepare_usb
 sudo ./prepare-usb.sh
 ```
 
-Prerequisiti sul PC host: `e2fsprogs`, `exfatprogs`, `util-linux` (fdisk, dd, wipefs…).
+**Prerequisiti sul PC host (CLI):** `e2fsprogs`, `exfatprogs`, `util-linux` (fdisk, dd, wipefs…).
 
 Lo script guida nove passi con pause e doppia conferma di sicurezza (`SI SCRIVI`).
 
-Versione per Windows e GUI Linux in fase di preparazione.
+**Download prepare-usb** (dalla [Release 0.71-alpha](https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha)):
+
+| Pacchetto | Formati |
+|-----------|---------|
+| Completo (CLI + GUI) | `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}` |
+| Solo GUI | `Quelo_prepare_usb_gui-0.71-alpha.{zip,rar,tar}` |
+
+Versione per Windows: ancora in preparazione.
 
 ### 3. Avvia dal BIOS/UEFI
 
@@ -181,7 +222,7 @@ Il codice di build e gli script USB sono in **`SOURCE_CODE/`**:
 | Cartella | Contenuto |
 |----------|-----------|
 | `Quelo_office/` | Build ISO (live-build, overlay, hooks) |
-| `Quelo_prepare_usb/` | `prepare-usb.sh`, `quelo-write-iso.py` |
+| `Quelo_prepare_usb/` | `prepare-usb.sh`, `prepare-usb-gui.sh`, `prepare-usb-gui.py`, `quelo_prepare_lib.py`, `quelo-write-iso.py` |
 
 Dalla live, `quelo-export` (in `QUELO-HOME/quelo-export/`) raccoglie pacchetti e configurazioni aggiunte durante i test, per integrarle nei sorgenti e rigenerare l’ISO.
 

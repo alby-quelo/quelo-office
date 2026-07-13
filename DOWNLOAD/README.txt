@@ -1,22 +1,48 @@
 Quelo Office — pacchetti prepare-usb (release 0.71-alpha)
 ============================================================
 
-Archivi con lo script per preparare la chiavetta USB (prepare-usb.sh,
-quelo-write-iso.py, NOTES-MANUALE.txt).
+Archivi per preparare la chiavetta USB dal PC host (Linux).
 
-Distribuiti su GitHub Releases insieme all'ISO:
-  https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha
-
+Pacchetto completo (CLI + GUI)
+------------------------------
   Quelo_prepare_usb-0.71-alpha.zip
   Quelo_prepare_usb-0.71-alpha.rar
   Quelo_prepare_usb-0.71-alpha.tar
 
-Uso rapido (Linux):
+  Contiene: prepare-usb.sh, prepare-usb-gui.sh, prepare-usb-gui.py,
+  quelo_prepare_lib.py, quelo-write-iso.py, logo.png, NOTES-MANUALE.txt
+
+Pacchetto solo GUI
+------------------
+  Quelo_prepare_usb_gui-0.71-alpha.zip
+  Quelo_prepare_usb_gui-0.71-alpha.rar
+  Quelo_prepare_usb_gui-0.71-alpha.tar
+
+  Contiene: prepare-usb-gui.sh, prepare-usb-gui.py, quelo_prepare_lib.py,
+  quelo-write-iso.py, logo.png, NOTES-MANUALE.txt
+
+Distribuiti su GitHub Releases insieme all'ISO:
+  https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha
+
+Uso rapido — GUI (consigliato)
+------------------------------
   1. Scarica anche Quelo_Office-0.71-alpha.iso dalla stessa pagina Release
-  2. Estrai l'archivio prepare-usb
+  2. Estrai l'archivio prepare-usb-gui (o il pacchetto completo)
   3. Metti l'ISO in una cartella ISO/ accanto a SOURCE_CODE/, oppure
-     indica il percorso quando lo script lo chiede
+     selezionala dall'interfaccia grafica
+  4. ./Quelo_prepare_usb_gui/prepare-usb-gui.sh
+
+Uso rapido — CLI (terminale)
+----------------------------
+  1–3 come sopra
   4. sudo ./Quelo_prepare_usb/prepare-usb.sh
+
+Prerequisiti host
+-----------------
+  GUI: python3, python3-tk, e2fsprogs, exfatprogs, util-linux, polkit o sudo
+  CLI: e2fsprogs, exfatprogs, util-linux
 
 Per rigenerare gli archivi (sviluppo):
   SOURCE_CODE/Quelo_prepare_usb/build-archives.sh
+
+Vedi CHANGELOG.TXT per le novità della GUI.

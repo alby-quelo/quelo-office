@@ -69,16 +69,23 @@
       <div class="card" style="margin-top:1rem;text-align:left">
         <h3 style="margin-top:0">Script prepare-usb (preparazione chiavetta)</h3>
         <p style="margin:0.5rem 0 0.75rem;color:var(--text-muted)">
-          Pacchetto con <code>prepare-usb.sh</code>, <code>quelo-write-iso.py</code> e note.
-          Scarica anche l’ISO dalla stessa pagina Release.
+          Pacchetto completo: <code>prepare-usb.sh</code> (CLI) + <code>prepare-usb-gui</code> (interfaccia grafica Linux),
+          <code>quelo-write-iso.py</code> e note. Scarica anche l’ISO dalla stessa pagina Release.
         </p>
+        <p style="margin:0 0 0.5rem;font-size:0.95rem"><strong>Completo (CLI + GUI)</strong></p>
         <div class="cta-row" style="justify-content:flex-start;margin-top:0">
           <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb-0.71-alpha.zip">ZIP</a>
           <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb-0.71-alpha.rar">RAR</a>
           <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb-0.71-alpha.tar">TAR</a>
         </div>
+        <p style="margin:0.75rem 0 0.5rem;font-size:0.95rem"><strong>Solo GUI Linux</strong></p>
+        <div class="cta-row" style="justify-content:flex-start;margin-top:0">
+          <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb_gui-0.71-alpha.zip">ZIP</a>
+          <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb_gui-0.71-alpha.rar">RAR</a>
+          <a class="btn btn-secondary" href="https://github.com/alby-quelo/quelo-office/releases/download/0.71-alpha/Quelo_prepare_usb_gui-0.71-alpha.tar">TAR</a>
+        </div>
         <p style="margin:0.75rem 0 0;font-size:0.9rem;color:var(--text-muted)">
-          <em>Versione per Windows e GUI Linux in fase di preparazione.</em>
+          <em>Versione per Windows: ancora in preparazione.</em>
         </p>
       </div>
       <div class="hero-frame">
@@ -138,6 +145,13 @@
     <section id="schermate">
       <h2>Schermate</h2>
 
+      <h3>Preparazione chiavetta USB (GUI host)</h3>
+      <p>Interfaccia grafica Linux per scrivere l’ISO, creare persistenza e partizione home — solo dal PC host.</p>
+      <figure style="max-width:780px;margin:1rem auto">
+        <img src="screenshots/08-prepare-usb-gui.png" alt="Interfaccia prepare-usb GUI" loading="lazy" style="width:100%;height:auto;border-radius:8px;border:1px solid var(--border)">
+        <figcaption>prepare-usb-gui — selezione ISO, USB, persistenza e conferme di sicurezza</figcaption>
+      </figure>
+
       <h3>Salvataggio e ripristino sessione</h3>
       <p>Scegli cosa conservare (rete, stampanti, Bluetooth, desktop, audio, schermo, Firefox) e verifica il riepilogo prima di riavviare.</p>
 
@@ -191,14 +205,22 @@
     <section id="uso">
       <h2>Come si usa</h2>
       <ol>
-        <li><strong>Scarica l’ISO</strong> e il pacchetto <strong>prepare-usb</strong> (ZIP, RAR o TAR) dalla pagina <a href="https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha">Release 0.71-alpha</a>.</li>
-        <li><strong>Prepara la chiavetta</strong> dal PC host — mai dalla live bootata sulla stessa USB. Estrai l’archivio prepare-usb, poi:</li>
+        <li><strong>Scarica l’ISO</strong> e un pacchetto <strong>prepare-usb</strong> (completo o solo GUI) dalla pagina <a href="https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha">Release 0.71-alpha</a>.</li>
+        <li><strong>Prepara la chiavetta</strong> dal PC host — mai dalla live bootata sulla stessa USB.</li>
       </ol>
-      <pre><code># oppure: git clone https://github.com/alby-quelo/quelo-office.git
-cd Quelo_prepare_usb
+
+      <h3>GUI grafica (consigliata)</h3>
+      <pre><code>cd Quelo_prepare_usb_gui
+./prepare-usb-gui.sh</code></pre>
+      <p>Prerequisiti host: <code>python3</code>, <code>python3-tk</code>, <code>e2fsprogs</code>, <code>exfatprogs</code>, <code>util-linux</code>, <code>polkit</code> (pkexec) o <code>sudo</code>.</p>
+      <p>Debian/Ubuntu: <code>sudo apt install python3 python3-tk e2fsprogs exfatprogs util-linux polkit-1</code></p>
+
+      <h3>Script a terminale (CLI)</h3>
+      <pre><code>cd Quelo_prepare_usb
 sudo ./prepare-usb.sh</code></pre>
-      <p>Prerequisiti sul PC host: <code>e2fsprogs</code>, <code>exfatprogs</code>, <code>util-linux</code>.</p>
-      <p><em>Versione per Windows e GUI Linux in fase di preparazione.</em></p>
+      <p>Prerequisiti host: <code>e2fsprogs</code>, <code>exfatprogs</code>, <code>util-linux</code>.</p>
+
+      <p><em>Versione per Windows: ancora in preparazione.</em></p>
       <ol start="3">
         <li><strong>Avvia da USB</strong> (BIOS/UEFI).</li>
         <li>Allo <strong>spegnimento</strong>, usa il pulsante «Spegni» per salvare le configurazioni che vuoi conservare.</li>

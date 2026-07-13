@@ -1,41 +1,7 @@
-Quelo Office — prepare-usb GUI (BETA INTERNA)
-==============================================
+Quelo Office — prepare-usb GUI
+================================
 
-NON pubblicata. Solo per test sul PC host prima della release.
+Questa nota è stata incorporata in NOTES-MANUALE.txt (sezione A).
+La GUI è pubblicata dalla release 0.71-alpha.
 
-File
-----
-  prepare-usb-gui.sh   — launcher (pkexec/sudo + python3)
-  prepare-usb-gui.py   — interfaccia grafica (tkinter)
-  quelo_prepare_lib.py — logica condivisa host
-  quelo-write-iso.py   — scrittura/verifica ISO (usata dalla GUI)
-
-Prerequisiti host (Linux)
--------------------------
-  python3, python3-tk
-  e2fsprogs, exfatprogs, util-linux (fdisk, wipefs, sfdisk, lsblk)
-  polkit (pkexec) oppure sudo
-
-Avvio
------
-  ./prepare-usb-gui.sh
-
-Oppure, se già root nella sessione grafica:
-  sudo python3 prepare-usb-gui.py
-
-Vincoli
--------
-  • SOLO sul PC host — mai dalla live Quelo Office bootata sulla stessa USB
-  • Richiede privilegi root (come prepare-usb.sh)
-  • Stesse conferme di sicurezza dello script CLI (nome disco + SI SCRIVI)
-
-Cosa fa
--------
-  Stessi 9 passi di prepare-usb.sh:
-  ISO → wipe → scrittura+verifica → partizioni → ext4+exFAT → cartelle home
-
-Pubblicazione
--------------
-  NON inclusa negli archivi zip/rar/tar pubblici finché i test non sono OK.
-  NON va nell'ISO live.
-  Quando pronta: aggiungere agli archivi prepare-usb e alla pagina Release.
+Vedi anche CHANGELOG.TXT nel repository.

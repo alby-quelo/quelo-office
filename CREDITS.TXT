@@ -26,6 +26,8 @@ Sistema e build
   Free Software Foundation | GNU GRUB | https://www.gnu.org/software/grub/
   Lennart Poettering et al. | systemd | https://systemd.io/
   Python Software Foundation | Python 3 | https://www.python.org/
+  Python Software Foundation | tkinter / python3-tk (prepare-usb host GUI) | https://www.python.org/
+  Tcl Core Team | Tcl/Tk | https://www.tcl.tk/
   Pillow contributors | Pillow (python3-pil) | https://python-pillow.org/
 
 Firmware di rete (vendor)
@@ -125,6 +127,8 @@ System and build
   Free Software Foundation | GNU GRUB | https://www.gnu.org/software/grub/
   Lennart Poettering et al. | systemd | https://systemd.io/
   Python Software Foundation | Python 3 | https://www.python.org/
+  Python Software Foundation | tkinter / python3-tk (prepare-usb host GUI) | https://www.python.org/
+  Tcl Core Team | Tcl/Tk | https://www.tcl.tk/
   Pillow contributors | Pillow (python3-pil) | https://python-pillow.org/
 
 Network firmware (vendors)
