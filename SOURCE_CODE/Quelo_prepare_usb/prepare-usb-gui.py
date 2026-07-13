@@ -36,9 +36,32 @@ class PrepareUsbGui(tk.Tk):
         self._running = False
 
         self._build_ui()
+        self._set_window_icon()
         self._startup_checks()
         self._refresh_disks()
         self._autofill_iso()
+
+    def _set_window_icon(self) -> None:
+        for path in (
+            os.path.join(SCRIPT_DIR, "logo.png"),
+            os.path.join(
+                SCRIPT_DIR,
+                "..",
+                "Quelo_office",
+                "overlay",
+                "usr",
+                "share",
+                "quelo-office",
+                "logo.png",
+            ),
+        ):
+            if os.path.isfile(path):
+                try:
+                    self._icon_img = tk.PhotoImage(file=path)
+                    self.iconphoto(True, self._icon_img)
+                except tk.TclError:
+                    pass
+                break
 
     def _build_ui(self) -> None:
         # Barra pulsanti fissa in basso (pack prima, side=BOTTOM)
@@ -109,10 +132,17 @@ class PrepareUsbGui(tk.Tk):
         prog_frame = ttk.LabelFrame(outer, text="Avanzamento", padding=10)
         prog_frame.pack(fill=tk.BOTH, expand=True, pady=4)
         self.progress = ttk.Progressbar(prog_frame, variable=self.progress_var, maximum=100)
-        self.progress.pack(fill=tk.X, pady=(0, 6))
-        ttk.Label(prog_frame, textvariable=self.status_var).pack(anchor=tk.W)
+        self.progress.pack(fill=tk.X, pady=(0, 8))
+        self.status_label = ttk.Label(
+            prog_frame,
+            textvariable=self.status_var,
+            anchor=tk.W,
+            wraplength=680,
+            padding=(0, 2),
+        )
+        self.status_label.pack(fill=tk.X, anchor=tk.W, pady=(0, 8))
         log_wrap = ttk.Frame(prog_frame)
-        log_wrap.pack(fill=tk.BOTH, expand=True, pady=(6, 0))
+        log_wrap.pack(fill=tk.BOTH, expand=True)
         scroll = ttk.Scrollbar(log_wrap)
         scroll.pack(side=tk.RIGHT, fill=tk.Y)
         self.log = tk.Text(
@@ -207,6 +237,7 @@ class PrepareUsbGui(tk.Tk):
         def _do() -> None:
             self.progress_var.set(max(0, min(100, pct)))
             self.status_var.set(label)
+            self.status_label.configure(text=label)
 
         self.after(0, _do)
 

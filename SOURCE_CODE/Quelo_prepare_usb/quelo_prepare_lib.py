@@ -395,7 +395,7 @@ def create_partitions_auto(
     if not shutil.which("sfdisk"):
         raise PrepareError("sfdisk non trovato (util-linux).")
 
-    script = f",,{persist_mb}M,L\n,,L\n"
+    script = f",{persist_mb}M,L\n,,L\n"
     for attempt in range(1, 4):
         if log:
             log(f"Creo partizioni con sfdisk (tentativo {attempt}/3)...")
@@ -413,9 +413,13 @@ def create_partitions_auto(
             except PrepareError:
                 if log:
                     log("Partizioni create ma verifica fallita, riprovo...")
-        else:
+        if proc.returncode != 0:
             if log:
-                log(proc.stderr.strip() or "sfdisk fallito.")
+                err = (proc.stderr or proc.stdout or "").strip()
+                if err:
+                    log(f"sfdisk: {err}")
+                else:
+                    log("sfdisk fallito.")
         time.sleep(2)
 
     raise PrepareError("Creazione automatica partizioni fallita dopo 3 tentativi.")
