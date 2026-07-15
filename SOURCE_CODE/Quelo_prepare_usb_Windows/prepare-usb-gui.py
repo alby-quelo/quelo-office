@@ -1,0 +1,499 @@
+#!/usr/bin/env python3
+"""GUI host per preparazione chiavetta Quelo Office. NON inclusa nell'ISO live."""
+
+from __future__ import annotations
+
+import os
+import sys
+import threading
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+if SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, SCRIPT_DIR)
+
+if sys.platform == "win32":
+    import quelo_prepare_win_lib as lib  # noqa: E402
+else:
+    import quelo_prepare_lib as lib  # noqa: E402
+
+IS_WINDOWS = sys.platform == "win32"
+
+
+class PrepareUsbGui(tk.Tk):
+    def __init__(self) -> None:
+        super().__init__()
+        self.title(
+            "Quelo Office — prepare-usb (PC host, Windows)"
+            if IS_WINDOWS
+            else "Quelo Office — prepare-usb (PC host)"
+        )
+        self.minsize(640, 580)
+        self.geometry("780x700")
+
+        self.iso_var = tk.StringVar()
+        self.disk_var = tk.StringVar()
+        self.persist_var = tk.IntVar(value=1024)
+        self.confirm_disk_var = tk.StringVar()
+        self.confirm_phrase_var = tk.StringVar()
+        self.status_step_var = tk.StringVar(value="Pronto per iniziare")
+        self.status_detail_var = tk.StringVar(
+            value=(
+                "Scegli il file ISO di Quelo Office, seleziona la chiavetta USB "
+                "e completa le due conferme di sicurezza. Poi premi Esegui."
+            ),
+        )
+        self.progress_var = tk.DoubleVar(value=0.0)
+
+        self._disks: list[lib.DiskInfo] = []
+        self._worker: threading.Thread | None = None
+        self._running = False
+        self._exit_code = 0
+
+        self._build_ui()
+        self._set_window_icon()
+        self.update_idletasks()
+        self._startup_checks()
+        self.status_detail_var.set("Caricamento elenco dischi USB...")
+        self.after(50, self._deferred_disk_scan)
+        self._autofill_iso()
+
+    def _deferred_disk_scan(self) -> None:
+        def worker() -> None:
+            _win_log("[GUI] scansione dischi (diskpart)...")
+            try:
+                root = lib.root_disk()
+            except lib.PrepareError as exc:
+                _win_log(f"[GUI] root_disk errore: {exc}")
+                root = None
+            try:
+                disks = lib.list_disks()
+            except lib.PrepareError as exc:
+                _win_log(f"[GUI] list_disks errore: {exc}")
+
+                def err() -> None:
+                    messagebox.showerror("Dischi", str(exc))
+                    self.status_detail_var.set("Errore lettura dischi. Premi Aggiorna.")
+
+                self.after(0, err)
+                return
+
+            _win_log(f"[GUI] trovati {len(disks)} dischi")
+
+            def apply() -> None:
+                self._disks = disks
+                labels = []
+                for d in self._disks:
+                    tag = "USB" if d.is_usb else "ATTENZIONE: non USB"
+                    if IS_WINDOWS:
+                        labels.append(f"Disco {d.name}  {d.size}  {d.model}  [{tag}]")
+                    else:
+                        labels.append(f"{d.path}  {d.size}  {d.model}  [{tag}]")
+                self.disk_combo["values"] = labels
+                if labels:
+                    usb_idx = next((i for i, d in enumerate(self._disks) if d.is_usb), 0)
+                    self.disk_combo.current(usb_idx)
+                if root:
+                    label = f"Disco di sistema (NON usare): {root}"
+                    if IS_WINDOWS and hasattr(lib, "_disk_number"):
+                        try:
+                            label = f"Disco di sistema (NON usare): Disco {lib._disk_number(root)}"
+                        except lib.PrepareError:
+                            pass
+                    self.root_disk_label.configure(text=label)
+                self.status_detail_var.set(
+                    "Scegli il file ISO di Quelo Office, seleziona la chiavetta USB "
+                    "e completa le due conferme di sicurezza. Poi premi Esegui."
+                )
+
+            self.after(0, apply)
+
+        threading.Thread(target=worker, daemon=True).start()
+
+    def _set_window_icon(self) -> None:
+        for path in (
+            os.path.join(SCRIPT_DIR, "logo.png"),
+            os.path.join(
+                SCRIPT_DIR,
+                "..",
+                "Quelo_office",
+                "overlay",
+                "usr",
+                "share",
+                "quelo-office",
+                "logo.png",
+            ),
+        ):
+            if os.path.isfile(path):
+                try:
+                    self._icon_img = tk.PhotoImage(file=path)
+                    self.iconphoto(True, self._icon_img)
+                except tk.TclError:
+                    pass
+                break
+
+    def _build_ui(self) -> None:
+        # Barra pulsanti fissa in basso (pack prima, side=BOTTOM)
+        actions = ttk.Frame(self, padding=(12, 8, 12, 12))
+        actions.pack(side=tk.BOTTOM, fill=tk.X)
+        self.cancel_btn = ttk.Button(actions, text="Annulla", command=self.destroy)
+        self.cancel_btn.pack(side=tk.RIGHT, padx=(8, 0))
+        self.start_btn = ttk.Button(actions, text="Esegui", command=self._start)
+        self.start_btn.pack(side=tk.RIGHT)
+
+        outer = ttk.Frame(self, padding=12)
+        outer.pack(fill=tk.BOTH, expand=True)
+
+        warn = ttk.Label(
+            outer,
+            text=(
+                "Strumento HOST — eseguire sul PC locale con la USB collegata.\n"
+                "NON avviare dalla sessione live Quelo Office bootata sulla stessa chiavetta."
+            ),
+            foreground="#a33",
+            wraplength=700,
+            justify=tk.LEFT,
+        )
+        warn.pack(anchor=tk.W, pady=(0, 10))
+
+        iso_frame = ttk.LabelFrame(outer, text="1. Immagine ISO", padding=10)
+        iso_frame.pack(fill=tk.X, pady=4)
+        row = ttk.Frame(iso_frame)
+        row.pack(fill=tk.X)
+        ttk.Entry(row, textvariable=self.iso_var).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+        ttk.Button(row, text="Sfoglia…", command=self._browse_iso).pack(side=tk.LEFT)
+
+        usb_frame = ttk.LabelFrame(outer, text="2. Chiavetta USB", padding=10)
+        usb_frame.pack(fill=tk.X, pady=4)
+        row2 = ttk.Frame(usb_frame)
+        row2.pack(fill=tk.X)
+        self.disk_combo = ttk.Combobox(row2, textvariable=self.disk_var, state="readonly", width=70)
+        self.disk_combo.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
+        ttk.Button(row2, text="Aggiorna", command=self._refresh_disks).pack(side=tk.LEFT)
+        self.root_disk_label = ttk.Label(usb_frame, text="", foreground="#666")
+        self.root_disk_label.pack(anchor=tk.W, pady=(6, 0))
+
+        persist_frame = ttk.LabelFrame(outer, text="3. Dimensione persistenza (ext4)", padding=10)
+        persist_frame.pack(fill=tk.X, pady=4)
+        for mb in lib.PERSIST_SIZES_MB:
+            label = f"{mb} MB"
+            if mb == 1024:
+                label += " (consigliato)"
+            ttk.Radiobutton(
+                persist_frame,
+                text=label,
+                variable=self.persist_var,
+                value=mb,
+            ).pack(anchor=tk.W)
+
+        confirm_frame = ttk.LabelFrame(outer, text="4. Conferma sicurezza", padding=10)
+        confirm_frame.pack(fill=tk.X, pady=4)
+        ttk.Label(
+            confirm_frame,
+            text="Tutti i dati sul disco USB verranno SOVRASCRITTI.",
+            foreground="#a33",
+        ).pack(anchor=tk.W)
+        ttk.Label(confirm_frame, text="Conferma 1/2 — numero disco (es. 2):" if IS_WINDOWS else "Conferma 1/2 — nome disco (es. sdb):").pack(anchor=tk.W, pady=(6, 0))
+        ttk.Entry(confirm_frame, textvariable=self.confirm_disk_var).pack(fill=tk.X)
+        ttk.Label(confirm_frame, text='Conferma 2/2 — digita: SI SCRIVI').pack(anchor=tk.W, pady=(6, 0))
+        ttk.Entry(confirm_frame, textvariable=self.confirm_phrase_var).pack(fill=tk.X)
+
+        prog_frame = ttk.LabelFrame(outer, text="Avanzamento", padding=10)
+        prog_frame.pack(fill=tk.BOTH, expand=True, pady=4)
+        prog_frame.columnconfigure(0, weight=1)
+        prog_frame.rowconfigure(3, weight=1)
+
+        self.progress = ttk.Progressbar(prog_frame, variable=self.progress_var, maximum=100)
+        self.progress.grid(row=0, column=0, sticky=tk.EW, pady=(0, 10))
+
+        self.status_step_label = ttk.Label(
+            prog_frame,
+            textvariable=self.status_step_var,
+            font=("", 11, "bold"),
+        )
+        self.status_step_label.grid(row=1, column=0, sticky=tk.W)
+
+        self.status_detail_label = ttk.Label(
+            prog_frame,
+            textvariable=self.status_detail_var,
+            wraplength=700,
+            justify=tk.LEFT,
+        )
+        self.status_detail_label.grid(row=2, column=0, sticky=tk.EW, pady=(4, 10))
+
+        log_wrap = ttk.Frame(prog_frame)
+        log_wrap.grid(row=3, column=0, sticky=tk.NSEW)
+        log_wrap.columnconfigure(0, weight=1)
+        log_wrap.rowconfigure(0, weight=1)
+        scroll = ttk.Scrollbar(log_wrap)
+        scroll.grid(row=0, column=1, sticky=tk.NS)
+        self.log = tk.Text(
+            log_wrap,
+            height=6,
+            wrap=tk.WORD,
+            state=tk.DISABLED,
+            yscrollcommand=scroll.set,
+        )
+        self.log.grid(row=0, column=0, sticky=tk.NSEW)
+        scroll.configure(command=self.log.yview)
+
+    def _startup_checks(self) -> None:
+        if not IS_WINDOWS:
+            try:
+                lib.require_host()
+            except lib.PrepareError as exc:
+                messagebox.showerror("Sessione live", str(exc))
+                self.after(100, self.destroy)
+                return
+
+        elevated = lib.is_admin() if IS_WINDOWS else os.geteuid() == 0
+        if not elevated:
+            messagebox.showerror(
+                "Permessi",
+                "Servono privilegi amministratore.\n"
+                + (
+                    "Usa: prepare-usb-gui.bat (UAC)"
+                    if IS_WINDOWS
+                    else "Usa: ./prepare-usb-gui.sh (pkexec/sudo)"
+                ),
+            )
+            self.after(100, self.destroy)
+            return
+
+        missing = lib.missing_dependencies()
+        if missing:
+            messagebox.showerror(
+                "Dipendenze mancanti",
+                "Installa:\n• " + "\n• ".join(missing),
+            )
+            self.after(100, self.destroy)
+            return
+
+    def _autofill_iso(self) -> None:
+        found = lib.find_publish_iso()
+        if found and not self.iso_var.get():
+            self.iso_var.set(found)
+
+    def _browse_iso(self) -> None:
+        path = filedialog.askopenfilename(
+            title="Seleziona ISO Quelo Office",
+            filetypes=[("ISO", "*.iso"), ("Tutti i file", "*.*")],
+        )
+        if path:
+            self.iso_var.set(path)
+
+    def _refresh_disks(self) -> None:
+        self.status_detail_var.set("Aggiornamento elenco dischi...")
+        self._deferred_disk_scan()
+
+    def _selected_disk(self) -> str | None:
+        idx = self.disk_combo.current()
+        if idx < 0 or idx >= len(self._disks):
+            return None
+        return self._disks[idx].path
+
+    def _append_log(self, line: str) -> None:
+        if IS_WINDOWS:
+            print(f"[GUI] {line}", file=sys.stderr, flush=True)
+            _win_log(f"[GUI] {line}")
+
+        def _do() -> None:
+            self.log.configure(state=tk.NORMAL)
+            self.log.insert(tk.END, line + "\n")
+            self.log.see(tk.END)
+            self.log.configure(state=tk.DISABLED)
+
+        self.after(0, _do)
+
+    def _set_status(self, step: str, detail: str = "") -> None:
+        def _do() -> None:
+            self.status_step_var.set(step)
+            self.status_detail_var.set(detail)
+
+        self.after(0, _do)
+
+    def _set_progress(self, pct: int, label: str) -> None:
+        def _do() -> None:
+            self.progress_var.set(max(0, min(100, pct)))
+            if "\n" in label:
+                step, detail = label.split("\n", 1)
+            else:
+                step, detail = label, ""
+            self.status_step_var.set(step)
+            self.status_detail_var.set(detail)
+
+        self.after(0, _do)
+
+    def _start(self) -> None:
+        if self._running:
+            return
+
+        iso = self.iso_var.get().strip()
+        disk = self._selected_disk()
+        persist_mb = self.persist_var.get()
+        disk_name = self.confirm_disk_var.get().strip()
+        phrase = self.confirm_phrase_var.get()
+
+        if not iso or not os.path.isfile(iso):
+            messagebox.showwarning("ISO", "Seleziona un file ISO valido.")
+            return
+        if not disk:
+            messagebox.showwarning("USB", "Seleziona una chiavetta USB.")
+            return
+
+        info = self._disks[self.disk_combo.current()]
+        try:
+            lib.validate_confirm_text(info.name, disk_name, phrase)
+        except lib.PrepareError as exc:
+            messagebox.showwarning("Conferma", str(exc))
+            return
+
+        root = lib.root_disk()
+        if root and disk == root:
+            messagebox.showerror("USB", "Hai scelto il disco di sistema. STOP.")
+            return
+
+        allow_non_usb = False
+        if not info.is_usb:
+            if not messagebox.askyesno(
+                "Attenzione",
+                "Il disco non risulta USB/removable.\nContinuare comunque?",
+            ):
+                return
+            allow_non_usb = True
+
+        if not messagebox.askokcancel(
+            "Ultima conferma",
+            f"Sto per preparare:\n\n"
+            f"ISO: {iso}\n"
+            f"USB: {disk}\n"
+            f"Persistenza: {persist_mb} MB\n\n"
+            f"Tutti i dati su {disk} verranno cancellati.",
+        ):
+            return
+
+        self._running = True
+        self.start_btn.configure(state=tk.DISABLED)
+        self.cancel_btn.configure(state=tk.DISABLED)
+        self.progress_var.set(0)
+        self._set_progress(
+            0,
+            "Avvio operazione\n"
+            "Controllo i parametri scelti e avvio la preparazione della chiavetta. "
+            "Tutti i dati già presenti sul disco USB selezionato verranno cancellati.",
+        )
+        self.log.configure(state=tk.NORMAL)
+        self.log.delete("1.0", tk.END)
+        self.log.configure(state=tk.DISABLED)
+
+        def worker() -> None:
+            try:
+                def on_progress(pct: int, _cur: int, _total: int, label: str) -> None:
+                    self._set_progress(pct, label)
+
+                lib.run_prepare(
+                    iso,
+                    disk,
+                    persist_mb,
+                    allow_non_usb=allow_non_usb,
+                    log=self._append_log,
+                    progress=on_progress,
+                )
+            except lib.PrepareError as exc:
+                err_msg = str(exc)
+                self._append_log(f"ERRORE: {err_msg}")
+                self._set_progress(
+                    0,
+                    f"Operazione interrotta\n{err_msg} "
+                    "Consulta il registro in basso per i dettagli tecnici.",
+                )
+
+                def _fail(msg: str = err_msg) -> None:
+                    messagebox.showerror("Errore", msg)
+                    self._exit_code = 1
+                    self._running = False
+                    self.start_btn.configure(state=tk.NORMAL)
+                    self.cancel_btn.configure(state=tk.NORMAL)
+
+                self.after(0, _fail)
+            else:
+                self._set_progress(
+                    100,
+                    "Operazione completata con successo\n"
+                    "La chiavetta è pronta: rimuovila in sicurezza, riavvia il PC "
+                    "e seleziona l'avvio da USB nel menu del BIOS o del boot manager.",
+                )
+
+                def _finish_ok() -> None:
+                    messagebox.showinfo(
+                        "Completato",
+                        "Chiavetta pronta.\n\n"
+                        "1. Rimuovi la USB in sicurezza\n"
+                        "2. Boot da USB\n"
+                        "3. Allo spegnimento salva le configurazioni che vuoi conservare",
+                    )
+                    self._exit_code = 0
+                    self._running = False
+                    self.quit()
+                    self.destroy()
+
+                self.after(0, _finish_ok)
+
+        self._worker = threading.Thread(target=worker, daemon=True)
+        self._worker.start()
+
+
+def _win_log(msg: str) -> None:
+    if not IS_WINDOWS:
+        return
+    log_path = os.path.join(SCRIPT_DIR, "windows", "LOG-FULL.txt")
+    try:
+        with open(log_path, "a", encoding="utf-8", errors="replace") as fh:
+            fh.write(msg.rstrip() + "\n")
+            fh.flush()
+    except OSError:
+        pass
+
+
+def main() -> int:
+    if IS_WINDOWS:
+        import platform
+        import traceback
+
+        _win_log(f"[prepare-usb-gui.py] === avvio ===")
+        _win_log(f"python={sys.version}")
+        _win_log(f"executable={sys.executable}")
+        _win_log(f"cwd={os.getcwd()}")
+        _win_log(f"platform={platform.platform()}")
+        _win_log(f"arch={platform.architecture()}")
+        _win_log(f"argv={sys.argv}")
+    if not IS_WINDOWS and not os.environ.get("DISPLAY"):
+        print("ERRORE: DISPLAY non impostato (serve sessione grafica).", file=sys.stderr)
+        return 1
+    try:
+        import tkinter  # noqa: F401
+    except ImportError as exc:
+        _win_log(f"ERRORE tkinter ImportError: {exc}")
+        print(
+            "ERRORE: tkinter non disponibile (reinstalla Python con Tcl/Tk).",
+            file=sys.stderr,
+        )
+        if IS_WINDOWS:
+            pass
+        return 1
+
+    try:
+        app = PrepareUsbGui()
+        app.mainloop()
+        return int(getattr(app, "_exit_code", 0))
+    except Exception:
+        if IS_WINDOWS:
+            _win_log("ERRORE eccezione GUI:\n" + traceback.format_exc())
+            traceback.print_exc()
+        raise
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

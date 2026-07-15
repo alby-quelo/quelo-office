@@ -1,0 +1,47 @@
+Quelo Office prepare-usb — Windows (32 bit, OFFLINE)
+====================================================
+
+AVVIO
+-----
+  Doppio clic su:  AVVIA.bat
+
+  Fa tutto in automatico:
+    1. controlla dipendenze
+    2. installa Python + mke2fs se mancano (solo in windows\)
+    3. apre la GUI (richiede conferma UAC amministratore)
+
+  Nessuna connessione Internet richiesta.
+
+Contenuto pacchetto
+-------------------
+  AVVIA.bat                          — unico file da avviare
+  prepare-usb-gui.py                 — programma grafico
+  windows\installers\python-3.9.13.exe
+  windows\tools\e2fsprogs\           — mke2fs + DLL (32 bit)
+
+  Gli script di appoggio sono in windows\scripts\ (non serve toccarli).
+
+Requisiti
+---------
+  • Windows 7 SP1 o superiore (32 o 64 bit)
+  • Privilegi amministratore (UAC)
+  • Nessuna connessione Internet
+
+Se la finestra si chiude subito
+--------------------------------
+  1. Tasto destro su AVVIA.bat -^> Esegui come amministratore
+  2. Apri windows\LOG-FULL.txt  (log completo di TUTTO)
+  3. Apri windows\logs\python-installer.log  (solo installer Python)
+
+Conferma sicurezza nella GUI
+----------------------------
+  • Conferma 1/2: numero disco USB (es. 2)
+  • Conferma 2/2: SI SCRIVI
+
+
+ENGLISH — Quick start
+---------------------
+  Double-click AVVIA.bat (offline, no Internet).
+  See windows\prepare-usb-gui.log if the window closes immediately.
+
+Requirements: Windows 7 SP1+ (32 or 64-bit), administrator (UAC).
