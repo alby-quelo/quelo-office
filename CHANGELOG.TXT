@@ -1,6 +1,43 @@
 Quelo Office — Changelog pubblico
 ==================================
 
+Release 0.71-alpha — prepare-usb GUI su Windows (2026-07-16)
+-------------------------------------------------------------
+
+ITALIANO
+--------
+
+### Nuovo: interfaccia grafica prepare-usb anche su Windows (32 e 64 bit)
+
+Realizzata la **GUI per creare la chiavetta Quelo Office anche su Windows**,
+sia a **32 bit** sia a **64 bit** (pacchetto offline con Python 32 bit).
+
+**Download**
+  - `Quelo-prepare_usb_windows.{zip,rar,tar}`
+
+**Invariato**
+  - Avvio USB ibrido UEFI/MBR
+  - Partizioni: ISO, EFI, persistenza ext4, QUELO-HOME (exFAT)
+  - GUI Linux host e script CLI `prepare-usb.sh`
+
+
+ENGLISH
+-------
+
+### New: prepare-usb graphical interface on Windows (32-bit and 64-bit)
+
+The **GUI to prepare the Quelo Office USB stick is now available on Windows**,
+for both **32-bit** and **64-bit** hosts (offline package with 32-bit Python).
+
+**Download**
+  - `Quelo-prepare_usb_windows.{zip,rar,tar}`
+
+**Unchanged**
+  - Hybrid UEFI/MBR USB boot
+  - Partitions: ISO, EFI, ext4 persistence, QUELO-HOME (exFAT)
+  - Linux host GUI and CLI script `prepare-usb.sh`
+
+
 Release 0.71-alpha — aggiornamento prepare-usb GUI (2026-07-13)
 ----------------------------------------------------------------
 
@@ -41,7 +78,6 @@ USB dal PC host (non dalla live Quelo Office bootata sulla stessa USB).
 **Invariato**
   - ISO live `Quelo_Office-0.71-alpha.iso`
   - Script CLI `prepare-usb.sh` (terminal)
-  - Versione Windows prepare-usb: ancora in preparazione
 
 ### Correzione: partizione QUELO-HOME (exFAT) su Windows (2026-07-13)
 
@@ -99,7 +135,6 @@ host PC (not from a Quelo Office live session booted on the same stick).
 **Unchanged**
   - Live ISO `Quelo_Office-0.71-alpha.iso`
   - CLI script `prepare-usb.sh` (terminal)
-  - Windows prepare-usb version: still in preparation
 
 ### Fix: QUELO-HOME (exFAT) partition on Windows (2026-07-13)
 

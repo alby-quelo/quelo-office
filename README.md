@@ -122,7 +122,7 @@ La dimensione della partizione di persistenza la scegli tu durante la preparazio
 
 File ufficiale ISO: **`Quelo_Office-0.71-alpha.iso`**
 
-Pacchetto prepare-usb (script preparazione chiavetta), in tre formati — pacchetto **completo** (CLI + GUI):
+Pacchetto prepare-usb (script preparazione chiavetta), in tre formati — pacchetto **completo** (CLI + GUI Linux):
 
 | Formato | File |
 |---------|------|
@@ -137,6 +137,14 @@ Pacchetto **solo GUI** (interfaccia grafica Linux):
 | ZIP | `Quelo_prepare_usb_gui-0.71-alpha.zip` |
 | RAR | `Quelo_prepare_usb_gui-0.71-alpha.rar` |
 | TAR | `Quelo_prepare_usb_gui-0.71-alpha.tar` |
+
+Pacchetto **GUI Windows** (32 e 64 bit, offline):
+
+| Formato | File |
+|---------|------|
+| ZIP | `Quelo-prepare_usb_windows.zip` |
+| RAR | `Quelo-prepare_usb_windows.rar` |
+| TAR | `Quelo-prepare_usb_windows.tar` |
 
 Tutti i download: **https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha**
 
@@ -184,16 +192,25 @@ Lo script guida nove passi con pause e doppia conferma di sicurezza (`SI SCRIVI`
 
 | Pacchetto | Formati |
 |-----------|---------|
-| Completo (CLI + GUI) | `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}` |
+| Completo (CLI + GUI Linux) | `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}` |
 | Solo GUI Linux | `Quelo_prepare_usb_gui-0.71-alpha.{zip,rar,tar}` |
+| GUI Windows (32/64 bit) | `Quelo-prepare_usb_windows.{zip,rar,tar}` |
 
-La GUI Linux (release 0.71-alpha) include la correzione per la partizione **QUELO-HOME**
-exFAT su Windows (tipo partizione 0x07). Vedi `CHANGELOG.TXT`.
+Vedi `CHANGELOG.TXT` per le novità.
 
-#### Opzione C — GUI grafica (Windows 7+)
+#### Opzione C — GUI grafica (Windows 7+, 32 e 64 bit)
 
-**Ancora in preparazione** — non scaricare da questa release; verrà pubblicata
-in un aggiornamento successivo.
+1. Scarica anche `Quelo_Office-0.71-alpha.iso` dalla stessa pagina Release
+2. Estrai `Quelo-prepare_usb_windows.zip` (oppure `.rar` / `.tar`)
+3. Doppio clic su **`AVVIA.bat`** (accetta il prompt UAC amministratore)
+4. Nella GUI: scegli ISO, chiavetta USB, dimensione persistenza (512 / 1024 / 2048 MB)
+5. Conferme di sicurezza: numero disco + digita `SI SCRIVI`
+
+Il pacchetto è **offline** (include Python 32 bit e strumenti): non serve Internet.
+Funziona su **Windows 32 bit** e **Windows 64 bit** (WOW64).
+
+In caso di problemi: tasto destro su `AVVIA.bat` → Esegui come amministratore, poi apri
+`windows\LOG-FULL.txt`. Dettagli anche in `LEGGIMI-WINDOWS.txt` / `LEGGIMI.txt` nell’archivio.
 
 ### 3. Avvia dal BIOS/UEFI
 

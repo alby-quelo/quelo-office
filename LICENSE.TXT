@@ -148,6 +148,23 @@ Font
                                         (EULA proprietaria; Arial, Times,
                                          Verdana, Courier, ecc.)
 
+prepare-usb GUI Windows (pacchetto host Quelo-prepare_usb_windows)
+  Python 3.9.13 Win32 (offline)         → PSF License
+                                        https://docs.python.org/3/license.html
+  Tcl/Tk (con Python Win32 / tkinter)   → Tcl/Tk License (BSD-style)
+                                        https://www.tcl.tk/software/tcltk/license.html
+  e2fsprogs / mke2fs.exe                → GPL v2
+                                        https://e2fsprogs.sourceforge.net/
+  Cygwin x86 (DLL per mke2fs)           → GPL v3+ (runtime Cygwin)
+                                        https://cygwin.com/licensing.html
+  GPT fdisk — sgdisk32.exe              → GPL v2
+                                        https://www.rodsbooks.com/gdisk/
+  FATtools (exFAT in-place)             → GPL v3
+                                        https://github.com/maxpat78/FATtools
+  diskpart, PowerShell, mountvol        → componenti proprietari Microsoft Windows
+                                        (già presenti sul sistema host; non
+                                         sostituiti dalla licenza Quelo Office)
+
 Altri
   console-setup, kbd, locales           → GPL v2+ / varie (Debian)
 
@@ -296,6 +313,23 @@ Fonts
   ttf-mscorefonts-installer           → Microsoft End-User License Agreement
                                         (proprietary EULA; Arial, Times,
                                          Verdana, Courier, etc.)
+
+prepare-usb GUI Windows (Quelo-prepare_usb_windows host package)
+  Python 3.9.13 Win32 (offline)       → PSF License
+                                        https://docs.python.org/3/license.html
+  Tcl/Tk (with Python Win32 / tkinter) → Tcl/Tk License (BSD-style)
+                                        https://www.tcl.tk/software/tcltk/license.html
+  e2fsprogs / mke2fs.exe              → GPL v2
+                                        https://e2fsprogs.sourceforge.net/
+  Cygwin x86 (DLLs for mke2fs)        → GPL v3+ (Cygwin runtime)
+                                        https://cygwin.com/licensing.html
+  GPT fdisk — sgdisk32.exe            → GPL v2
+                                        https://www.rodsbooks.com/gdisk/
+  FATtools (in-place exFAT)           → GPL v3
+                                        https://github.com/maxpat78/FATtools
+  diskpart, PowerShell, mountvol      → proprietary Microsoft Windows components
+                                        (already on the host OS; not replaced by
+                                         the Quelo Office license)
 
 Other
   console-setup, kbd, locales         → GPL v2+ / various (Debian)

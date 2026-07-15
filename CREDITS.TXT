@@ -30,6 +30,15 @@ Sistema e build
   Tcl Core Team | Tcl/Tk | https://www.tcl.tk/
   Pillow contributors | Pillow (python3-pil) | https://python-pillow.org/
 
+prepare-usb GUI Windows (host 32/64 bit)
+  Python Software Foundation | Python 3.9.13 Win32 (pacchetto offline) | https://www.python.org/
+  Tcl Core Team | Tcl/Tk (con Python Win32 / tkinter) | https://www.tcl.tk/
+  Theodore Ts'o / e2fsprogs | mke2fs (creazione ext4 persistenza) | https://e2fsprogs.sourceforge.net/
+  Cygwin Project | runtime Cygwin x86 (DLL per mke2fs.exe) | https://cygwin.com/
+  Roderick W. Smith | GPT fdisk — sgdisk32.exe (diagnostica GPT) | https://www.rodsbooks.com/gdisk/
+  maxpat78 | FATtools (formattazione exFAT in-place) | https://github.com/maxpat78/FATtools
+  Microsoft | diskpart, PowerShell, mountvol (strumenti di sistema Windows) | https://www.microsoft.com/
+
 Firmware di rete (vendor)
   Debian non-free-firmware | firmware-* (LAN, WiFi, mobile) | https://wiki.debian.org/Firmware
 
@@ -130,6 +139,15 @@ System and build
   Python Software Foundation | tkinter / python3-tk (prepare-usb host GUI) | https://www.python.org/
   Tcl Core Team | Tcl/Tk | https://www.tcl.tk/
   Pillow contributors | Pillow (python3-pil) | https://python-pillow.org/
+
+prepare-usb GUI Windows (32/64-bit host)
+  Python Software Foundation | Python 3.9.13 Win32 (offline package) | https://www.python.org/
+  Tcl Core Team | Tcl/Tk (with Python Win32 / tkinter) | https://www.tcl.tk/
+  Theodore Ts'o / e2fsprogs | mke2fs (ext4 persistence) | https://e2fsprogs.sourceforge.net/
+  Cygwin Project | Cygwin x86 runtime (DLLs for mke2fs.exe) | https://cygwin.com/
+  Roderick W. Smith | GPT fdisk — sgdisk32.exe (GPT diagnostics) | https://www.rodsbooks.com/gdisk/
+  maxpat78 | FATtools (in-place exFAT formatting) | https://github.com/maxpat78/FATtools
+  Microsoft | diskpart, PowerShell, mountvol (Windows system tools) | https://www.microsoft.com/
 
 Network firmware (vendors)
   Debian non-free-firmware | firmware-* (LAN, WiFi, mobile) | https://wiki.debian.org/Firmware

@@ -122,7 +122,7 @@ You choose the persistence partition size during preparation (e.g. 128 / 256 / 5
 
 Official ISO: **`Quelo_Office-0.71-alpha.iso`**
 
-prepare-usb package (USB preparation scripts) — **full** package (CLI + GUI), three formats:
+prepare-usb package (USB preparation scripts) — **full** package (CLI + Linux GUI), three formats:
 
 | Format | File |
 |--------|------|
@@ -137,6 +137,14 @@ prepare-usb package (USB preparation scripts) — **full** package (CLI + GUI), 
 | ZIP | `Quelo_prepare_usb_gui-0.71-alpha.zip` |
 | RAR | `Quelo_prepare_usb_gui-0.71-alpha.rar` |
 | TAR | `Quelo_prepare_usb_gui-0.71-alpha.tar` |
+
+**Windows GUI** package (32-bit and 64-bit, offline):
+
+| Format | File |
+|--------|------|
+| ZIP | `Quelo-prepare_usb_windows.zip` |
+| RAR | `Quelo-prepare_usb_windows.rar` |
+| TAR | `Quelo-prepare_usb_windows.tar` |
 
 All downloads: **https://github.com/alby-quelo/quelo-office/releases/tag/0.71-alpha**
 
@@ -184,16 +192,25 @@ The script walks through nine steps with pauses and a safety double confirmation
 
 | Package | Formats |
 |---------|---------|
-| Full (CLI + GUI) | `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}` |
+| Full (CLI + Linux GUI) | `Quelo_prepare_usb-0.71-alpha.{zip,rar,tar}` |
 | GUI only (Linux) | `Quelo_prepare_usb_gui-0.71-alpha.{zip,rar,tar}` |
+| Windows GUI (32/64-bit) | `Quelo-prepare_usb_windows.{zip,rar,tar}` |
 
-The Linux GUI (release 0.71-alpha) includes the **QUELO-HOME** exFAT fix for Windows
-(partition type 0x07). See `CHANGELOG.TXT`.
+See `CHANGELOG.TXT` for release notes.
 
-#### Option C — Graphical interface (Windows 7+)
+#### Option C — Graphical interface (Windows 7+, 32-bit and 64-bit)
 
-**Still in preparation** — not available from this release; will be published in a
-later update.
+1. Also download `Quelo_Office-0.71-alpha.iso` from the same Release page
+2. Extract `Quelo-prepare_usb_windows.zip` (or `.rar` / `.tar`)
+3. Double-click **`AVVIA.bat`** (accept the UAC administrator prompt)
+4. In the GUI: choose ISO, USB drive, persistence size (512 / 1024 / 2048 MB)
+5. Safety confirmations: disk number + type `SI SCRIVI`
+
+The package is **offline** (includes 32-bit Python and tools): no Internet required.
+It runs on **32-bit Windows** and **64-bit Windows** (WOW64).
+
+If something fails: right-click `AVVIA.bat` → Run as administrator, then open
+`windows\LOG-FULL.txt`. See also `LEGGIMI-WINDOWS.txt` / `LEGGIMI.txt` in the archive.
 
 ### 3. Boot from BIOS/UEFI
 
