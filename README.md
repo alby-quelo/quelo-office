@@ -246,6 +246,7 @@ Il codice di build e gli script USB sono in **`SOURCE_CODE/`**:
 |----------|-----------|
 | `Quelo_office/` | Build ISO (live-build, overlay, hooks) |
 | `Quelo_prepare_usb/` | `prepare-usb.sh`, `prepare-usb-gui.sh`, `prepare-usb-gui.py`, `quelo_prepare_lib.py`, `quelo-write-iso.py` |
+| `Quelo_prepare_usb_Windows/` | GUI Windows: `AVVIA.bat`, `prepare-usb-gui.py`, `quelo_prepare_win_lib.py` |
 
 Dalla live, `quelo-export` (in `QUELO-HOME/quelo-export/`) raccoglie pacchetti e configurazioni aggiunte durante i test, per integrarle nei sorgenti e rigenerare l’ISO.
 
